@@ -1,0 +1,10 @@
+# public/robots.txt
+User-agent: *
+Allow: /
+
+# Disallow admin pages
+Disallow: /admin/
+Disallow: /api/admin/
+
+# Sitemap
+Sitemap: https://yourzerosandones.com/sitemap.xml

@@ -1,0 +1,119 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+/// --- Add these models at the bottom of prisma/schema.prisma ---
+
+model Blog {
+  id           String   @id @default(uuid())
+  slug         String   @unique
+  title        String
+  excerpt      String?
+  content      String   // canonical Markdown
+  content_html String?  // last-saved HTML (optional)
+  author       String?
+  readTime     String?
+  tags         String[] @default([])
+  image        String?   // featured image URL (relative or absolute)
+  published    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Admin {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// prisma/schema.prisma
+// Add this model to your existing schema
+
+model Testimonial {
+  id          String   @id @default(uuid())
+  name        String
+  role        String
+  company     String?
+  message     String   @db.Text
+  image       String?
+  rating      Int      @default(5)
+  verified    Boolean  @default(false)
+  position    Int?     // Custom display position (optional)
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// prisma/schema.prisma - Update Portfolio model
+
+model Portfolio {
+  id               Int      @id @default(autoincrement())
+  slug             String   @unique
+  title            String
+  shortDescription String   @db.Text
+  fullDescription  String   @db.Text
+
+  // ✅ Changed: Array of category-subcategory pairs
+  categories       Json     @default("[]")  // [{category: "Branding & Design", subCategory: "Graphic Design"}, ...]
+
+  // Images
+  image            String?
+  images           String[]
+  features         String[]
+
+  // Hidden fields (stored but not exposed in public API)
+  client           String?
+  duration         String?
+  year             String?
+  website          String?
+  technologies     String[]
+  results          Json?    @default("[]")
+  testimonial      Json?
+
+  featured         Boolean  @default(false)
+  published        Boolean  @default(false)
+  position         Int?
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([published])
+  @@index([featured])
+}
+
+
+// prisma/schema.prisma
+// Add this model with your existing ones
+
+model Client {
+  id        String   @id @default(uuid())
+  name      String
+  logo      String?        // Uploaded logo image path (via /api/upload)
+  position  Int?           // Manual sort order (optional)
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// prisma/schema.prisma
+model TeamMember {
+  id          String   @id @default(cuid())
+  name        String
+  role        String
+  image       String?
+  description String?
+  linkedin    String?
+  twitter     String?
+  position    Int?
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

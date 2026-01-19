@@ -51,6 +51,8 @@ const socialLinks = [
 ]
 
 export default function Footer() {
+  const currentYear = new Date().getFullYear()
+  
   return (
     <footer className="bg-gray-100 text-black py-8">
       <div 
@@ -181,7 +183,7 @@ export default function Footer() {
 
         {/* Copyright */}
         <div className="border-t border-gray-200 mt-8 pt-8 text-center text-gray-600">
-          <p className="text-sm sm:text-base">&copy; 2025 YourZerosAndOnes. All rights reserved.</p>
+          <p className="text-sm sm:text-base">&copy; {currentYear} YourZerosAndOnes. All rights reserved.</p>
         </div>
       </div>
     </footer>

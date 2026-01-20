@@ -1435,3 +1435,7 @@ kbd {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+.grecaptcha-badge {
+  visibility: hidden !important;
+}

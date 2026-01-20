@@ -4,9 +4,13 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import AdminLayoutNew from "@/components/admin/AdminLayoutNew";
-import { PORTFOLIO_CATEGORIES, SUBCATEGORIES_SIMPLE } from "@/lib/portfolio-categories";
+import CategoryIcon from "@/components/CategoryIcon";
+import {
+  PORTFOLIO_CATEGORIES,
+  SUBCATEGORIES_SIMPLE,
+} from "@/lib/portfolio-categories";
 import { toastService } from "@/lib/toastConfig";
-
+import CustomSelect from "@/components/CustomSelect";
 export default function CreatePortfolioPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -67,37 +71,37 @@ export default function CreatePortfolioPage() {
   };
 
   const handleAddCategory = () => {
-    if (!formData.tempCategory || !formData.tempSubCategory) {
-      toastService.error("Please select both category and service");
-      return;
-    }
+  if (!formData.tempCategory || !formData.tempSubCategory) {
+    toastService.error("Please select both category and service");
+    return;
+  }
 
-    const isDuplicate = formData.categories.some(
-      (cat) =>
-        cat.category === formData.tempCategory &&
-        cat.subCategory === formData.tempSubCategory
-    );
+  const isDuplicate = formData.categories.some(
+    (cat) =>
+      cat.category === formData.tempCategory &&
+      cat.subCategory === formData.tempSubCategory
+  );
 
-    if (isDuplicate) {
-      toastService.error("This category + service combination already exists");
-      return;
-    }
+  if (isDuplicate) {
+    toastService.error("This category + service combination already exists");
+    return;
+  }
 
-    setFormData((prev) => ({
-      ...prev,
-      categories: [
-        ...prev.categories,
-        {
-          category: prev.tempCategory,
-          subCategory: prev.tempSubCategory,
-        },
-      ],
-      tempCategory: "",
-      tempSubCategory: "",
-    }));
+  setFormData((prev) => ({
+    ...prev,
+    categories: [
+      ...prev.categories,
+      {
+        category: prev.tempCategory,
+        subCategory: prev.tempSubCategory,
+      },
+    ],
+    tempCategory: "",
+    tempSubCategory: "",
+  }));
 
-    toastService.success("Category added");
-  };
+  toastService.success("Category added");
+};
 
   const handleRemoveCategory = (index) => {
     setFormData((prev) => ({
@@ -255,7 +259,9 @@ export default function CreatePortfolioPage() {
 
           if (!uploadRes.ok) {
             const uploadError = await uploadRes.json().catch(() => ({}));
-            throw new Error(uploadError?.error || "Gallery image upload failed");
+            throw new Error(
+              uploadError?.error || "Gallery image upload failed",
+            );
           }
           const uploadData = await uploadRes.json();
           uploadedImages.push(uploadData.url);
@@ -317,13 +323,28 @@ export default function CreatePortfolioPage() {
       <div className="min-h-screen mt-0">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-slate-800">Create Project</h1>
+            <h1 className="text-3xl font-bold text-slate-800">
+              Create Project
+            </h1>
             <p className="text-slate-600 mt-1">Add a new portfolio project</p>
           </div>
           <Link href="/admin/portfolio">
-            <button type="button" className="flex items-center gap-2 px-4 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <button
+              type="button"
+              className="flex items-center gap-2 px-4 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </Link>
@@ -331,11 +352,18 @@ export default function CreatePortfolioPage() {
 
         <form onSubmit={handleSubmit} className="space-y-8">
           <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <h2 className="text-xl font-bold text-slate-800 mb-6">Basic Information</h2>
+            <h2 className="text-xl font-bold text-slate-800 mb-6">
+              Basic Information
+            </h2>
             <div className="space-y-4">
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="title" className="block text-sm font-medium text-slate-700 mb-2">Project Title *</label>
+                  <label
+                    htmlFor="title"
+                    className="block text-sm font-medium text-slate-700 mb-2"
+                  >
+                    Project Title *
+                  </label>
                   <input
                     type="text"
                     id="title"
@@ -348,7 +376,12 @@ export default function CreatePortfolioPage() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="slug" className="block text-sm font-medium text-slate-700 mb-2">Slug *</label>
+                  <label
+                    htmlFor="slug"
+                    className="block text-sm font-medium text-slate-700 mb-2"
+                  >
+                    Slug *
+                  </label>
                   <input
                     type="text"
                     id="slug"
@@ -363,7 +396,12 @@ export default function CreatePortfolioPage() {
               </div>
 
               <div>
-                <label htmlFor="shortDescription" className="block text-sm font-medium text-slate-700 mb-2">Short Description *</label>
+                <label
+                  htmlFor="shortDescription"
+                  className="block text-sm font-medium text-slate-700 mb-2"
+                >
+                  Short Description *
+                </label>
                 <textarea
                   id="shortDescription"
                   name="shortDescription"
@@ -377,7 +415,12 @@ export default function CreatePortfolioPage() {
               </div>
 
               <div>
-                <label htmlFor="fullDescription" className="block text-sm font-medium text-slate-700 mb-2">Full Description *</label>
+                <label
+                  htmlFor="fullDescription"
+                  className="block text-sm font-medium text-slate-700 mb-2"
+                >
+                  Full Description *
+                </label>
                 <textarea
                   id="fullDescription"
                   name="fullDescription"
@@ -392,85 +435,289 @@ export default function CreatePortfolioPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <h2 className="text-xl font-bold text-slate-800 mb-6">Categories & Services</h2>
+          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-xl font-bold text-slate-800">
+                  Categories & Services
+                </h2>
+                <p className="text-sm text-slate-500 mt-1">
+                  {formData.categories.length === 0
+                    ? "Add at least one category to continue"
+                    : `${formData.categories.length} ${formData.categories.length === 1 ? "category" : "categories"} selected`}
+                </p>
+              </div>
+              {formData.categories.length > 0 && (
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                  {formData.categories.length} / 10
+                </span>
+              )}
+            </div>
 
+            {/* Selected Categories Display */}
             {formData.categories.length > 0 && (
-              <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                <p className="text-sm font-medium text-blue-900 mb-3">Selected ({formData.categories.length}):</p>
-                <div className="flex flex-wrap gap-2">
-                  {formData.categories.map((cat, index) => (
-                    <div key={index} className="flex items-center gap-2 bg-blue-600 text-white px-3 py-1.5 rounded-full text-sm font-medium">
-                      <span>{cat.category} → {cat.subCategory}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveCategory(index)}
-                        className="hover:bg-blue-700 rounded-full p-0.5 transition-colors ml-1"
-                        aria-label="Remove category"
+              <div className="mb-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <svg
+                    className="w-4 h-4 text-blue-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <p className="text-sm font-semibold text-slate-700">
+                    Selected Categories
+                  </p>
+                </div>
+                <div className="bg-gradient-to-br from-blue-50 to-slate-50 rounded-lg border border-blue-100 p-4">
+                  <div className="flex flex-wrap gap-2">
+                    {formData.categories.map((cat, index) => (
+                      <div
+                        key={index}
+                        className="group flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5"
                       >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
-                    </div>
-                  ))}
+                        <CategoryIcon
+                          icon={
+                            PORTFOLIO_CATEGORIES.find(
+                              (c) => c.category === cat.category,
+                            )?.icon || "sparkles"
+                          }
+                          className="w-4 h-4 stroke-white"
+                        />
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-1.5">
+                          <span className="font-semibold">{cat.category}</span>
+                          <svg
+                            className="w-3 h-3 hidden sm:block opacity-70"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 5l7 7-7 7"
+                            />
+                          </svg>
+                          <span className="text-blue-100 sm:text-white text-xs sm:text-sm">
+                            {cat.subCategory}
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveCategory(index)}
+                          className="ml-2 hover:bg-blue-700 rounded-full p-1 transition-all duration-200 group-hover:rotate-90"
+                          aria-label="Remove category"
+                          title="Remove this category"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
 
-            <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-              <p className="text-sm font-medium text-slate-700 mb-4">Add a category + service:</p>
-              <div className="grid sm:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label htmlFor="tempCategory" className="block text-sm font-medium text-slate-700 mb-2">Category *</label>
-                  <select
-                    id="tempCategory"
-                    value={formData.tempCategory}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, tempCategory: e.target.value, tempSubCategory: "" }))}
-                    className="w-full px-3 py-2 text-slate-900 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            {/* Add New Category Form */}
+            <div className="bg-slate-50 rounded-lg border-2 border-dashed border-slate-300 p-5 hover:border-blue-300 transition-colors duration-200">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                  <svg
+                    className="w-4 h-4 text-blue-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    <option value="">Select category</option>
-                    {PORTFOLIO_CATEGORIES.map((cat) => (
-                      <option key={cat.category} value={cat.category}>{cat.category}</option>
-                    ))}
-                  </select>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
                 </div>
-
-                <div>
-                  <label htmlFor="tempSubCategory" className="block text-sm font-medium text-slate-700 mb-2">Service *</label>
-                  <select
-                    id="tempSubCategory"
-                    value={formData.tempSubCategory}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, tempSubCategory: e.target.value }))}
-                    disabled={!formData.tempCategory}
-                    className="w-full px-3 py-2 text-slate-900 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <option value="">Select service</option>
-                    {(SUBCATEGORIES_SIMPLE[formData.tempCategory] || []).map((sub) => (
-                      <option key={sub} value={sub}>{sub}</option>
-                    ))}
-                  </select>
-                </div>
+                <p className="text-sm font-semibold text-slate-700">
+                  Add New Category
+                </p>
               </div>
 
-              <button
-                type="button"
-                onClick={handleAddCategory}
-                className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-              >
-                + Add Category
-              </button>
+              <div className="space-y-4">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {/* Category Select */}
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-2 uppercase tracking-wide">
+                      Category *
+                    </label>
+                    <CustomSelect
+                      options={PORTFOLIO_CATEGORIES.map((cat) => ({
+                        value: cat.category,
+                        label: cat.category,
+                      }))}
+                      value={
+                        formData.tempCategory
+                          ? {
+                              value: formData.tempCategory,
+                              label: formData.tempCategory,
+                            }
+                          : null
+                      }
+                      onChange={(selected) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          tempCategory: selected?.value || "",
+                          tempSubCategory: "",
+                        }))
+                      }
+                      placeholder="Choose a category..."
+                      showIcon
+                      iconMap={PORTFOLIO_CATEGORIES.reduce((acc, cat) => {
+                        acc[cat.category] = cat.icon;
+                        return acc;
+                      }, {})}
+                      isClearable
+                    />
+                  </div>
+
+                  {/* Service Select */}
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-2 uppercase tracking-wide">
+                      Service *
+                    </label>
+                    <CustomSelect
+                      options={
+                        formData.tempCategory
+                          ? (
+                              SUBCATEGORIES_SIMPLE[formData.tempCategory] || []
+                            ).map((sub) => ({
+                              value: sub,
+                              label: sub,
+                            }))
+                          : []
+                      }
+                      value={
+                        formData.tempSubCategory
+                          ? {
+                              value: formData.tempSubCategory,
+                              label: formData.tempSubCategory,
+                            }
+                          : null
+                      }
+                      onChange={(selected) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          tempSubCategory: selected?.value || "",
+                        }))
+                      }
+                      placeholder={
+                        formData.tempCategory
+                          ? "Choose a service..."
+                          : "Select category first"
+                      }
+                      isDisabled={!formData.tempCategory}
+                      isClearable
+                    />
+                    {!formData.tempCategory && (
+                      <p className="mt-1.5 text-xs text-slate-500 flex items-center gap-1">
+                        <svg
+                          className="w-3 h-3"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                        Please select a category first
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Add Button */}
+                <button
+                  type="button"
+                  onClick={handleAddCategory}
+                  disabled={!formData.tempCategory || !formData.tempSubCategory}
+                  className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 font-semibold shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600 disabled:hover:shadow-sm flex items-center justify-center gap-2 group"
+                >
+                  <svg
+                    className="w-5 h-5 group-hover:rotate-90 transition-transform duration-200"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                  Add Category & Service
+                </button>
+              </div>
             </div>
 
+            {/* Error Message */}
             {formData.categories.length === 0 && (
-              <p className="mt-4 text-sm text-red-600 font-medium">⚠️ At least one category + service is required</p>
+              <div className="mt-4 flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <svg
+                  className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+                <div>
+                  <p className="text-sm font-semibold text-red-800">
+                    Required Field
+                  </p>
+                  <p className="text-xs text-red-600 mt-0.5">
+                    At least one category & service combination is required to
+                    create a project
+                  </p>
+                </div>
+              </div>
             )}
           </div>
 
           <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <h2 className="text-xl font-bold text-slate-800 mb-6">Hero Image</h2>
+            <h2 className="text-xl font-bold text-slate-800 mb-6">
+              Hero Image
+            </h2>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-3">Upload Main Project Image</label>
+              <label className="block text-sm font-medium text-slate-700 mb-3">
+                Upload Main Project Image
+              </label>
               <div className="border-2 border-dashed border-slate-300 rounded-lg p-6 text-center cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all">
                 <input
                   type="file"
@@ -480,25 +727,53 @@ export default function CreatePortfolioPage() {
                   id="main-image-upload"
                 />
                 <label htmlFor="main-image-upload" className="cursor-pointer">
-                  <svg className="w-12 h-12 text-slate-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  <svg
+                    className="w-12 h-12 text-slate-400 mx-auto mb-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
                   </svg>
-                  <p className="text-slate-600 font-medium">Click to upload or drag and drop</p>
-                  <p className="text-sm text-slate-500 mt-1">PNG, JPG, GIF up to 5MB</p>
+                  <p className="text-slate-600 font-medium">
+                    Click to upload or drag and drop
+                  </p>
+                  <p className="text-sm text-slate-500 mt-1">
+                    PNG, JPG, GIF up to 5MB
+                  </p>
                 </label>
               </div>
 
               {mainImagePreview && (
                 <div className="mt-4 relative rounded-lg overflow-hidden bg-slate-100 max-w-xs">
-                  <img src={mainImagePreview.preview} alt="Hero preview" className="w-full h-48 object-cover" />
+                  <img
+                    src={mainImagePreview.preview}
+                    alt="Hero preview"
+                    className="w-full h-48 object-cover"
+                  />
                   <button
                     type="button"
                     onClick={removeMainImage}
                     className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded hover:bg-red-600"
                     aria-label="Remove image"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                   </button>
                 </div>
@@ -507,9 +782,13 @@ export default function CreatePortfolioPage() {
           </div>
 
           <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <h2 className="text-xl font-bold text-slate-800 mb-6">Gallery Images</h2>
+            <h2 className="text-xl font-bold text-slate-800 mb-6">
+              Gallery Images
+            </h2>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-3">Upload Images</label>
+              <label className="block text-sm font-medium text-slate-700 mb-3">
+                Upload Images
+              </label>
               <div className="border-2 border-dashed border-slate-300 rounded-lg p-6 text-center cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all">
                 <input
                   type="file"
@@ -520,27 +799,58 @@ export default function CreatePortfolioPage() {
                   id="image-upload"
                 />
                 <label htmlFor="image-upload" className="cursor-pointer">
-                  <svg className="w-12 h-12 text-slate-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  <svg
+                    className="w-12 h-12 text-slate-400 mx-auto mb-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
                   </svg>
-                  <p className="text-slate-600 font-medium">Click to upload or drag and drop</p>
-                  <p className="text-sm text-slate-500 mt-1">PNG, JPG, GIF up to 5MB</p>
+                  <p className="text-slate-600 font-medium">
+                    Click to upload or drag and drop
+                  </p>
+                  <p className="text-sm text-slate-500 mt-1">
+                    PNG, JPG, GIF up to 5MB
+                  </p>
                 </label>
               </div>
 
               {imagePreview.length > 0 && (
                 <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
                   {imagePreview.map((img, index) => (
-                    <div key={index} className="relative rounded-lg overflow-hidden bg-slate-100">
-                      <img src={img.preview} alt={`Preview ${index}`} className="w-full h-32 object-cover" />
+                    <div
+                      key={index}
+                      className="relative rounded-lg overflow-hidden bg-slate-100"
+                    >
+                      <img
+                        src={img.preview}
+                        alt={`Preview ${index}`}
+                        className="w-full h-32 object-cover"
+                      />
                       <button
                         type="button"
                         onClick={() => removeImage(index)}
                         className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded hover:bg-red-600"
                         aria-label="Remove image"
                       >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
                         </svg>
                       </button>
                     </div>
@@ -551,14 +861,18 @@ export default function CreatePortfolioPage() {
           </div>
 
           <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <h2 className="text-xl font-bold text-slate-800 mb-6">Key Features</h2>
+            <h2 className="text-xl font-bold text-slate-800 mb-6">
+              Key Features
+            </h2>
             <div className="space-y-3">
               {formData.features.map((feature, index) => (
                 <div key={index} className="flex gap-2">
                   <input
                     type="text"
                     value={feature}
-                    onChange={(e) => handleArrayChange("features", index, e.target.value)}
+                    onChange={(e) =>
+                      handleArrayChange("features", index, e.target.value)
+                    }
                     placeholder={`Feature ${index + 1}`}
                     className="flex-1 px-3 py-2 text-slate-900 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
@@ -584,7 +898,9 @@ export default function CreatePortfolioPage() {
           </div>
 
           <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <h2 className="text-xl font-bold text-slate-800 mb-6">Publishing Options</h2>
+            <h2 className="text-xl font-bold text-slate-800 mb-6">
+              Publishing Options
+            </h2>
             <div className="space-y-3">
               <label className="flex items-center gap-3 cursor-pointer">
                 <input
@@ -594,11 +910,18 @@ export default function CreatePortfolioPage() {
                   onChange={handleInputChange}
                   className="w-4 h-4"
                 />
-                <span className="text-sm font-medium text-slate-700">Publish this project</span>
+                <span className="text-sm font-medium text-slate-700">
+                  Publish this project
+                </span>
               </label>
 
               <div>
-                <label htmlFor="position" className="block text-sm font-medium text-slate-700 mb-2">Display Position (optional)</label>
+                <label
+                  htmlFor="position"
+                  className="block text-sm font-medium text-slate-700 mb-2"
+                >
+                  Display Position (optional)
+                </label>
                 <input
                   type="number"
                   id="position"

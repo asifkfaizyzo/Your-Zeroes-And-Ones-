@@ -77,7 +77,7 @@ export async function GET() {
       xml += '  <url>\n';
       xml += `    <loc>${DOMAIN}${page.url}</loc>\n`;
       xml += `    <lastmod>${formatDate(new Date())}</lastmod>\n`;
-      xml += `    hangefreq>${page.changefreq}</changefreq>\n`;
+      xml += `    <changefreq>${page.changefreq}</changefreq>\n`;
       xml += `    <priority>${page.priority}</priority>\n`;
       xml += '  </url>\n';
     }
@@ -87,7 +87,7 @@ export async function GET() {
       xml += '  <url>\n';
       xml += `    <loc>${DOMAIN}/blog/${blog.slug}</loc>\n`;
       xml += `    <lastmod>${formatDate(blog.updatedAt)}</lastmod>\n`;
-      xml += `    hangefreq>monthly</changefreq>\n`;
+      xml += `    <changefreq>monthly</changefreq>\n`;
       xml += `    <priority>0.6</priority>\n`;
       xml += '  </url>\n';
     }
@@ -97,7 +97,7 @@ export async function GET() {
       xml += '  <url>\n';
       xml += `    <loc>${DOMAIN}/portfolio/${project.slug}</loc>\n`;
       xml += `    <lastmod>${formatDate(project.updatedAt)}</lastmod>\n`;
-      xml += `    hangefreq>monthly</changefreq>\n`;
+      xml += `    <changefreq>monthly</changefreq>\n`;
       xml += `    <priority>0.7</priority>\n`;
       xml += '  </url>\n';
     }

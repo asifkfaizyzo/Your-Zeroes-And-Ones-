@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import BlogEditor from "./BlogEditor";
+import BlogEditor from "./blog-editor/BlogEditor";
 import { toastService } from "@/lib/toastConfig";
 
 export default function BlogEditorWrapper({

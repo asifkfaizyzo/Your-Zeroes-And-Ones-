@@ -3,10 +3,8 @@ import React from 'react';
 import prisma from '@/lib/prisma';
 import Header from '../../../components/Header';
 import Footer from '../../../components/Footer';
-import ReactMarkdown from 'react-markdown';
-import rehypeRaw from 'rehype-raw';
-import rehypeSanitize from 'rehype-sanitize';
 import Link from 'next/link';
+import DOMPurify from 'isomorphic-dompurify';
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
@@ -42,6 +40,42 @@ function getRelatedPosts(current, all, limit = 3) {
     .filter((p) => p.slug !== current.slug)
     .filter((p) => p.tags?.some((t) => current.tags.includes(t)))
     .slice(0, limit);
+}
+
+// Helper to get unique tags
+function getUniqueTags(tags) {
+  if (!tags || !Array.isArray(tags)) return [];
+  return [...new Set(tags)];
+}
+
+// Sanitize HTML for safe rendering
+function sanitizeContent(html) {
+  if (!html) return '';
+  
+  const clean = DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: [
+      'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+      'p', 'br', 'hr',
+      'ul', 'ol', 'li',
+      'blockquote', 'pre', 'code',
+      'strong', 'em', 'u', 's', 'sub', 'sup',
+      'a', 'img', 'figure', 'figcaption',
+      'div', 'span', 'iframe',
+      'table', 'thead', 'tbody', 'tr', 'th', 'td',
+    ],
+    ALLOWED_ATTR: [
+      'href', 'target', 'rel',
+      'src', 'alt', 'title', 'width', 'height', 'loading',
+      'class', 'id', 'style',
+      'data-alignment', 'data-width', 'data-columns', 'data-youtube-video',
+      'frameborder', 'allow', 'allowfullscreen',
+    ],
+    ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|tel):|[^a-z]|[a-z+.-]+(?:[^a-z+.\-:]|$))/i,
+    ADD_TAGS: ['iframe'],
+    ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder'],
+  });
+  
+  return clean;
 }
 
 export default async function PostPage({ params }) {
@@ -89,6 +123,12 @@ export default async function PostPage({ params }) {
   const next = index > 0 ? allPosts[index - 1] : null;
   const relatedPosts = getRelatedPosts(post, allPosts, 3);
 
+  // Use HTML content instead of Markdown
+  const sanitizedContent = sanitizeContent(post.content_html);
+  
+  // Get unique tags
+  const uniqueTags = getUniqueTags(post.tags);
+
   return (
     <>
       <Header />
@@ -134,15 +174,15 @@ export default async function PostPage({ params }) {
               </Link>
 
               <div className="max-w-4xl">
-                {/* Tags */}
-                {post.tags?.length > 0 && (
+                {/* Tags - using uniqueTags */}
+                {uniqueTags.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3 sm:mb-4">
-                    {post.tags.slice(0, 3).map((t) => (
+                    {uniqueTags.slice(0, 3).map((tag) => (
                       <span 
-                        key={t} 
+                        key={tag} 
                         className="px-2.5 py-1 sm:px-3 sm:py-1.5 bg-white/10 backdrop-blur-sm text-white text-xs sm:text-sm font-medium rounded-full border border-white/20"
                       >
-                        {t}
+                        {tag}
                       </span>
                     ))}
                   </div>
@@ -214,48 +254,26 @@ export default async function PostPage({ params }) {
 
         {/* ARTICLE BODY */}
         <div className="bg-white">
-  <div 
-    className="w-full py-10 sm:py-14 lg:py-20"
-    style={{
-      paddingLeft: 'clamp(2rem, 8vw, 12rem)',
-      paddingRight: 'clamp(2rem, 8vw, 12rem)'
-    }}
-  >
-    <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
-      {/* Main content - Added min-w-0 */}
-      <div className="lg:col-span-8 min-w-0">
-        {/* Added overflow-hidden wrapper */}
-        <div className="overflow-hidden">
           <div 
-            className="
-              prose prose-base sm:prose-lg max-w-none
-              prose-headings:text-slate-800 prose-headings:font-bold prose-headings:tracking-tight
-              prose-h2:text-2xl text-slate-900 prose-h2:sm:text-3xl prose-h2:mt-10 prose-h2:sm:mt-14 prose-h2:mb-4 prose-h2:sm:mb-6 prose-h2:pb-3 prose-h2:border-b prose-h2:border-slate-200
-              prose-h3:text-xl prose-h3:sm:text-2xl prose-h3:mt-8 prose-h3:sm:mt-10 prose-h3:mb-3 prose-h3:sm:mb-4
-              prose-p:text-slate-700 prose-p:leading-relaxed
-              prose-a:text-blue-600 prose-a:font-medium prose-a:no-underline hover:prose-a:underline
-              prose-strong:text-slate-800 prose-strong:font-bold
-              prose-code:text-blue-700 prose-code:bg-blue-50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:before:content-none prose-code:after:content-none prose-code:font-medium
-              prose-pre:bg-slate-900 prose-pre:rounded-xl prose-pre:shadow-xl prose-pre:text-sm
-              prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:bg-blue-50/50 prose-blockquote:rounded-r-lg prose-blockquote:py-3 prose-blockquote:px-5 prose-blockquote:not-italic prose-blockquote:text-slate-700
-              prose-img:rounded-xl prose-img:shadow-lg
-              prose-ul:text-slate-900 prose-ul:marker:text-blue-500
-              prose-ol:text-slate-700 prose-ol:marker:text-blue-600 prose-ol:marker:font-bold
-              prose-li:text-slate-700
-            "
+            className="w-full py-10 sm:py-14 lg:py-20"
             style={{
-              overflowWrap: 'break-word',
-              wordBreak: 'break-word'
+              paddingLeft: 'clamp(2rem, 8vw, 12rem)',
+              paddingRight: 'clamp(2rem, 8vw, 12rem)'
             }}
           >
-            <ReactMarkdown rehypePlugins={[rehypeRaw, rehypeSanitize]}>
-              {post.content}
-            </ReactMarkdown>
-          </div>
-        </div>
+            <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
+              {/* Main content */}
+              <div className="lg:col-span-8 min-w-0">
+                <div className="overflow-hidden">
+                  {/* Use blog-content class for styling */}
+                  <article 
+                    className="blog-content"
+                    dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+                  />
+                </div>
 
-                {/* Tags Section */}
-                {post.tags?.length > 0 && (
+                {/* Tags Section - using uniqueTags */}
+                {uniqueTags.length > 0 && (
                   <div className="mt-12 sm:mt-16 pt-8 border-t border-slate-200">
                     <h3 className="text-xs sm:text-sm font-bold text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2">
                       <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -264,7 +282,7 @@ export default async function PostPage({ params }) {
                       Topics
                     </h3>
                     <div className="flex flex-wrap gap-2">
-                      {post.tags.map((tag) => (
+                      {uniqueTags.map((tag) => (
                         <Link 
                           key={tag} 
                           href={`/blog?tag=${encodeURIComponent(tag.toLowerCase())}`} 
@@ -277,7 +295,7 @@ export default async function PostPage({ params }) {
                   </div>
                 )}
 
-                {/* Author Bio - Compact on mobile */}
+                {/* Author Bio */}
                 <div className="mt-8 sm:mt-10 p-5 sm:p-6 bg-slate-50 rounded-2xl border border-slate-200">
                   <div className="flex items-center sm:items-start gap-4">
                     <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg sm:text-xl flex-shrink-0">
@@ -327,14 +345,13 @@ export default async function PostPage({ params }) {
                 </div>
               </div>
 
-              {/* Sidebar - Hidden on mobile, shown as cards below content */}
+              {/* Sidebar */}
               <aside className="lg:col-span-4">
                 <div className="lg:sticky lg:top-24 space-y-6">
                   {/* Newsletter CTA */}
                   <div className="relative overflow-hidden rounded-2xl">
                     <div className="absolute inset-0 bg-gradient-to-br from-[#1a365d] via-[#2d5a87] to-[#1e3a5f]" />
                     
-                    {/* Decorative elements */}
                     <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-400/20 rounded-full blur-2xl" />
                     <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-indigo-400/20 rounded-full blur-2xl" />
                     
@@ -420,7 +437,6 @@ export default async function PostPage({ params }) {
         {/* CONTINUE READING SECTION */}
         {relatedPosts.length > 0 && (
           <section className="bg-slate-900 py-14 sm:py-20 relative overflow-hidden">
-            {/* Background decoration */}
             <div className="absolute top-0 left-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl" />
             <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl" />
             
@@ -431,7 +447,6 @@ export default async function PostPage({ params }) {
                 paddingRight: 'clamp(2rem, 8vw, 12rem)'
               }}
             >
-              {/* Section header */}
               <div className="mb-10 sm:mb-14">
                 <span className="text-blue-400 font-semibold text-xs uppercase tracking-widest mb-2 block">Keep reading</span>
                 <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight">
@@ -439,12 +454,10 @@ export default async function PostPage({ params }) {
                 </h2>
               </div>
 
-              {/* Cards grid */}
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
                 {relatedPosts.map((rp) => (
                   <Link key={rp.id} href={`/blog/${rp.slug}`} className="group">
                     <article className="h-full">
-                      {/* Image */}
                       <div className="relative h-40 sm:h-48 rounded-xl overflow-hidden mb-4">
                         {rp.image ? (
                           <img 
@@ -458,7 +471,6 @@ export default async function PostPage({ params }) {
                         
                         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
                         
-                        {/* Tag */}
                         <div className="absolute top-3 left-3">
                           <span className="px-2.5 py-1 bg-white/90 rounded-md text-xs font-semibold text-slate-800">
                             {rp.tags?.[0] || 'Article'}
@@ -466,7 +478,6 @@ export default async function PostPage({ params }) {
                         </div>
                       </div>
                       
-                      {/* Content */}
                       <div className="flex items-center gap-2 text-slate-400 text-xs mb-2">
                         <span>{formatDate(rp.createdAt)}</span>
                         <span className="w-1 h-1 rounded-full bg-slate-600" />
@@ -483,7 +494,6 @@ export default async function PostPage({ params }) {
                 ))}
               </div>
 
-              {/* View all button */}
               <div className="mt-10 sm:mt-14 text-center">
                 <Link 
                   href="/blog" 

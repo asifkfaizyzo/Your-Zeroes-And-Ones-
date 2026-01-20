@@ -4,21 +4,22 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
-
+import CategoryIcon from "@/components/CategoryIcon";
+import { PORTFOLIO_CATEGORIES } from "@/lib/portfolio-categories";
 export default function ProjectDetail({ project, relatedProjects }) {
   const [selectedImage, setSelectedImage] = useState(null);
 
-  // Helper function to get icon for category
-  const getCategoryIcon = (categoryName) => {
+  // Helper function to get icon name for category
+  const getCategoryIconName = (categoryName) => {
     switch (categoryName) {
       case "Branding & Design":
-        return "🎨";
+        return "palette";
       case "Digital Marketing":
-        return "📈";
+        return "chart";
       case "Technology":
-        return "💻";
+        return "code";
       default:
-        return "✨";
+        return "sparkles";
     }
   };
 
@@ -85,59 +86,59 @@ export default function ProjectDetail({ project, relatedProjects }) {
             }}
           >
             {/* Breadcrumb */}
-         <nav className="mb-6 ml-2 lg:ml-3 xl:ml-5 2xl:ml-20">
-  <ol className="flex items-center gap-2 text-white/80 text-sm">
-    <li>
-      <Link href="/" className="hover:text-white">
-        Home
-      </Link>
-    </li>
-    <li>
-      <svg
-        className="w-4 h-4"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9 5l7 7-7 7"
-        />
-      </svg>
-    </li>
-    <li>
-      <Link href="/portfolio" className="hover:text-white">
-        Portfolio
-      </Link>
-    </li>
-    <li>
-      <svg
-        className="w-4 h-4"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9 5l7 7-7 7"
-        />
-      </svg>
-    </li>
-    <li className="text-white font-medium">{project.title}</li>
-  </ol>
-</nav>
+            <nav className="mb-6 ml-2 lg:ml-3 xl:ml-5 2xl:ml-20">
+              <ol className="flex items-center gap-2 text-white/80 text-sm">
+                <li>
+                  <Link href="/" className="hover:text-white">
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </li>
+                <li>
+                  <Link href="/portfolio" className="hover:text-white">
+                    Portfolio
+                  </Link>
+                </li>
+                <li>
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </li>
+                <li className="text-white font-medium">{project.title}</li>
+              </ol>
+            </nav>
 
-<h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4 ml-2 lg:ml-3 xl:ml-5 2xl:ml-20">
-  {project.title}
-</h1>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4 ml-2 lg:ml-3 xl:ml-5 2xl:ml-20">
+              {project.title}
+            </h1>
 
-<p className="text-xl text-white/80 max-w-3xl ml-4 lg:ml-3 xl:ml-5 2xl:ml-20">
-  {project.shortDescription}
-</p>
+            <p className="text-xl text-white/80 max-w-3xl ml-4 lg:ml-3 xl:ml-5 2xl:ml-20">
+              {project.shortDescription}
+            </p>
           </div>
         </div>
       </section>
@@ -268,21 +269,41 @@ export default function ProjectDetail({ project, relatedProjects }) {
                   Project Details
                 </h3>
                 <div className="space-y-4">
-                  {/* Categories with Pill Badges */}
+                  {/* Categories with Pill Badges - No Duplicates */}
                   {project.categories && project.categories.length > 0 && (
                     <div className="py-3 border-b border-gray-100">
                       <span className="text-gray-500 text-sm mb-3 block">
                         Categories
                       </span>
                       <div className="flex flex-wrap gap-2">
-                        {project.categories.map((cat, index) => (
-                          <span
-                            key={index}
-                            className="px-3 py-1.5 bg-[#20427f]/10 rounded-full text-sm font-medium text-[#20427f] inline-flex items-center gap-1.5"
-                          >
-                            {getCategoryIcon(cat.category)} {cat.category}
-                          </span>
-                        ))}
+                        {/* Get unique categories only */}
+                        {[
+                          ...new Set(
+                            project.categories.map((cat) => cat.category),
+                          ),
+                        ].map((category, index) => {
+                          const categorySlug = PORTFOLIO_CATEGORIES.find(
+                            (c) => c.category === category,
+                          )?.slug;
+
+                          return (
+                            <Link
+                              key={index}
+                              href={
+                                categorySlug ? `/services/${categorySlug}` : "#"
+                              }
+                              className="inline-block"
+                            >
+                              <span className="px-3 py-1.5 bg-[#20427f]/10 rounded-full text-sm font-medium text-[#20427f] inline-flex items-center gap-1.5 hover:bg-[#20427f]/20 transition-colors cursor-pointer">
+                                <CategoryIcon
+                                  icon={getCategoryIconName(category)}
+                                  className="w-4 h-4"
+                                />
+                                {category}
+                              </span>
+                            </Link>
+                          );
+                        })}
                       </div>
                     </div>
                   )}
@@ -295,14 +316,33 @@ export default function ProjectDetail({ project, relatedProjects }) {
                           Services
                         </span>
                         <div className="flex flex-wrap gap-2">
-                          {project.categories.map((cat, index) => (
-                            <span
-                              key={index}
-                              className="px-3 py-1.5 bg-gradient-to-r from-[#20427f] to-[#1a3668] rounded-full text-sm font-medium text-white inline-flex items-center gap-1.5 shadow-sm"
-                            >
-                              {getCategoryIcon(cat.category)} {cat.category}
-                            </span>
-                          ))}
+                          {project.categories.map((cat, index) => {
+                            const categoryData = PORTFOLIO_CATEGORIES.find(
+                              (c) => c.category === cat.category,
+                            );
+                            const subServiceData =
+                              categoryData?.subServices.find(
+                                (s) => s.name === cat.subCategory,
+                              );
+                            const categorySlug = categoryData?.slug;
+                            const subServiceSlug = subServiceData?.slug;
+
+                            return (
+                              <Link
+                                key={index}
+                                href={
+                                  categorySlug && subServiceSlug
+                                    ? `/services/${categorySlug}/${subServiceSlug}`
+                                    : "#"
+                                }
+                                className="inline-block"
+                              >
+                                <span className="px-3 py-1.5 bg-gradient-to-r from-[#20427f] to-[#1a3668] rounded-full text-sm font-medium text-white inline-flex items-center gap-1.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer">
+                                  {cat.subCategory}
+                                </span>
+                              </Link>
+                            );
+                          })}
                         </div>
                       </div>
                     )}

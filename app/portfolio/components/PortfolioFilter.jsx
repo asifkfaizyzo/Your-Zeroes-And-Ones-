@@ -208,13 +208,13 @@ export default function PortfolioFilter({
                           transition={{ duration: 0.15 }}
                           className="absolute top-full right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50"
                         >
-                          {/* Dropdown Header */}
+                          {/* Dropdown Header
                           <div className="px-4 py-3 bg-gradient-to-r from-[#20427f] to-cyan-600">
                             <div className="flex items-center gap-2 text-white">
                               <CategoryIcon className="w-5 h-5" />
                               <span className="font-semibold">{category.category}</span>
                             </div>
-                          </div>
+                          </div> */}
 
                           {/* All in Category Option */}
                           <button

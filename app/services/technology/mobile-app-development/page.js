@@ -463,62 +463,82 @@ export default function MobileDevelopment() {
         </section>
 
         {/* Why Choose Us Section */}
-        <section className="py-20 bg-gray-50">
-          <div 
-            className="max-w-[1800px] mx-auto"
-            style={{
-              paddingLeft: 'clamp(2rem, 8vw, 12rem)',
-              paddingRight: 'clamp(2rem, 8vw, 12rem)'
-            }}
-          >
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">
-                Why Choose Our Mobile Development
-              </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Expertise and experience that sets us apart in mobile app
-                development
-              </p>
-            </div>
+<section className="py-20 bg-gray-50">
+  <div 
+    className="max-w-[1800px] mx-auto"
+    style={{
+      paddingLeft: 'clamp(2rem, 8vw, 12rem)',
+      paddingRight: 'clamp(2rem, 8vw, 12rem)'
+    }}
+  >
+    <div className="text-center mb-16">
+      <h2 className="text-4xl font-bold text-gray-900 mb-4">
+        Why Choose Our Mobile Development
+      </h2>
+      <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+        Expertise and experience that sets us apart in mobile app development
+      </p>
+    </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {[
-                {
-                  title: "Platform Expertise",
-                  description:
-                    "Deep knowledge of iOS, Android, and cross-platform technologies",
-                  metric: "100+",
-                },
-                {
-                  title: "Apps Delivered",
-                  description:
-                    "Successful mobile applications across various industries",
-                  metric: "50+",
-                },
-                {
-                  title: "Development Speed",
-                  description:
-                    "Faster time-to-market with optimized development processes",
-                  metric: "40%",
-                },
-                {
-                  title: "Client Satisfaction",
-                  description:
-                    "Consistently high ratings and long-term partnerships",
-                  metric: "98%",
-                },
-              ].map((item, index) => (
-                <div key={index} className="text-center">
-                  <div className="text-3xl font-bold text-[#20427f] mb-2">
-                    {item.metric}
-                  </div>
-                  <h4 className="font-bold text-gray-900 mb-2">{item.title}</h4>
-                  <p className="text-gray-600 text-sm">{item.description}</p>
-                </div>
-              ))}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      {[
+        {
+          title: "Platform Expertise",
+          description: "Deep knowledge of iOS, Android, and cross-platform technologies with native performance optimization.",
+          icon: (
+            <svg className="w-8 h-8" fill="none" stroke="#1a3568" strokeWidth={1.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+            </svg>
+          ),
+        },
+        {
+          title: "Agile Development",
+          description: "Iterative development approach with regular updates, feedback loops, and transparent communication.",
+          icon: (
+            <svg className="w-8 h-8" fill="none" stroke="#1a3568" strokeWidth={1.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+            </svg>
+          ),
+        },
+        {
+          title: "User-Centric Design",
+          description: "Beautiful, intuitive interfaces designed with your users in mind for maximum engagement and retention.",
+          icon: (
+            <svg className="w-8 h-8" fill="none" stroke="#1a3568" strokeWidth={1.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+            </svg>
+          ),
+        },
+        {
+          title: "End-to-End Support",
+          description: "From concept to launch and beyond — we provide ongoing maintenance, updates, and dedicated support.",
+          icon: (
+            <svg className="w-8 h-8" fill="none" stroke="#1a3568" strokeWidth={1.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+            </svg>
+          ),
+        },
+      ].map((item, index) => (
+        <div 
+          key={index} 
+          className="bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-[#20427f] group"
+        >
+          <div className="w-16 h-16 bg-blue-50 rounded-xl flex items-center justify-center mx-auto mb-5 group-hover:bg-[#20427f] group-hover:scale-110 transition-all duration-300">
+            <div className="group-hover:[&_svg]:stroke-white transition-all duration-300">
+              {item.icon}
             </div>
           </div>
-        </section>
+          <h4 className="font-bold text-gray-900 mb-3 text-lg group-hover:text-[#20427f] transition-colors">
+            {item.title}
+          </h4>
+          <p className="text-gray-600 text-sm leading-relaxed">
+            {item.description}
+          </p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
 
         <ServiceProjects
           categoryName="Technology"

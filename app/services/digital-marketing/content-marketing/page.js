@@ -339,7 +339,7 @@ export default function ContentMarketing() {
           </div>
         </section>
 
-        {/* Content Types Section */}
+        {/* Content Types Section
         <section className="py-20 bg-white">
           <div 
             className="max-w-[1800px] mx-auto"
@@ -375,7 +375,7 @@ export default function ContentMarketing() {
               ))}
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Results Section */}
         <section className="py-20 bg-gradient-to-r from-[#20427f] to-[#1a3566]">

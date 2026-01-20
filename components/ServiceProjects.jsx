@@ -79,7 +79,10 @@ export default function ServiceProjectsExpandable({
           <div className="flex flex-wrap justify-center gap-6">
             {[...Array(4)].map((_, i) => (
               <div key={i} className="animate-pulse w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]">
-                <div className="bg-gray-200 aspect-square rounded-2xl" />
+                <div 
+                  className="bg-gray-200 rounded-2xl" 
+                  style={{ height: 'clamp(180px, 20vw, 280px)' }}
+                />
               </div>
             ))}
           </div>
@@ -280,14 +283,13 @@ export default function ServiceProjectsExpandable({
           </div>
         )}
 
-        {/* Square Cards - Flexbox Centered - When projects exist */}
+        {/* Project Cards - Dynamic sizing like ProjectCard */}
         {!isLoading && !error && projects.length > 0 && (
           <>
             <div className="flex flex-wrap justify-center gap-6">
               {projects.map((project, index) => (
-                <Link
+                <div
                   key={project.id || index}
-                  href={`/portfolio/${project.slug}`}
                   className={`group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer flex flex-col w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] ${
                     isVisible
                       ? "opacity-100 translate-y-0"
@@ -295,63 +297,81 @@ export default function ServiceProjectsExpandable({
                   }`}
                   style={{ transitionDelay: `${index * 100}ms` }}
                 >
-                  {/* Square Image */}
-                  <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-[#20427f] to-[#1a3668]">
-                    {project.image ? (
-                      <Image
-                        src={project.image}
-                        alt={project.title}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center text-white/40 text-sm">
-                        Project Image
-                      </div>
-                    )}
+                  <Link href={`/portfolio/${project.slug}`} className="flex flex-col h-full">
+                    {/* Image - Dynamic height like ProjectCard */}
+                    <div 
+                      className="relative overflow-hidden bg-gradient-to-br from-[#20427f] to-[#1a3668]"
+                      style={{
+                        height: 'clamp(180px, 20vw, 280px)'
+                      }}
+                    >
+                      {project.image ? (
+                        <Image
+                          src={project.image}
+                          alt={project.title}
+                          fill
+                          unoptimized={project.image?.startsWith('/uploads/')}
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center text-white/40 text-sm">
+                          Project Image
+                        </div>
+                      )}
 
-                    {/* Hover overlay */}
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300" />
+                      {/* Hover overlay */}
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300" />
 
-                    {/* View Project CTA */}
-                    <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="bg-white text-[#20427f] px-4 py-3 rounded-xl font-semibold text-center flex items-center justify-center gap-2 text-sm">
-                        View Project
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M17 8l4 4m0 0l-4 4m4-4H3"
-                          />
-                        </svg>
+                      {/* View Project CTA */}
+                      <div className="absolute bottom-4 left-4 right-4 opacity-100 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="bg-white text-[#20427f] px-4 py-3 rounded-xl font-semibold text-center flex items-center justify-center gap-2 text-sm lg:text-base">
+                          View Project
+                          <svg
+                            className="w-4 h-4 lg:w-5 lg:h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M17 8l4 4m0 0l-4 4m4-4H3"
+                            />
+                          </svg>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Content */}
-                  <div className="flex-1 flex flex-col p-6">
-                    {/* Category */}
-                    <span className="text-xs font-medium text-gray-500 mb-2">
-                      {project.category || subCategoryName}
-                    </span>
+                    {/* Content - Dynamic padding */}
+                    <div 
+                      className="flex-1 flex flex-col"
+                      style={{
+                        padding: 'clamp(1rem, 2vw, 1.5rem)'
+                      }}
+                    >
+                      {/* Title - Dynamic font size */}
+                      <h3 
+                        className="font-bold text-gray-900 mb-2 group-hover:text-[#20427f] transition-colors line-clamp-2"
+                        style={{
+                          fontSize: 'clamp(1rem, 1.5vw, 1.25rem)'
+                        }}
+                      >
+                        {project.title}
+                      </h3>
 
-                    {/* Title */}
-                    <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-[#20427f] transition-colors line-clamp-2">
-                      {project.title}
-                    </h3>
-
-                    {/* Description */}
-                    <p className="text-sm text-gray-600 leading-relaxed line-clamp-2">
-                      {project.description}
-                    </p>
-                  </div>
-                </Link>
+                      {/* Description - Dynamic font size */}
+                      <p 
+                        className="text-gray-600 leading-relaxed line-clamp-2 flex-1"
+                        style={{
+                          fontSize: 'clamp(0.8rem, 1vw, 0.9rem)'
+                        }}
+                      >
+                        {project.description || project.shortDescription}
+                      </p>
+                    </div>
+                  </Link>
+                </div>
               ))}
             </div>
 

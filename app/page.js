@@ -381,12 +381,30 @@ export default function Home() {
   const [testimonialsLoading, setTestimonialsLoading] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
 
-  const stats = [
-    { number: 50, label: "Projects Completed", suffix: "+" },
-    { number: clients.length || 30, label: "Happy Clients", suffix: "+" },
-    { number: 15, label: "Years Experience", suffix: "+" },
-    { number: 24, label: "Support", suffix: "/7" },
-  ];
+  const [stats, setStats] = useState(null);
+
+  useEffect(() => {
+    fetch("/api/stats")
+      .then((res) => res.json())
+      .then(setStats)
+      .catch(() => {
+        setStats({
+          projects: 20,
+          clients: 30,
+          years: 15,
+          support: "24/7",
+        });
+      });
+  }, []);
+
+  const statsConfig = stats
+    ? [
+        { number: stats.projects, label: "Projects Completed", suffix: "+" },
+        { number: stats.clients, label: "Happy Clients", suffix: "+" },
+        { number: stats.years, label: "Years Experience", suffix: "+" },
+        { number: stats.support, label: "Support", suffix: "" },
+      ]
+    : [];
 
   // Fetch clients from API
   useEffect(() => {
@@ -450,7 +468,7 @@ export default function Home() {
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     const elements = document.querySelectorAll("[data-animate]");
@@ -462,7 +480,7 @@ export default function Home() {
   // Counter animation helper
   const animateCounter = useCallback((target, key) => {
     let current = 0;
-    const increment = target / 50;
+    const increment = target / 20;
     const timer = setInterval(() => {
       current += increment;
       if (current >= target) {
@@ -476,10 +494,10 @@ export default function Home() {
 
   // Animate stats counters
   useEffect(() => {
-    if (isVisible["stats"]) {
-      animateCounter(50, "projects");
-      animateCounter(clients.length || 30, "clients");
-      animateCounter(15, "years");
+    if (isVisible["stats"] && stats) {
+      animateCounter(stats.projects, "projects");
+      animateCounter(stats.clients, "clients");
+      animateCounter(stats.years, "years");
     }
   }, [isVisible["stats"], clients.length, animateCounter]);
 
@@ -498,7 +516,7 @@ export default function Home() {
     testimonials[activeTestimonial] || fallbackTestimonials[0];
   const rating = Math.min(
     5,
-    Math.max(0, parseInt(currentTestimonial?.rating) || 5)
+    Math.max(0, parseInt(currentTestimonial?.rating) || 5),
   );
 
   if (error) {
@@ -555,7 +573,7 @@ export default function Home() {
                         : "translate-y-10 opacity-0"
                     }`}
                   >
-                   We Complete Your
+                    We Complete Your
                     <span className="block bg-gradient-to-r from-[#20427f] via-cyan-600 to-purple-600 bg-clip-text text-transparent animate-gradient-x">
                       Zeros and Ones
                     </span>
@@ -720,23 +738,29 @@ export default function Home() {
             }}
           >
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
-              {stats.map((stat, index) => (
+              {statsConfig.map((stat, index) => (
                 <div
                   key={index}
                   className={`text-center p-4 sm:p-6 lg:p-8 2xl:p-10 rounded-xl sm:rounded-2xl bg-gradient-to-br ${
                     index === 0
                       ? "from-purple-50 to-pink-50"
                       : index === 1
-                      ? "from-blue-50 to-cyan-50"
-                      : index === 2
-                      ? "from-green-50 to-emerald-50"
-                      : "from-orange-50 to-yellow-50"
+                        ? "from-blue-50 to-cyan-50"
+                        : index === 2
+                          ? "from-green-50 to-emerald-50"
+                          : "from-orange-50 to-yellow-50"
                   } transform hover:scale-105 lg:hover:scale-110 transition-all duration-300 hover:shadow-xl`}
                 >
                   <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl 2xl:text-6xl font-bold bg-gradient-to-r from-[#20427f] to-cyan-600 bg-clip-text text-transparent mb-1 sm:mb-2">
                     {index === 3
                       ? stat.number
-                      : countUp[Object.keys(countUp)[index]] || 0}
+                      : countUp[
+                          index === 0
+                            ? "projects"
+                            : index === 1
+                              ? "clients"
+                              : "years"
+                        ] || 0}
                     {stat.suffix}
                   </div>
                   <div className="text-gray-600 font-semibold text-xs sm:text-sm md:text-base 2xl:text-lg">
@@ -1019,456 +1043,456 @@ export default function Home() {
           </div>
         </section>
 
-{/* ==================== TESTIMONIALS SECTION - VARIATION 3: CAROUSEL WITH PREVIEWS ==================== */}
-<section
-  className="py-12 sm:py-16 lg:py-20 2xl:py-24 bg-gradient-to-b from-white via-blue-50/30 to-white relative overflow-hidden"
-  data-animate
-  id="testimonials"
-  onMouseEnter={() => setIsPaused(false)}
-  onMouseLeave={() => setIsPaused(false)}
->
-  {/* Subtle Grid Background */}
-  <div
-    className="absolute inset-0 opacity-[0.02]"
-    style={{
-      backgroundImage: `linear-gradient(#20427f 1px, transparent 1px), linear-gradient(90deg, #20427f 1px, transparent 1px)`,
-      backgroundSize: "50px 50px",
-    }}
-  />
-
-  <div
-    className="w-full max-w-[1800px] mx-auto relative z-10"
-    style={{
-      paddingLeft: "clamp(1rem, 4vw, 4rem)",
-      paddingRight: "clamp(1rem, 4vw, 4rem)",
-    }}
-  >
-    {/* Header */}
-    <div className="text-center mb-10 lg:mb-14">
-      <span className="inline-block text-[#20427f] font-semibold text-xs sm:text-sm uppercase tracking-widest mb-2">
-        ★ CLIENT TESTIMONIALS ★
-      </span>
-      <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl 2xl:text-6xl font-bold text-gray-900">
-        What Our Clients Say
-      </h2>
-    </div>
-
-    {testimonialsLoading ? (
-      <div className="flex justify-center py-16">
-        <div className="flex items-center gap-2">
-          {[0, 1, 2].map((i) => (
-            <div
-              key={i}
-              className="w-3 h-3 bg-[#20427f] rounded-full animate-bounce"
-              style={{ animationDelay: `${i * 150}ms` }}
-            />
-          ))}
-        </div>
-      </div>
-    ) : testimonials.length === 0 ? (
-      <div className="text-center py-16 text-gray-500">
-        No testimonials available yet.
-      </div>
-    ) : (
-      <div className="relative">
-        {/* Desktop: 3-Card Layout */}
-        <div className="hidden lg:flex items-center justify-center gap-6 xl:gap-8">
-          {testimonials.length > 1 && (
-            <>
-              {/* Previous Card (Dimmed) */}
-              <div
-                className="w-80 xl:w-96 flex-shrink-0 cursor-pointer transition-all duration-500 opacity-40 hover:opacity-60 scale-90 hover:scale-95"
-                onClick={() =>
-                  setActiveTestimonial((prev) =>
-                    prev === 0 ? testimonials.length - 1 : prev - 1
-                  )
-                }
-              >
-                <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-100 overflow-hidden">
-                  <p 
-                    className="text-gray-600 text-sm line-clamp-3 mb-4"
-                    style={{
-                      wordBreak: 'break-word',
-                      overflowWrap: 'break-word'
-                    }}
-                  >
-                    "
-                    {testimonials[
-                      (activeTestimonial - 1 + testimonials.length) %
-                        testimonials.length
-                    ]?.message?.slice(0, 100)}
-                    ..."
-                  </p>
-                  <div className="flex items-center gap-3 min-w-0">
-                    <TestimonialAvatar
-                      testimonial={
-                        testimonials[
-                          (activeTestimonial -
-                            1 +
-                            testimonials.length) %
-                            testimonials.length
-                        ]
-                      }
-                      size="sm"
-                    />
-                    <span 
-                      className="text-sm font-medium text-gray-700 truncate"
-                      style={{
-                        wordBreak: 'break-word',
-                        overflowWrap: 'break-word'
-                      }}
-                    >
-                      {
-                        testimonials[
-                          (activeTestimonial -
-                            1 +
-                            testimonials.length) %
-                            testimonials.length
-                        ]?.name
-                      }
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
-
-          {/* Active Card (Center) */}
+        {/* ==================== TESTIMONIALS SECTION - VARIATION 3: CAROUSEL WITH PREVIEWS ==================== */}
+        <section
+          className="py-12 sm:py-16 lg:py-20 2xl:py-24 bg-gradient-to-b from-white via-blue-50/30 to-white relative overflow-hidden"
+          data-animate
+          id="testimonials"
+          onMouseEnter={() => setIsPaused(false)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          {/* Subtle Grid Background */}
           <div
-            key={activeTestimonial}
-            className="w-full max-w-2xl xl:max-w-3xl flex-shrink-0 animate-scale-in"
+            className="absolute inset-0 opacity-[0.02]"
+            style={{
+              backgroundImage: `linear-gradient(#20427f 1px, transparent 1px), linear-gradient(90deg, #20427f 1px, transparent 1px)`,
+              backgroundSize: "50px 50px",
+            }}
+          />
+
+          <div
+            className="w-full max-w-[1800px] mx-auto relative z-10"
+            style={{
+              paddingLeft: "clamp(1rem, 4vw, 4rem)",
+              paddingRight: "clamp(1rem, 4vw, 4rem)",
+            }}
           >
-            <div className="relative">
-              {/* Glow */}
-              <div className="absolute -inset-1 bg-gradient-to-r from-[#20427f] via-cyan-500 to-[#20427f] rounded-3xl blur-lg opacity-20 animate-glow" />
+            {/* Header */}
+            <div className="text-center mb-10 lg:mb-14">
+              <span className="inline-block text-[#20427f] font-semibold text-xs sm:text-sm uppercase tracking-widest mb-2">
+                ★ CLIENT TESTIMONIALS ★
+              </span>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl 2xl:text-6xl font-bold text-gray-900">
+                What Our Clients Say
+              </h2>
+            </div>
 
-              <div className="relative bg-white rounded-3xl p-8 xl:p-12 shadow-2xl border border-gray-100 overflow-hidden">
-                {/* Quote Icon with Animation */}
-                <div className="absolute top-4 left-8 w-10 h-10 bg-gradient-to-r from-[#20427f] to-cyan-500 rounded-xl flex items-center justify-center shadow-lg animate-bounce-slow">
-                  <svg
-                    className="w-5 h-5 text-white"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                  </svg>
-                </div>
-
-                {/* Verified */}
-                {currentTestimonial.verified && (
-                  <div className="absolute top-6 right-6">
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
-                      <svg
-                        className="w-3.5 h-3.5"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      Verified
-                    </span>
-                  </div>
-                )}
-
-                {/* Stars */}
-                <div className="flex justify-center gap-1 mb-6 pt-4">
-                  {[...Array(5)].map((_, i) => (
-                    <svg
+            {testimonialsLoading ? (
+              <div className="flex justify-center py-16">
+                <div className="flex items-center gap-2">
+                  {[0, 1, 2].map((i) => (
+                    <div
                       key={i}
-                      className={`w-6 h-6 ${
-                        i < rating ? "text-yellow-400" : "text-gray-200"
-                      } animate-twinkle`}
-                      style={{ animationDelay: `${i * 100}ms` }}
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
+                      className="w-3 h-3 bg-[#20427f] rounded-full animate-bounce"
+                      style={{ animationDelay: `${i * 150}ms` }}
+                    />
                   ))}
                 </div>
+              </div>
+            ) : testimonials.length === 0 ? (
+              <div className="text-center py-16 text-gray-500">
+                No testimonials available yet.
+              </div>
+            ) : (
+              <div className="relative">
+                {/* Desktop: 3-Card Layout */}
+                <div className="hidden lg:flex items-center justify-center gap-6 xl:gap-8">
+                  {testimonials.length > 1 && (
+                    <>
+                      {/* Previous Card (Dimmed) */}
+                      <div
+                        className="w-80 xl:w-96 flex-shrink-0 cursor-pointer transition-all duration-500 opacity-40 hover:opacity-60 scale-90 hover:scale-95"
+                        onClick={() =>
+                          setActiveTestimonial((prev) =>
+                            prev === 0 ? testimonials.length - 1 : prev - 1,
+                          )
+                        }
+                      >
+                        <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-100 overflow-hidden">
+                          <p
+                            className="text-gray-600 text-sm line-clamp-3 mb-4"
+                            style={{
+                              wordBreak: "break-word",
+                              overflowWrap: "break-word",
+                            }}
+                          >
+                            "
+                            {testimonials[
+                              (activeTestimonial - 1 + testimonials.length) %
+                                testimonials.length
+                            ]?.message?.slice(0, 100)}
+                            ..."
+                          </p>
+                          <div className="flex items-center gap-3 min-w-0">
+                            <TestimonialAvatar
+                              testimonial={
+                                testimonials[
+                                  (activeTestimonial -
+                                    1 +
+                                    testimonials.length) %
+                                    testimonials.length
+                                ]
+                              }
+                              size="sm"
+                            />
+                            <span
+                              className="text-sm font-medium text-gray-700 truncate"
+                              style={{
+                                wordBreak: "break-word",
+                                overflowWrap: "break-word",
+                              }}
+                            >
+                              {
+                                testimonials[
+                                  (activeTestimonial -
+                                    1 +
+                                    testimonials.length) %
+                                    testimonials.length
+                                ]?.name
+                              }
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
 
-                {/* Message - FIXED */}
-                <p 
-                  className="text-xl xl:text-2xl text-gray-700 text-center leading-relaxed mb-8 animate-fade-in"
-                  style={{
-                    wordBreak: 'break-word',
-                    overflowWrap: 'break-word',
-                    whiteSpace: 'pre-wrap'
-                  }}
-                >
-                  "
-                  {currentTestimonial.message ||
-                    currentTestimonial.content}
-                  "
-                </p>
+                  {/* Active Card (Center) */}
+                  <div
+                    key={activeTestimonial}
+                    className="w-full max-w-2xl xl:max-w-3xl flex-shrink-0 animate-scale-in"
+                  >
+                    <div className="relative">
+                      {/* Glow */}
+                      <div className="absolute -inset-1 bg-gradient-to-r from-[#20427f] via-cyan-500 to-[#20427f] rounded-3xl blur-lg opacity-20 animate-glow" />
 
-                {/* Author - FIXED */}
-                <div className="flex items-center justify-center gap-4">
-                  <div className="relative flex-shrink-0">
-                    <div className="absolute -inset-0.5 bg-gradient-to-r from-[#20427f] to-cyan-500 rounded-full animate-spin-slow" />
-                    <div className="relative bg-white rounded-full p-0.5">
+                      <div className="relative bg-white rounded-3xl p-8 xl:p-12 shadow-2xl border border-gray-100 overflow-hidden">
+                        {/* Quote Icon with Animation */}
+                        <div className="absolute top-4 left-8 w-10 h-10 bg-gradient-to-r from-[#20427f] to-cyan-500 rounded-xl flex items-center justify-center shadow-lg animate-bounce-slow">
+                          <svg
+                            className="w-5 h-5 text-white"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                          </svg>
+                        </div>
+
+                        {/* Verified */}
+                        {currentTestimonial.verified && (
+                          <div className="absolute top-6 right-6">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
+                              <svg
+                                className="w-3.5 h-3.5"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                              Verified
+                            </span>
+                          </div>
+                        )}
+
+                        {/* Stars */}
+                        <div className="flex justify-center gap-1 mb-6 pt-4">
+                          {[...Array(5)].map((_, i) => (
+                            <svg
+                              key={i}
+                              className={`w-6 h-6 ${
+                                i < rating ? "text-yellow-400" : "text-gray-200"
+                              } animate-twinkle`}
+                              style={{ animationDelay: `${i * 100}ms` }}
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                          ))}
+                        </div>
+
+                        {/* Message - FIXED */}
+                        <p
+                          className="text-xl xl:text-2xl text-gray-700 text-center leading-relaxed mb-8 animate-fade-in"
+                          style={{
+                            wordBreak: "break-word",
+                            overflowWrap: "break-word",
+                            whiteSpace: "pre-wrap",
+                          }}
+                        >
+                          "
+                          {currentTestimonial.message ||
+                            currentTestimonial.content}
+                          "
+                        </p>
+
+                        {/* Author - FIXED */}
+                        <div className="flex items-center justify-center gap-4">
+                          <div className="relative flex-shrink-0">
+                            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#20427f] to-cyan-500 rounded-full animate-spin-slow" />
+                            <div className="relative bg-white rounded-full p-0.5">
+                              <TestimonialAvatar
+                                testimonial={currentTestimonial}
+                                size="md"
+                              />
+                            </div>
+                          </div>
+                          <div className="min-w-0 max-w-xs">
+                            <div
+                              className="font-bold text-gray-900 text-lg"
+                              style={{
+                                wordBreak: "break-word",
+                                overflowWrap: "break-word",
+                              }}
+                            >
+                              {currentTestimonial.name}
+                            </div>
+                            <div
+                              className="text-[#20427f] text-sm font-medium"
+                              style={{
+                                wordBreak: "break-word",
+                                overflowWrap: "break-word",
+                              }}
+                            >
+                              {currentTestimonial.role}
+                            </div>
+                            {currentTestimonial.company && (
+                              <div
+                                className="text-gray-500 text-xs"
+                                style={{
+                                  wordBreak: "break-word",
+                                  overflowWrap: "break-word",
+                                }}
+                              >
+                                {currentTestimonial.company}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Progress Bar */}
+                        {!isPaused && testimonials.length > 1 && (
+                          <div className="mt-8 h-1 bg-gray-100 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-gradient-to-r from-[#20427f] to-cyan-500 animate-progress"
+                              style={{ animationDuration: "3s" }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {testimonials.length > 1 && (
+                    <>
+                      {/* Next Card (Dimmed) */}
+                      <div
+                        className="w-80 xl:w-96 flex-shrink-0 cursor-pointer transition-all duration-500 opacity-40 hover:opacity-60 scale-90 hover:scale-95"
+                        onClick={() =>
+                          setActiveTestimonial(
+                            (prev) => (prev + 1) % testimonials.length,
+                          )
+                        }
+                      >
+                        <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-100 overflow-hidden">
+                          <p
+                            className="text-gray-600 text-sm line-clamp-3 mb-4"
+                            style={{
+                              wordBreak: "break-word",
+                              overflowWrap: "break-word",
+                            }}
+                          >
+                            "
+                            {testimonials[
+                              (activeTestimonial + 1) % testimonials.length
+                            ]?.message?.slice(0, 100)}
+                            ..."
+                          </p>
+                          <div className="flex items-center gap-3 min-w-0">
+                            <TestimonialAvatar
+                              testimonial={
+                                testimonials[
+                                  (activeTestimonial + 1) % testimonials.length
+                                ]
+                              }
+                              size="sm"
+                            />
+                            <span
+                              className="text-sm font-medium text-gray-700 truncate"
+                              style={{
+                                wordBreak: "break-word",
+                                overflowWrap: "break-word",
+                              }}
+                            >
+                              {
+                                testimonials[
+                                  (activeTestimonial + 1) % testimonials.length
+                                ]?.name
+                              }
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {/* Mobile: Single Card */}
+                <div className="lg:hidden">
+                  <div
+                    key={activeTestimonial}
+                    className="bg-white rounded-2xl p-6 shadow-xl animate-slide-up overflow-hidden"
+                  >
+                    <div className="flex justify-center gap-1 mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <svg
+                          key={i}
+                          className={`w-5 h-5 ${
+                            i < rating ? "text-yellow-400" : "text-gray-200"
+                          }`}
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      ))}
+                    </div>
+                    <p
+                      className="text-gray-700 text-center mb-6"
+                      style={{
+                        wordBreak: "break-word",
+                        overflowWrap: "break-word",
+                        whiteSpace: "pre-wrap",
+                      }}
+                    >
+                      "
+                      {currentTestimonial.message || currentTestimonial.content}
+                      "
+                    </p>
+                    <div className="flex items-center justify-center gap-3">
                       <TestimonialAvatar
                         testimonial={currentTestimonial}
-                        size="md"
+                        size="sm"
                       />
-                    </div>
-                  </div>
-                  <div className="min-w-0 max-w-xs">
-                    <div 
-                      className="font-bold text-gray-900 text-lg"
-                      style={{
-                        wordBreak: 'break-word',
-                        overflowWrap: 'break-word'
-                      }}
-                    >
-                      {currentTestimonial.name}
-                    </div>
-                    <div 
-                      className="text-[#20427f] text-sm font-medium"
-                      style={{
-                        wordBreak: 'break-word',
-                        overflowWrap: 'break-word'
-                      }}
-                    >
-                      {currentTestimonial.role}
-                    </div>
-                    {currentTestimonial.company && (
-                      <div 
-                        className="text-gray-500 text-xs"
-                        style={{
-                          wordBreak: 'break-word',
-                          overflowWrap: 'break-word'
-                        }}
-                      >
-                        {currentTestimonial.company}
+                      <div className="min-w-0 max-w-[200px]">
+                        <div
+                          className="font-bold text-gray-900"
+                          style={{
+                            wordBreak: "break-word",
+                            overflowWrap: "break-word",
+                          }}
+                        >
+                          {currentTestimonial.name}
+                        </div>
+                        <div
+                          className="text-[#20427f] text-sm"
+                          style={{
+                            wordBreak: "break-word",
+                            overflowWrap: "break-word",
+                          }}
+                        >
+                          {currentTestimonial.role}
+                        </div>
                       </div>
-                    )}
+                    </div>
                   </div>
                 </div>
 
-                {/* Progress Bar */}
-                {!isPaused && testimonials.length > 1 && (
-                  <div className="mt-8 h-1 bg-gray-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-[#20427f] to-cyan-500 animate-progress"
-                      style={{ animationDuration: "3s" }}
-                    />
+                {/* Navigation */}
+                {testimonials.length > 1 && (
+                  <div className="flex justify-center items-center gap-4 mt-8">
+                    <button
+                      onClick={() =>
+                        setActiveTestimonial((prev) =>
+                          prev === 0 ? testimonials.length - 1 : prev - 1,
+                        )
+                      }
+                      className="w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center text-[#20427f] hover:bg-[#20427f] hover:text-white transition-all duration-300 hover:scale-110"
+                    >
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 19l-7-7 7-7"
+                        />
+                      </svg>
+                    </button>
+
+                    <div className="flex gap-2">
+                      {testimonials.map((_, i) => (
+                        <button
+                          key={i}
+                          onClick={() => setActiveTestimonial(i)}
+                          className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                            i === activeTestimonial
+                              ? "bg-[#20427f] scale-125"
+                              : "bg-gray-300 hover:bg-[#20427f]/50"
+                          }`}
+                        />
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={() =>
+                        setActiveTestimonial(
+                          (prev) => (prev + 1) % testimonials.length,
+                        )
+                      }
+                      className="w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center text-[#20427f] hover:bg-[#20427f] hover:text-white transition-all duration-300 hover:scale-110"
+                    >
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </button>
                   </div>
                 )}
-              </div>
-            </div>
-          </div>
 
-          {testimonials.length > 1 && (
-            <>
-              {/* Next Card (Dimmed) */}
-              <div
-                className="w-80 xl:w-96 flex-shrink-0 cursor-pointer transition-all duration-500 opacity-40 hover:opacity-60 scale-90 hover:scale-95"
-                onClick={() =>
-                  setActiveTestimonial(
-                    (prev) => (prev + 1) % testimonials.length
-                  )
-                }
-              >
-                <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-100 overflow-hidden">
-                  <p 
-                    className="text-gray-600 text-sm line-clamp-3 mb-4"
-                    style={{
-                      wordBreak: 'break-word',
-                      overflowWrap: 'break-word'
-                    }}
+                {/* View All */}
+                <div className="text-center mt-10">
+                  <Link
+                    href="/testimonials"
+                    className="inline-flex items-center gap-2 text-[#20427f] font-semibold hover:gap-3 transition-all"
                   >
-                    "
-                    {testimonials[
-                      (activeTestimonial + 1) % testimonials.length
-                    ]?.message?.slice(0, 100)}
-                    ..."
-                  </p>
-                  <div className="flex items-center gap-3 min-w-0">
-                    <TestimonialAvatar
-                      testimonial={
-                        testimonials[
-                          (activeTestimonial + 1) % testimonials.length
-                        ]
-                      }
-                      size="sm"
-                    />
-                    <span 
-                      className="text-sm font-medium text-gray-700 truncate"
-                      style={{
-                        wordBreak: 'break-word',
-                        overflowWrap: 'break-word'
-                      }}
+                    View all testimonials
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
                     >
-                      {
-                        testimonials[
-                          (activeTestimonial + 1) % testimonials.length
-                        ]?.name
-                      }
-                    </span>
-                  </div>
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17 8l4 4m0 0l-4 4m4-4H3"
+                      />
+                    </svg>
+                  </Link>
                 </div>
               </div>
-            </>
-          )}
-        </div>
-
-        {/* Mobile: Single Card */}
-        <div className="lg:hidden">
-          <div
-            key={activeTestimonial}
-            className="bg-white rounded-2xl p-6 shadow-xl animate-slide-up overflow-hidden"
-          >
-            <div className="flex justify-center gap-1 mb-4">
-              {[...Array(5)].map((_, i) => (
-                <svg
-                  key={i}
-                  className={`w-5 h-5 ${
-                    i < rating ? "text-yellow-400" : "text-gray-200"
-                  }`}
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-              ))}
-            </div>
-            <p 
-              className="text-gray-700 text-center mb-6"
-              style={{
-                wordBreak: 'break-word',
-                overflowWrap: 'break-word',
-                whiteSpace: 'pre-wrap'
-              }}
-            >
-              "
-              {currentTestimonial.message || currentTestimonial.content}
-              "
-            </p>
-            <div className="flex items-center justify-center gap-3">
-              <TestimonialAvatar
-                testimonial={currentTestimonial}
-                size="sm"
-              />
-              <div className="min-w-0 max-w-[200px]">
-                <div 
-                  className="font-bold text-gray-900"
-                  style={{
-                    wordBreak: 'break-word',
-                    overflowWrap: 'break-word'
-                  }}
-                >
-                  {currentTestimonial.name}
-                </div>
-                <div 
-                  className="text-[#20427f] text-sm"
-                  style={{
-                    wordBreak: 'break-word',
-                    overflowWrap: 'break-word'
-                  }}
-                >
-                  {currentTestimonial.role}
-                </div>
-              </div>
-            </div>
+            )}
           </div>
-        </div>
-
-        {/* Navigation */}
-        {testimonials.length > 1 && (
-          <div className="flex justify-center items-center gap-4 mt-8">
-            <button
-              onClick={() =>
-                setActiveTestimonial((prev) =>
-                  prev === 0 ? testimonials.length - 1 : prev - 1
-                )
-              }
-              className="w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center text-[#20427f] hover:bg-[#20427f] hover:text-white transition-all duration-300 hover:scale-110"
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-            </button>
-
-            <div className="flex gap-2">
-              {testimonials.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActiveTestimonial(i)}
-                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                    i === activeTestimonial
-                      ? "bg-[#20427f] scale-125"
-                      : "bg-gray-300 hover:bg-[#20427f]/50"
-                  }`}
-                />
-              ))}
-            </div>
-
-            <button
-              onClick={() =>
-                setActiveTestimonial(
-                  (prev) => (prev + 1) % testimonials.length
-                )
-              }
-              className="w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center text-[#20427f] hover:bg-[#20427f] hover:text-white transition-all duration-300 hover:scale-110"
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </button>
-          </div>
-        )}
-
-        {/* View All */}
-        <div className="text-center mt-10">
-          <Link
-            href="/testimonials"
-            className="inline-flex items-center gap-2 text-[#20427f] font-semibold hover:gap-3 transition-all"
-          >
-            View all testimonials
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 8l4 4m0 0l-4 4m4-4H3"
-              />
-            </svg>
-          </Link>
-        </div>
-      </div>
-    )}
-  </div>
-</section>
+        </section>
 
         {/* ==================== CTA SECTION ==================== */}
         <section className="py-12 sm:py-16 lg:py-20 2xl:py-24 bg-gradient-to-r from-[#203E7F] to-cyan-600 relative overflow-hidden">

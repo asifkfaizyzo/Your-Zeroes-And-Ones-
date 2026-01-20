@@ -1,20 +1,21 @@
-// Q:\PROJECTS\YourZeroesAndOnes\YZO_Main\app\portfolio\components\ProjectCard.jsx
+// app/portfolio/components/ProjectCard.jsx
 "use client";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
+import CategoryIcon from "@/components/CategoryIcon";
 
 export default function ProjectCard({ project }) {
-  const getCategoryIcon = (categoryName) => {
+  const getCategoryIconName = (categoryName) => {
     switch (categoryName) {
       case 'Branding & Design':
-        return '🎨';
+        return 'palette';
       case 'Digital Marketing':
-        return '📈';
+        return 'chart';
       case 'Technology':
-        return '💻';
+        return 'code';
       default:
-        return '✨';
+        return 'sparkles';
     }
   };
 
@@ -43,7 +44,7 @@ export default function ProjectCard({ project }) {
               src={project.image}
               alt={project.title}
               fill
-		unoptimized={project.image?.startsWith('/uploads/')}
+              unoptimized={project.image?.startsWith('/uploads/')}
               className="object-cover group-hover:scale-105 transition-transform duration-500"
             />
           ) : (

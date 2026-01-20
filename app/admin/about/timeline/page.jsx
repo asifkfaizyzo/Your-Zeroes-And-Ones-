@@ -562,13 +562,13 @@ export default function TimelinePage() {
         <div className="mb-8 mt-0">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-4">
-              <button
+              {/* <button
                 onClick={() => router.push('/admin/dashboard')}
                 className="p-2 hover:bg-slate-100 rounded-xl transition-colors"
                 title="Back to Dashboard"
               >
                 <Icons.ArrowLeft className="w-5 h-5 text-slate-600" />
-              </button>
+              </button> */}
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-slate-800">Timeline Management</h1>
                 <p className="text-slate-600 mt-1 text-sm sm:text-base">Manage your company milestones</p>

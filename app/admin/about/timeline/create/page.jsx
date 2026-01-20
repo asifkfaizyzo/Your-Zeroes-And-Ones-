@@ -284,13 +284,13 @@ export default function CreateTimelinePage() {
       <div className="mb-8">
         <div className="bg-white rounded-2xl shadow-lg border-2 border-slate-200 p-4 sm:p-6">
           <div className="flex items-center gap-4">
-            <button
+            {/* <button
               onClick={() => router.push('/admin/about/timeline')}
               className="p-2.5 hover:bg-slate-100 rounded-xl transition-colors"
               title="Back to Timeline"
             >
               <Icons.ArrowLeft className="w-5 h-5 text-slate-600" />
-            </button>
+            </button> */}
             
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
@@ -327,7 +327,7 @@ export default function CreateTimelinePage() {
                     error={errors.year}
                   >
                     <div className="relative">
-                      <Icons.Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                      <Icons.Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-black" />
                       <input
                         type="text"
                         name="year"
@@ -349,7 +349,7 @@ export default function CreateTimelinePage() {
                         name="title"
                         value={formData.title}
                         onChange={handleChange}
-                        className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-medium ${
+                        className={`w-full px-4 py-3 border-2 rounded-xl text-black focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all font-medium ${
                           errors.title ? 'border-red-300 bg-red-50' : 'border-slate-200'
                         }`}
                         placeholder="e.g., Company Founded"
@@ -370,7 +370,7 @@ export default function CreateTimelinePage() {
                     onChange={handleChange}
                     rows={4}
                     maxLength={500}
-                    className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all resize-none font-medium ${
+                    className={`w-full px-4 py-3 border-2 rounded-xl text-black focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all resize-none font-medium ${
                       errors.description ? 'border-red-300 bg-red-50' : 'border-slate-200'
                     }`}
                     placeholder="Describe this milestone in detail..."
@@ -382,7 +382,7 @@ export default function CreateTimelinePage() {
             {/* Icon Selection Card */}
             <div className="bg-white rounded-2xl border-2 border-slate-200 shadow-lg overflow-hidden">
               <div className="px-6 py-4 border-b-2 border-slate-100 bg-slate-50/50">
-                <h2 className="font-semibold text-slate-900 flex items-center gap-2">
+                <h2 className="font-semibold text-black flex items-center gap-2">
                   <Icons.Sparkles className="w-5 h-5 text-indigo-600" />
                   Choose an Icon
                 </h2>
@@ -396,7 +396,7 @@ export default function CreateTimelinePage() {
             {/* Publish Settings Card */}
             <div className="bg-white rounded-2xl border-2 border-slate-200 shadow-lg overflow-hidden">
               <div className="px-6 py-4 border-b-2 border-slate-100 bg-slate-50/50">
-                <h2 className="font-semibold text-slate-900 flex items-center gap-2">
+                <h2 className="font-semibold text-black flex items-center gap-2">
                   <Icons.Settings className="w-5 h-5 text-indigo-600" />
                   Publish Settings
                 </h2>

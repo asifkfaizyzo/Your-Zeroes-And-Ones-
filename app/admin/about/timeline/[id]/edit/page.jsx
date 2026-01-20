@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
+import AdminLayoutNew from '@/components/admin/AdminLayoutNew';
 import { toast } from 'react-hot-toast';
 
 // Icon components
@@ -370,6 +371,7 @@ export default function EditTimelinePage() {
   }
 
   return (
+    <AdminLayoutNew>
     <>
       {/* Header Card */}
       <div className="mb-8">
@@ -666,5 +668,6 @@ export default function EditTimelinePage() {
         </div>
       </form>
     </>
+  </AdminLayoutNew>
   );
 }

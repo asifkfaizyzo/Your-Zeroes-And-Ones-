@@ -1,3 +1,4 @@
+// components/admin/Sidebar.js
 'use client';
 
 import Link from 'next/link';
@@ -15,6 +16,21 @@ const menuItems = [
     ),
     badge: null,
     submenu: null,
+  },
+  {
+    name: 'About',
+    href: '/admin/about',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ),
+    badge: null,
+    submenu: [
+      { name: 'Who We Are', href: '/admin/about/content', icon: '●' },
+      { name: 'All Timeline', href: '/admin/about/timeline', icon: '○' },
+      { name: 'Add Timeline', href: '/admin/about/timeline/create', icon: '+' },
+    ],
   },
   {
     name: 'Blogs',
@@ -88,7 +104,6 @@ const menuItems = [
   },
 ];
 
-// FIXED: Added onLogout prop
 export default function Sidebar({ isCollapsed = false, onToggle, onLogout }) {
   const pathname = usePathname();
   const [expandedMenu, setExpandedMenu] = useState(null);
@@ -158,7 +173,6 @@ export default function Sidebar({ isCollapsed = false, onToggle, onLogout }) {
     }
   };
 
-  // FIXED: Handle logout click
   const handleLogoutClick = () => {
     setIsMobileOpen(false);
     if (onLogout) {
@@ -377,7 +391,7 @@ export default function Sidebar({ isCollapsed = false, onToggle, onLogout }) {
           )}
         </nav>
 
-        {/* Footer - FIXED: Added onClick handler */}
+        {/* Footer */}
         <div className="flex-shrink-0 p-4 border-t border-slate-100 bg-white">
           {!isCollapsed ? (
             <div className="flex items-center justify-between">

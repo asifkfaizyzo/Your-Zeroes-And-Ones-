@@ -117,3 +117,42 @@ model TeamMember {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+
+// ============================================
+// ABOUT PAGE MANAGEMENT MODELS
+// ============================================
+
+model AboutContent {
+  id              String   @id @default(uuid())
+  badge           String   @default("Who We Are")
+  title           String   @default("Crafting Digital")
+  highlightedText String   @default("Excellence")
+  paragraph1      String   @db.Text
+  paragraph2      String   @db.Text
+  media           String?  // image or video URL (relative path)
+  mediaType       String   @default("image") // "image" or "video"
+  
+  // Stats stored as JSON array
+  // Example: [{"value":"50+","label":"Projects Completed","icon":"CheckCircle"}]
+  stats           Json     @default("[{\"value\":\"50+\",\"label\":\"Projects Completed\",\"icon\":\"CheckCircle\"},{\"value\":\"15+\",\"label\":\"Years Experience\",\"icon\":\"Calendar\"},{\"value\":\"30+\",\"label\":\"Happy Clients\",\"icon\":\"Users\"},{\"value\":\"24/7\",\"label\":\"Support\",\"icon\":\"Clock\"}]")
+  
+  published       Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Timeline {
+  id          String   @id @default(uuid())
+  year        String
+  title       String
+  description String   @db.Text
+  icon        String   @default("Rocket") // Lucide icon name
+  position    Int      // For ordering (1, 2, 3, 4...)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([position])
+  @@index([published])
+}

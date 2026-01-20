@@ -1,4 +1,5 @@
-// app/api/upload/route.js - SECURED VERSION
+// app/api/upload/route.js
+
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
@@ -7,7 +8,8 @@ import { jwtVerify } from 'jose';
 
 export const runtime = 'nodejs';
 
-// Security constants
+// --- SECURITY CONFIGURATION ---
+
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_TYPES = [
   'image/jpeg',
@@ -18,13 +20,24 @@ const ALLOWED_TYPES = [
 ];
 const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
 
-// ✅ ADD 'team' TO THIS ARRAY
-const ALLOWED_FOLDERS = ['blogs', 'portfolio', 'clients', 'testimonials', 'general', 'team'];
+// Merged allowed folders from both versions
+const ALLOWED_FOLDERS = [
+  'blogs', 
+  'blog', // Added for compatibility
+  'portfolio', 
+  'clients', 
+  'testimonials', 
+  'general', 
+  'team', 
+  'about' // Added from first file
+];
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_ACCESS_SECRET);
 const COOKIE_NAME = process.env.JWT_COOKIE_NAME || 'yzo_admin';
 
-// ✅ Verify admin authentication
+// --- HELPER FUNCTIONS ---
+
+// Verify admin authentication
 async function verifyAdmin(req) {
   try {
     const cookieStore = await cookies();
@@ -37,98 +50,7 @@ async function verifyAdmin(req) {
   }
 }
 
-export async function POST(req) {
-  try {
-    // ✅ 1. Authentication check
-    const isAdmin = await verifyAdmin(req);
-    if (!isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const contentType = req.headers.get('content-type') || '';
-    if (!contentType.includes('multipart/form-data')) {
-      return NextResponse.json({ error: 'Expected multipart/form-data' }, { status: 400 });
-    }
-
-    const formData = await req.formData();
-    const file = formData.get('file');
-    const folder = formData.get('folder') || 'general';
-
-    if (!file || typeof file === 'string') {
-      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
-    }
-
-    // ✅ 2. Validate folder (prevent path traversal)
-    const sanitizedFolder = folder.replace(/[^a-zA-Z0-9-_]/g, '');
-    if (!ALLOWED_FOLDERS.includes(sanitizedFolder)) {
-      return NextResponse.json({ error: 'Invalid folder' }, { status: 400 });
-    }
-
-    // ✅ 3. Validate file size
-    if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json({ 
-        error: `File too large. Maximum size is ${MAX_FILE_SIZE / 1024 / 1024}MB` 
-      }, { status: 400 });
-    }
-
-    // ✅ 4. Validate file type
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      return NextResponse.json({ 
-        error: 'Invalid file type. Allowed: JPEG, PNG, GIF, WebP, SVG' 
-      }, { status: 400 });
-    }
-
-    // ✅ 5. Validate file extension
-    const originalName = file.name || `upload-${Date.now()}`;
-    const ext = path.extname(originalName).toLowerCase();
-    if (!ALLOWED_EXTENSIONS.includes(ext)) {
-      return NextResponse.json({ error: 'Invalid file extension' }, { status: 400 });
-    }
-
-    // ✅ 6. Validate file content (magic bytes check)
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    
-    if (!isValidImageBuffer(buffer, file.type)) {
-      return NextResponse.json({ error: 'Invalid file content' }, { status: 400 });
-    }
-
-    // ✅ 7. Create safe filename
-    const safeName = originalName
-      .replace(/\s+/g, '-')
-      .replace(/[^a-zA-Z0-9-._]/g, '')
-      .substring(0, 100); // Limit filename length
-    const filename = `${Date.now()}-${safeName}`;
-    
-    // ✅ 8. Safe directory creation
-    const uploadsDir = path.join(process.cwd(), 'public', 'uploads', sanitizedFolder);
-    if (!fs.existsSync(uploadsDir)) {
-      fs.mkdirSync(uploadsDir, { recursive: true });
-    }
-
-    const filepath = path.join(uploadsDir, filename);
-
-    // ✅ 9. Verify final path is within uploads directory
-    const resolvedPath = path.resolve(filepath);
-    const uploadsRoot = path.resolve(process.cwd(), 'public', 'uploads');
-    if (!resolvedPath.startsWith(uploadsRoot)) {
-      return NextResponse.json({ error: 'Invalid file path' }, { status: 400 });
-    }
-
-    await fs.promises.writeFile(filepath, buffer, { mode: 0o644 });
-
-    const url = `/uploads/${sanitizedFolder}/${filename}`;
-    console.log('✅ File uploaded:', url);
-
-    return NextResponse.json({ url, path: url });
-
-  } catch (err) {
-    console.error('Upload error:', err);
-    return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
-  }
-}
-
-// ✅ Magic bytes validation
+// Magic bytes validation to ensure file content matches extension
 function isValidImageBuffer(buffer, mimeType) {
   if (buffer.length < 4) return false;
 
@@ -152,4 +74,110 @@ function isValidImageBuffer(buffer, mimeType) {
   return sigs.some(sig => 
     sig.every((byte, i) => buffer[i] === byte)
   );
+}
+
+// --- MAIN ROUTE HANDLER ---
+
+export async function POST(req) {
+  try {
+    // 1. Authentication check
+    const isAdmin = await verifyAdmin(req);
+    if (!isAdmin) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const contentType = req.headers.get('content-type') || '';
+    if (!contentType.includes('multipart/form-data')) {
+      return NextResponse.json({ error: 'Expected multipart/form-data' }, { status: 400 });
+    }
+
+    const formData = await req.formData();
+    const file = formData.get('file');
+    
+    // Accept either 'folder' (new) or 'section' (old) parameter
+    const folderParam = formData.get('folder') || formData.get('section') || 'general';
+
+    if (!file || typeof file === 'string') {
+      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+    }
+
+    // 2. Validate folder (prevent path traversal)
+    const sanitizedFolder = folderParam.replace(/[^a-zA-Z0-9-_]/g, '');
+    if (!ALLOWED_FOLDERS.includes(sanitizedFolder)) {
+      return NextResponse.json({ 
+        error: `Invalid folder/section. Allowed: ${ALLOWED_FOLDERS.join(', ')}` 
+      }, { status: 400 });
+    }
+
+    // 3. Validate file size
+    if (file.size > MAX_FILE_SIZE) {
+      return NextResponse.json({ 
+        error: `File too large. Maximum size is ${MAX_FILE_SIZE / 1024 / 1024}MB` 
+      }, { status: 400 });
+    }
+
+    // 4. Validate file type
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      return NextResponse.json({ 
+        error: 'Invalid file type. Allowed: JPEG, PNG, GIF, WebP, SVG' 
+      }, { status: 400 });
+    }
+
+    // 5. Validate file extension
+    const originalName = file.name || `upload-${Date.now()}`;
+    const ext = path.extname(originalName).toLowerCase();
+    if (!ALLOWED_EXTENSIONS.includes(ext)) {
+      return NextResponse.json({ error: 'Invalid file extension' }, { status: 400 });
+    }
+
+    // 6. Validate file content (magic bytes check)
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    
+    if (!isValidImageBuffer(buffer, file.type)) {
+      return NextResponse.json({ error: 'Invalid file content (Magic Bytes mismatch)' }, { status: 400 });
+    }
+
+    // 7. Create safe filename
+    const safeName = originalName
+      .replace(/\s+/g, '-')
+      .replace(/[^a-zA-Z0-9-._]/g, '')
+      .substring(0, 100); // Limit filename length
+    const filename = `${Date.now()}-${safeName}`;
+    
+    // 8. Safe directory creation
+    const uploadsDir = path.join(process.cwd(), 'public', 'uploads', sanitizedFolder);
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir, { recursive: true });
+    }
+
+    const filepath = path.join(uploadsDir, filename);
+
+    // 9. Verify final path is within uploads directory (Anti-Path Traversal)
+    const resolvedPath = path.resolve(filepath);
+    const uploadsRoot = path.resolve(process.cwd(), 'public', 'uploads');
+    if (!resolvedPath.startsWith(uploadsRoot)) {
+      return NextResponse.json({ error: 'Invalid file path security check' }, { status: 400 });
+    }
+
+    // 10. Write File
+    await fs.promises.writeFile(filepath, buffer, { mode: 0o644 });
+
+    const url = `/uploads/${sanitizedFolder}/${filename}`;
+    console.log('✅ File uploaded:', url);
+
+    // Return combined response (Supports both frontend structures)
+    return NextResponse.json({
+      success: true,
+      url,
+      path: url, // Kept for secured version compatibility
+      filename,
+      size: file.size,
+      type: file.type
+    });
+
+  } catch (err) {
+    console.error('Upload error:', err);
+    return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
+  }
 }

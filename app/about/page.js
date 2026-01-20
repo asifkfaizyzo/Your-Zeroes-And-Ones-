@@ -22,7 +22,31 @@ import {
   Award,
   Clock,
   ArrowRight,
+  Target,
+  TrendingUp,
+  Star,
+  Trophy,
+  Briefcase,
+  Heart,
 } from "lucide-react";
+
+// Icon mapping for dynamic timeline
+const ICON_MAP = {
+  Rocket,
+  Users,
+  Award,
+  Zap,
+  Target,
+  TrendingUp,
+  Star,
+  Trophy,
+  CheckCircle,
+  Calendar,
+  Clock,
+  Briefcase,
+  Heart,
+  Shield,
+};
 
 // Animation variants
 const fadeInUp = {
@@ -78,7 +102,6 @@ function AnimatedSection({ children, className = "" }) {
 function AnimatedCounter({ value, suffix = "", duration = 2 }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
-  const numericValue = parseInt(value.replace(/\D/g, ""));
 
   return (
     <motion.span
@@ -108,8 +131,71 @@ function getInitials(name = '') {
   return parts.map((p) => p.charAt(0).toUpperCase()).join('');
 }
 
+// Default fallback data
+const DEFAULT_ABOUT_CONTENT = {
+  badge: 'Who We Are',
+  title: 'Crafting Digital',
+  highlightedText: 'Excellence',
+  paragraph1: 'Your Zeros and Ones is a premier IT consulting and software development company dedicated to helping businesses thrive in the digital age. We combine technical expertise with business acumen to deliver innovative solutions that drive growth and efficiency.',
+  paragraph2: 'Our team of passionate developers, designers, and strategists work collaboratively to transform complex challenges into elegant, user-friendly solutions.',
+  media: '/images/about/about-company.png',
+  mediaType: 'image',
+  stats: [
+    { value: '50+', label: 'Projects Completed', icon: 'CheckCircle' },
+    { value: '15+', label: 'Years Experience', icon: 'Calendar' },
+    { value: '30+', label: 'Happy Clients', icon: 'Users' },
+    { value: '24/7', label: 'Support', icon: 'Clock' }
+  ],
+  published: true
+};
+
 export default function About() {
-  // Static/hardcoded team members (these will always appear first)
+  // State for dynamic content with defaults
+  const [aboutContent, setAboutContent] = useState(DEFAULT_ABOUT_CONTENT);
+  const [timelineItems, setTimelineItems] = useState([]);
+  const [contentLoading, setContentLoading] = useState(false);
+  const [timelineLoading, setTimelineLoading] = useState(true);
+
+  // Fetch About Content (Who We Are)
+  useEffect(() => {
+    const fetchAboutContent = async () => {
+      try {
+        const res = await fetch('/api/admin/about/content');
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.published !== false) {
+            setAboutContent(data);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch about content:', error);
+        // Keep default content on error
+      }
+    };
+
+    fetchAboutContent();
+  }, []);
+
+  // Fetch Timeline Items
+  useEffect(() => {
+    const fetchTimeline = async () => {
+      try {
+        const res = await fetch('/api/admin/about/timeline?published=true');
+        if (res.ok) {
+          const data = await res.json();
+          setTimelineItems(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch timeline:', error);
+      } finally {
+        setTimelineLoading(false);
+      }
+    };
+
+    fetchTimeline();
+  }, []);
+
+  // Static team members
   const staticTeamMembers = [
     {
       id: "static-1",
@@ -149,11 +235,9 @@ export default function About() {
     },
   ];
 
-  // State for dynamic team members from API
   const [dynamicTeamMembers, setDynamicTeamMembers] = useState([]);
   const [teamLoading, setTeamLoading] = useState(true);
 
-  // Fetch additional team members from API
   useEffect(() => {
     const fetchTeamMembers = async () => {
       try {
@@ -172,40 +256,9 @@ export default function About() {
     fetchTeamMembers();
   }, []);
 
-  // Combine static members with dynamic members (static first, then dynamic)
   const allTeamMembers = dynamicTeamMembers;
 
-  const timeline = [
-    {
-      year: "2010",
-      title: "The Beginning",
-      description:
-        "Founded with a vision to make technology accessible to businesses of all sizes. Our first project was a simple e-commerce website that grew into a long-term partnership.",
-      Icon: Rocket,
-    },
-    {
-      year: "2015",
-      title: "Expansion & Growth",
-      description:
-        "Expanded our team and services to include mobile app development and cloud solutions. Partnered with major corporations and startups alike.",
-      Icon: Users,
-    },
-    {
-      year: "2020",
-      title: "Digital Transformation Leaders",
-      description:
-        "Recognized as industry leaders in digital transformation. Adapted to remote work seamlessly and helped clients navigate the digital-first world.",
-      Icon: Award,
-    },
-    {
-      year: "2024",
-      title: "Today & Beyond",
-      description:
-        "Continuing to innovate with AI, machine learning, and cutting-edge technologies. Committed to delivering exceptional value and building lasting partnerships.",
-      Icon: Zap,
-    },
-  ];
-
+  // Static sections
   const whyChooseUs = [
     {
       Icon: Lightbulb,
@@ -245,12 +298,10 @@ export default function About() {
     },
   ];
 
-  const stats = [
-    { value: "50+", label: "Projects Completed", Icon: CheckCircle },
-    { value: "15+", label: "Years Experience", Icon: Calendar },
-    { value: "30+", label: "Happy Clients", Icon: Users },
-    { value: "24/7", label: "Support", Icon: Clock },
-  ];
+  // Always ensure we have stats to display
+  const displayStats = (aboutContent?.stats && Array.isArray(aboutContent.stats) && aboutContent.stats.length === 4)
+    ? aboutContent.stats
+    : DEFAULT_ABOUT_CONTENT.stats;
 
   return (
     <>
@@ -259,7 +310,7 @@ export default function About() {
         {/* Hero Section */}
         <AboutHero />
 
-        {/* Who We Are Section */}
+        {/* Who We Are Section - DYNAMIC */}
         <section id="who-we-are" className="py-16 sm:py-20 md:py-24 bg-gray-100">
           <div 
             className="w-full"
@@ -277,15 +328,15 @@ export default function About() {
                       variants={fadeInUp}
                       className="inline-block px-4 py-1.5 bg-gradient-to-r from-[#203E7F] to-cyan-600 text-white text-sm font-semibold rounded-full mb-4"
                     >
-                      Who We Are
+                      {aboutContent.badge}
                     </motion.span>
                     <motion.h2
                       variants={fadeInUp}
                       className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4"
                     >
-                      Crafting Digital{" "}
+                      {aboutContent.title}{" "}
                       <span className="bg-gradient-to-r from-[#203E7F] to-cyan-600 bg-clip-text text-transparent">
-                        Excellence
+                        {aboutContent.highlightedText}
                       </span>
                     </motion.h2>
                   </div>
@@ -293,70 +344,77 @@ export default function About() {
                     variants={fadeInUp}
                     className="text-gray-600 text-base sm:text-lg leading-relaxed"
                   >
-                    Your Zeros and Ones is a premier IT consulting and software
-                    development company dedicated to helping businesses thrive in
-                    the digital age. We combine technical expertise with business
-                    acumen to deliver innovative solutions that drive growth and
-                    efficiency.
+                    {aboutContent.paragraph1}
                   </motion.p>
                   <motion.p
                     variants={fadeInUp}
                     className="text-gray-600 text-base sm:text-lg leading-relaxed"
                   >
-                    Our team of passionate developers, designers, and strategists
-                    work collaboratively to transform complex challenges into
-                    elegant, user-friendly solutions.
+                    {aboutContent.paragraph2}
                   </motion.p>
 
-                  {/* Stats Grid */}
+                  {/* Stats Grid - DYNAMIC */}
                   <motion.div
                     variants={staggerContainer}
                     className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8"
                   >
-                    {stats.map((stat, index) => (
-                      <motion.div
-                        key={stat.label}
-                        variants={scaleIn}
-                        whileHover={{ scale: 1.05, y: -5 }}
-                        className="text-center p-4 bg-white rounded-2xl shadow-lg border border-gray-100 group cursor-default"
-                      >
-                        <div className="w-10 h-10 bg-gradient-to-br from-[#203E7F] to-cyan-600 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
-                          <stat.Icon className="w-5 h-5 text-white" />
-                        </div>
-                        <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-[#203E7F] to-cyan-600 bg-clip-text text-transparent">
-                          <AnimatedCounter value={stat.value} />
-                        </div>
-                        <div className="text-xs sm:text-sm text-gray-500 mt-1">
-                          {stat.label}
-                        </div>
-                      </motion.div>
-                    ))}
+                    {displayStats.map((stat, index) => {
+                      const IconComponent = ICON_MAP[stat.icon] || CheckCircle;
+                      return (
+                        <motion.div
+                          key={index}
+                          variants={scaleIn}
+                          whileHover={{ scale: 1.05, y: -5 }}
+                          className="text-center p-4 bg-white rounded-2xl shadow-lg border border-gray-100 group cursor-default"
+                        >
+                          <div className="w-10 h-10 bg-gradient-to-br from-[#203E7F] to-cyan-600 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                            <IconComponent className="w-5 h-5 text-white" />
+                          </div>
+                          <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-[#203E7F] to-cyan-600 bg-clip-text text-transparent">
+                            <AnimatedCounter value={stat.value} />
+                          </div>
+                          <div className="text-xs sm:text-sm text-gray-500 mt-1">
+                            {stat.label}
+                          </div>
+                        </motion.div>
+                      );
+                    })}
                   </motion.div>
                 </motion.div>
 
-                {/* Image/Video */}
+                {/* Image/Video - DYNAMIC */}
                 <motion.div
                   variants={fadeInRight}
                   className="relative"
                 >
                   <div className="relative rounded-3xl overflow-hidden shadow-2xl">
                     <div className="aspect-[4/3] relative bg-gradient-to-br from-[#203E7F]/20 to-cyan-600/20">
-                      <Image
-                        src="/images/about/about-company.png"
-                        alt="Your Zeros and Ones Team"
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-center justify-center">
-                        <motion.button
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="w-16 h-16 md:w-20 md:h-20 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-xl group"
-                        >
-                          <div className="w-0 h-0 border-t-8 border-b-8 border-l-12 border-transparent border-l-[#203E7F] ml-1" />
-                        </motion.button>
-                      </div>
+                      {aboutContent.mediaType === 'video' && aboutContent.media ? (
+                        <video
+                          src={aboutContent.media}
+                          controls
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <>
+                          <Image
+                            src={aboutContent.media || "/images/about/about-company.png"}
+                            alt="Your Zeros and Ones Team"
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-center justify-center">
+                            <motion.button
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.95 }}
+                              className="w-16 h-16 md:w-20 md:h-20 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-xl group"
+                            >
+                              <div className="w-0 h-0 border-t-8 border-b-8 border-l-12 border-transparent border-l-[#203E7F] ml-1" />
+                            </motion.button>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
                 </motion.div>
@@ -365,7 +423,7 @@ export default function About() {
           </div>
         </section>
 
-        {/* Our Story / Timeline Section */}
+        {/* Timeline Section - DYNAMIC */}
         <section className="py-16 sm:py-20 md:py-24 bg-white relative overflow-hidden">
           {/* Background Decoration */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -398,54 +456,70 @@ export default function About() {
               </motion.div>
 
               {/* Timeline */}
-              <div className="relative max-w-4xl mx-auto">
-                {/* Timeline Line */}
-                <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#203E7F] via-cyan-500 to-[#203E7F] transform md:-translate-x-1/2" />
+              {timelineLoading ? (
+                <div className="flex items-center justify-center py-20">
+                  <div className="text-center">
+                    <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-slate-600">Loading timeline...</p>
+                  </div>
+                </div>
+              ) : timelineItems.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-slate-500">No timeline items available yet.</p>
+                </div>
+              ) : (
+                <div className="relative max-w-4xl mx-auto">
+                  {/* Timeline Line */}
+                  <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#203E7F] via-cyan-500 to-[#203E7F] transform md:-translate-x-1/2" />
 
-                {timeline.map((item, index) => (
-                  <motion.div
-                    key={item.year}
-                    variants={index % 2 === 0 ? fadeInLeft : fadeInRight}
-                    className={`relative flex items-center mb-12 ${
-                      index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
-                    }`}
-                  >
-                    {/* Timeline Dot */}
-                    <motion.div
-                      whileHover={{ scale: 1.2 }}
-                      className="absolute left-4 md:left-1/2 w-8 h-8 bg-gradient-to-br from-[#203E7F] to-cyan-600 rounded-full transform md:-translate-x-1/2 z-10 flex items-center justify-center shadow-lg"
-                    >
-                      <item.Icon className="w-4 h-4 text-white" />
-                    </motion.div>
+                  {timelineItems.map((item, index) => {
+                    const IconComponent = ICON_MAP[item.icon] || Rocket;
+                    return (
+                      <motion.div
+                        key={item.id}
+                        variants={index % 2 === 0 ? fadeInLeft : fadeInRight}
+                        className={`relative flex items-center mb-12 ${
+                          index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
+                        }`}
+                      >
+                        {/* Timeline Dot */}
+                        <motion.div
+                          whileHover={{ scale: 1.2 }}
+                          className="absolute left-4 md:left-1/2 w-8 h-8 bg-gradient-to-br from-[#203E7F] to-cyan-600 rounded-full transform md:-translate-x-1/2 z-10 flex items-center justify-center shadow-lg"
+                        >
+                          <IconComponent className="w-4 h-4 text-white" />
+                        </motion.div>
 
-                    {/* Content Card */}
-                    <motion.div
-                      whileHover={{ scale: 1.02, y: -5 }}
-                      className={`ml-16 md:ml-0 md:w-[calc(50%-2rem)] ${
-                        index % 2 === 0 ? "md:mr-auto md:pr-8" : "md:ml-auto md:pl-8"
-                      }`}
-                    >
-                      <div className="bg-white rounded-2xl p-6 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300">
-                        <div className="inline-flex items-center gap-2 bg-gradient-to-r from-[#203E7F] to-cyan-600 text-white px-3 py-1 rounded-full text-sm font-bold mb-3">
-                          <Calendar className="w-3 h-3" />
-                          {item.year}
-                        </div>
-                        <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
-                          {item.title}
-                        </h3>
-                        <p className="text-gray-600 leading-relaxed">
-                          {item.description}
-                        </p>
-                      </div>
-                    </motion.div>
-                  </motion.div>
-                ))}
-              </div>
+                        {/* Content Card */}
+                        <motion.div
+                          whileHover={{ scale: 1.02, y: -5 }}
+                          className={`ml-16 md:ml-0 md:w-[calc(50%-2rem)] ${
+                            index % 2 === 0 ? "md:mr-auto md:pr-8" : "md:ml-auto md:pl-8"
+                          }`}
+                        >
+                          <div className="bg-white rounded-2xl p-6 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300">
+                            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-[#203E7F] to-cyan-600 text-white px-3 py-1 rounded-full text-sm font-bold mb-3">
+                              <Calendar className="w-3 h-3" />
+                              {item.year}
+                            </div>
+                            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
+                              {item.title}
+                            </h3>
+                            <p className="text-gray-600 leading-relaxed">
+                              {item.description}
+                            </p>
+                          </div>
+                        </motion.div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              )}
             </AnimatedSection>
           </div>
         </section>
 
-        {/* Vision & Mission Section */}
+        {/* Vision & Mission Section - STATIC */}
         <section className="py-16 sm:py-20 md:py-24 bg-gray-100">
           <div 
             className="w-full"
@@ -475,7 +549,6 @@ export default function About() {
                   className="group"
                 >
                   <div className="bg-gradient-to-br from-[#203E7F] to-cyan-600 rounded-3xl p-8 sm:p-10 text-white h-full relative overflow-hidden">
-                    {/* Background Pattern */}
                     <div className="absolute inset-0 opacity-10">
                       <div
                         className="absolute inset-0"
@@ -512,7 +585,6 @@ export default function About() {
                   className="group"
                 >
                   <div className="bg-white rounded-3xl p-8 sm:p-10 h-full shadow-xl border border-gray-100 relative overflow-hidden">
-                    {/* Gradient Border Effect */}
                     <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-[#203E7F]/10 to-cyan-600/10 opacity-50" />
 
                     <div className="relative">
@@ -579,7 +651,6 @@ export default function About() {
                     className="group"
                   >
                     <div className="bg-gray-50 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100">
-                      {/* Image Container */}
                       <div className="relative h-56 sm:h-64 overflow-hidden">
                         {member.image ? (
                           <Image
@@ -596,7 +667,6 @@ export default function About() {
                             </span>
                           </div>
                         )}
-                        {/* Overlay on hover */}
                         <div className="absolute inset-0 bg-gradient-to-t from-[#203E7F]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
                           <div className="flex gap-3">
                             {member.linkedin && member.linkedin !== "#" && (
@@ -627,7 +697,6 @@ export default function About() {
                         </div>
                       </div>
 
-                      {/* Info */}
                       <div className="p-6 text-center bg-white">
                         <h3 className="text-xl font-bold text-gray-900 mb-1">
                           {member.name}
@@ -642,7 +711,6 @@ export default function About() {
                 ))}
               </motion.div>
 
-              {/* Loading indicator for dynamic members */}
               {teamLoading && (
                 <div className="flex justify-center mt-8">
                   <div className="inline-flex items-center gap-2 text-gray-500 text-sm">
@@ -655,7 +723,7 @@ export default function About() {
           </div>
         </section>
 
-        {/* Why Choose Us Section */}
+        {/* Why Choose Us Section - STATIC */}
         <section className="py-16 sm:py-20 md:py-24 bg-gray-100">
           <div 
             className="w-full"
@@ -728,7 +796,6 @@ export default function About() {
                 variants={fadeInUp}
                 className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl p-8 sm:p-12 text-center relative overflow-hidden border border-gray-200 max-w-4xl mx-auto"
               >
-                {/* Decorative Elements */}
                 <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-[#203E7F]/10 to-cyan-600/10 rounded-full -translate-y-1/2 translate-x-1/2" />
                 <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-br from-cyan-600/10 to-[#203E7F]/10 rounded-full translate-y-1/2 -translate-x-1/2" />
 

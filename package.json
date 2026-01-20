@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.9",
     "@prisma/client": "^6.19.0",
     "@tiptap/extension-code-block-lowlight": "^3.12.1",
     "@tiptap/extension-image": "^3.12.1",
@@ -33,6 +34,7 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-google-recaptcha": "^3.1.0",
+    "react-hot-toast": "^2.6.0",
     "react-leaflet": "^5.0.0",
     "react-markdown": "^10.1.0",
     "react-toastify": "^11.0.5",

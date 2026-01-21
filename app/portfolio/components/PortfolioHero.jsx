@@ -2,9 +2,16 @@
 "use client";
 import { motion } from "framer-motion";
 
-export default function PortfolioHero() {
+export default function PortfolioHero({ stats }) {
+  // ✅ Use stats prop with fallback values
+  const heroStats = stats || {
+    projects: 20,
+    clients: 30,
+    satisfaction: 100,
+  };
+
   return (
-    <section className="relative bg-gradient-to-br from-[#0f172a] via-[#1e3a5f] to-[#20427f] py-20 md:py-28 overflow-hidden">
+    <section className="relative bg-gradient-to-br from-[#0f172a] via-[#1e3a5f] to-[#20427f] py-1 md:py-1 overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0">
         <div 
@@ -35,8 +42,8 @@ export default function PortfolioHero() {
           paddingRight: 'clamp(2rem, 8vw, 12rem)'
         }}
       >
-        <div className="text-center">
-          {/* Badge */}
+        <div className="text-center py-8  xl:pb-35">
+          {/* Badge - ✅ Dynamic projects count */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -47,7 +54,9 @@ export default function PortfolioHero() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
             </span>
-            <span className="text-sm font-medium text-white/90">50+ Projects Delivered</span>
+            <span className="text-sm font-medium text-white/90">
+              {heroStats.projects}+ Projects Delivered
+            </span>
           </motion.div>
 
           {/* Heading */}
@@ -74,7 +83,7 @@ export default function PortfolioHero() {
             mobile apps, branding, and digital marketing.
           </motion.p>
 
-          {/* Stats */}
+          {/* ✅ UPDATED: Dynamic Stats */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -82,13 +91,17 @@ export default function PortfolioHero() {
             className="flex flex-wrap justify-center gap-8 md:gap-16"
           >
             {[
-              { value: "50+", label: "Projects" },
-              { value: "30+", label: "Clients" },
-              { value: "99%", label: "Satisfaction" },
+              { value: `${heroStats.projects}+`, label: "Projects" },
+              { value: `${heroStats.clients}+`, label: "Clients" },
+              { value: `${heroStats.satisfaction}%`, label: "Satisfaction" },
             ].map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-white">{stat.value}</div>
-                <div className="text-sm text-blue-200/70 mt-1">{stat.label}</div>
+                <div className="text-3xl md:text-4xl font-bold text-white">
+                  {stat.value}
+                </div>
+                <div className="text-sm text-blue-200/70 mt-1">
+                  {stat.label}
+                </div>
               </div>
             ))}
           </motion.div>
@@ -96,7 +109,7 @@ export default function PortfolioHero() {
       </div>
 
       {/* Bottom Wave */}
-      <div className="absolute bottom-0 left-0 right-0">
+      <div className="absolute -bottom-px left-0 right-0">
         <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path 
             d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" 

@@ -550,40 +550,83 @@ const cloudServices = [
           </div>
         </section>
 
-        {/* Benefits Section */}
-        <section className="py-20 bg-gray-50">
-          <div 
-            className="max-w-[1800px] mx-auto"
-            style={{
-              paddingLeft: 'clamp(2rem, 8vw, 12rem)',
-              paddingRight: 'clamp(2rem, 8vw, 12rem)'
-            }}
-          >
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">
-                Why Choose Our Cloud Services
-              </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Transform your business with scalable, secure, and
-                cost-effective cloud solutions
-              </p>
-            </div>
+        {/* Why Choose Us Section */}
+<section className="py-20 bg-gray-50">
+  <div 
+    className="max-w-[1800px] mx-auto"
+    style={{
+      paddingLeft: 'clamp(2rem, 8vw, 12rem)',
+      paddingRight: 'clamp(2rem, 8vw, 12rem)'
+    }}
+  >
+    <div className="text-center mb-16">
+      <h2 className="text-4xl font-bold text-gray-900 mb-4">
+        Why Choose Our Cloud Services
+      </h2>
+      <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+        Transform your business with scalable, secure, and cost-effective cloud solutions
+      </p>
+    </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {benefits.map((benefit, index) => (
-                <div key={index} className="text-center">
-                  <div className="text-2xl font-bold text-[#20427f] mb-2">
-                    {benefit.metric}
-                  </div>
-                  <h4 className="font-bold text-gray-900 mb-2">
-                    {benefit.title}
-                  </h4>
-                  <p className="text-gray-600 text-sm">{benefit.description}</p>
-                </div>
-              ))}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      {[
+        {
+          title: "Scalability & Flexibility",
+          description: "Dynamically scale resources up or down based on demand with pay-as-you-go pricing that grows with your business.",
+          icon: (
+            <svg className="w-8 h-8" fill="none" stroke="#1a3568" strokeWidth={1.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6" />
+            </svg>
+          ),
+        },
+        {
+          title: "Cost Optimization",
+          description: "Reduce capital expenditure with operational expense models and intelligent resource optimization strategies.",
+          icon: (
+            <svg className="w-8 h-8" fill="none" stroke="#1a3568" strokeWidth={1.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
+            </svg>
+          ),
+        },
+        {
+          title: "Security & Compliance",
+          description: "Enterprise-grade security with industry compliance certifications and continuous monitoring across all environments.",
+          icon: (
+            <svg className="w-8 h-8" fill="none" stroke="#1a3568" strokeWidth={1.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+            </svg>
+          ),
+        },
+        {
+          title: "Global Reach",
+          description: "Deploy applications closer to your users with worldwide data center presence for optimal performance and low latency.",
+          icon: (
+            <svg className="w-8 h-8" fill="none" stroke="#1a3568" strokeWidth={1.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5a17.92 17.92 0 01-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
+            </svg>
+          ),
+        },
+      ].map((item, index) => (
+        <div 
+          key={index} 
+          className="bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-[#20427f] group"
+        >
+          <div className="w-16 h-16 bg-blue-50 rounded-xl flex items-center justify-center mx-auto mb-5 group-hover:bg-[#20427f] group-hover:scale-110 transition-all duration-300">
+            <div className="group-hover:[&_svg]:stroke-white transition-all duration-300">
+              {item.icon}
             </div>
           </div>
-        </section>
+          <h4 className="font-bold text-gray-900 mb-3 text-lg group-hover:text-[#20427f] transition-colors">
+            {item.title}
+          </h4>
+          <p className="text-gray-600 text-sm leading-relaxed">
+            {item.description}
+          </p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
 
         <ServiceProjects
           categoryName="Technology"

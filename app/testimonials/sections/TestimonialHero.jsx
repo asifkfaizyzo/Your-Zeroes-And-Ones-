@@ -1,6 +1,7 @@
-// Q:\PROJECTS\YourZeroesAndOnes\YZO_Main\app\testimonials\sections\TestimonialHero.jsx
+// app/testimonials/sections/TestimonialHero.jsx
 "use client";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 const floatingWords = [
   { text: "Amazing!", emoji: "✨" },
@@ -12,16 +13,38 @@ const floatingWords = [
   { text: "Brilliant", emoji: "💎" },
 ];
 
-const stats = [
-  { value: "500+", label: "Happy Clients" },
-  { value: "98%", label: "Satisfaction Rate" },
-  { value: "50+", label: "5-Star Reviews" },
-];
-
 export default function TestimonialHero() {
+  // ✅ NEW: Dynamic stats state
+  const [stats, setStats] = useState([
+    { value: "30+", label: "Happy Clients" },
+    { value: "98%", label: "Satisfaction Rate" },
+    { value: "25+", label: "5-Star Reviews" },
+  ]);
+
+  // ✅ NEW: Fetch stats from API
+  useEffect(() => {
+    fetch("/api/stats")
+      .then((res) => res.json())
+      .then((data) => {
+        setStats([
+          { value: `${data.clients}+`, label: "Happy Clients" },
+          { value: "98%", label: "Satisfaction Rate" }, // Keep this static
+          { value: `25+`, label: "5-Star Reviews" },
+        ]);
+      })
+      .catch(() => {
+        // Keep fallback values on error
+        setStats([
+          { value: "30+", label: "Happy Clients" },
+          { value: "98%", label: "Satisfaction Rate" },
+          { value: "20+", label: "5-Star Reviews" },
+        ]);
+      });
+  }, []);
+
   return (
     <section className="relative w-full text-white text-center bg-gradient-to-br from-[#1a365d] via-[#2d5a87] to-[#1a5388] overflow-hidden min-h-[60vh] flex items-center">
-      {/* Animated Background Pattern - Using CSS Grid Pattern Instead */}
+      {/* Animated Background Pattern */}
       <div className="absolute inset-0 z-0">
         <div 
           className="absolute inset-0 opacity-30"
@@ -82,7 +105,7 @@ export default function TestimonialHero() {
 
       {/* Main Content */}
       <div className="relative z-10 w-full py-16 md:py-24 px-4">
-        {/* Badge */}
+        {/* Badge - ✅ Dynamic client count */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -93,7 +116,9 @@ export default function TestimonialHero() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
           </span>
-          <span className="text-sm font-medium">Trusted by 500+ clients worldwide</span>
+          <span className="text-sm font-medium">
+            Trusted by {stats[0].value.replace('+', '')}+ clients worldwide
+          </span>
         </motion.div>
 
         {/* Heading */}
@@ -121,7 +146,7 @@ export default function TestimonialHero() {
           These testimonials represent genuine experiences and lasting partnerships.
         </motion.p>
 
-        {/* Stats Row */}
+        {/* Stats Row - ✅ Dynamic data */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -136,8 +161,12 @@ export default function TestimonialHero() {
               transition={{ delay: 0.6 + index * 0.1, type: "spring" }}
               className="text-center"
             >
-              <div className="text-3xl md:text-4xl font-bold text-white">{stat.value}</div>
-              <div className="text-sm md:text-base text-blue-200/80 mt-1">{stat.label}</div>
+              <div className="text-3xl md:text-4xl font-bold text-white">
+                {stat.value}
+              </div>
+              <div className="text-sm md:text-base text-blue-200/80 mt-1">
+                {stat.label}
+              </div>
             </motion.div>
           ))}
         </motion.div>

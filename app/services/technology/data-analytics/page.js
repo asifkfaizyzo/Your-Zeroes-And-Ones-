@@ -784,7 +784,7 @@ export default function DataAnalytics() {
           </div>
         </section>
 
-        {/* Benefits Section */}
+        {/* Why Choose Us Section */}
         <section className="py-20 bg-white">
           <div
             className="max-w-[1800px] mx-auto"
@@ -803,15 +803,108 @@ export default function DataAnalytics() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {benefits.map((benefit, index) => (
-                <div key={index} className="text-center">
-                  <div className="text-2xl font-bold text-[#20427f] mb-2">
-                    {benefit.metric}
+              {[
+                {
+                  title: "Faster Decisions",
+                  description:
+                    "Real-time dashboards and automated reporting enable quick, informed decisions that keep you ahead of the competition.",
+                  icon: (
+                    <svg
+                      className="w-8 h-8"
+                      fill="none"
+                      stroke="#1a3568"
+                      strokeWidth={1.5}
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
+                      />
+                    </svg>
+                  ),
+                },
+                {
+                  title: "Actionable Insights",
+                  description:
+                    "Turn raw data into meaningful insights with advanced analytics, predictive modeling, and intuitive visualizations.",
+                  icon: (
+                    <svg
+                      className="w-8 h-8"
+                      fill="none"
+                      stroke="#1a3568"
+                      strokeWidth={1.5}
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                  ),
+                },
+                {
+                  title: "Unified Data",
+                  description:
+                    "Consolidate data from multiple sources into a single source of truth, eliminating silos and ensuring consistency.",
+                  icon: (
+                    <svg
+                      className="w-8 h-8"
+                      fill="none"
+                      stroke="#1a3568"
+                      strokeWidth={1.5}
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"
+                      />
+                    </svg>
+                  ),
+                },
+                {
+                  title: "Predictive Power",
+                  description:
+                    "Leverage machine learning and AI to forecast trends, identify opportunities, and mitigate risks before they impact your business.",
+                  icon: (
+                    <svg
+                      className="w-8 h-8"
+                      fill="none"
+                      stroke="#1a3568"
+                      strokeWidth={1.5}
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"
+                      />
+                    </svg>
+                  ),
+                },
+              ].map((item, index) => (
+                <div
+                  key={index}
+                  className="bg-gray-50 rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-[#20427f] group"
+                >
+                  <div className="w-16 h-16 bg-blue-50 rounded-xl flex items-center justify-center mx-auto mb-5 group-hover:bg-[#20427f] group-hover:scale-110 transition-all duration-300">
+                    <div className="group-hover:[&_svg]:stroke-white transition-all duration-300">
+                      {item.icon}
+                    </div>
                   </div>
-                  <h4 className="font-bold text-gray-900 mb-2">
-                    {benefit.title}
+                  <h4 className="font-bold text-gray-900 mb-3 text-lg group-hover:text-[#20427f] transition-colors">
+                    {item.title}
                   </h4>
-                  <p className="text-gray-600 text-sm">{benefit.description}</p>
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    {item.description}
+                  </p>
                 </div>
               ))}
             </div>

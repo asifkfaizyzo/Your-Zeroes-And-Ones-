@@ -192,23 +192,23 @@ export default function AdminLayoutNew({ children }) {
 
         {/* Footer - Inside scrollable area */}
         <footer className="bg-white border-t border-slate-200 py-4">
-          <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-slate-500">
-              <p>© 2025 YourZeroesAndOnes. All rights reserved.</p>
-              <div className="flex items-center gap-4">
-                <a href="#" className="hover:text-slate-700 transition-colors">
-                  Documentation
-                </a>
-                <a href="#" className="hover:text-slate-700 transition-colors">
-                  Support
-                </a>
-                <a href="#" className="hover:text-slate-700 transition-colors">
-                  Version 1.0.0
-                </a>
-              </div>
-            </div>
-          </div>
-        </footer>
+  <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-slate-500">
+      <p>© {new Date().getFullYear()} YourZeroesAndOnes. All rights reserved.</p>
+      <div className="flex items-center gap-4">
+        <a href="#" className="hover:text-slate-700 transition-colors">
+          Documentation
+        </a>
+        <a href="#" className="hover:text-slate-700 transition-colors">
+          Support
+        </a>
+        <a href="#" className="hover:text-slate-700 transition-colors">
+          Version 1.0.0
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
       </div>
     </div>
   );

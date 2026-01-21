@@ -13,7 +13,7 @@ function errorResponse(message, status = 500) {
 
 // ==================== FILE DELETION HELPER ====================
 async function deleteUploadedFile(filePath) {
-  if (!filePath || !filePath.startsWith('/uploads/')) {
+  if (!filePath || (!filePath.startsWith('/uploads/'))) {
     return false;
   }
 
@@ -130,7 +130,10 @@ export async function PUT(req, { params }) {
     const role = sanitizeString(body.role, 100);
     const company = sanitizeString(body.company, 100);
     const message = sanitizeString(body.message, 2000);
+    const quoteExcerpt = sanitizeString(body.quoteExcerpt, 300);
     const image = sanitizeString(body.image, 500);
+    const videoUrl = sanitizeString(body.videoUrl, 500);
+    const thumbnailUrl = sanitizeString(body.thumbnailUrl, 500);
     const rating = body.rating !== null && body.rating !== undefined 
       ? Math.min(5, Math.max(1, parseIntSafe(body.rating, 5))) 
       : 5;
@@ -184,22 +187,60 @@ export async function PUT(req, { params }) {
       return errorResponse('Message must be less than 2000 characters', 400);
     }
 
-    // 10. Validate image URL
+    // 10. Validate quote excerpt (optional)
+    if (quoteExcerpt && quoteExcerpt.length > 300) {
+      return errorResponse('Quote excerpt must be less than 300 characters', 400);
+    }
+
+    // 11. Validate profile image URL (optional)
     if (image && image.trim() !== '') {
       if (!image.startsWith('/uploads/') && !image.startsWith('http://') && !image.startsWith('https://')) {
-        return errorResponse('Image must be a valid upload path or URL', 400);
+        return errorResponse('Profile image must be a valid upload path or URL', 400);
       }
       if (image.length > 500) {
-        return errorResponse('Image URL is too long (max 500 characters)', 400);
+        return errorResponse('Profile image URL is too long (max 500 characters)', 400);
       }
     }
 
-    // 11. Validate rating
+    // 12. Validate video URL (optional)
+    if (videoUrl && videoUrl.trim() !== '') {
+      if (!videoUrl.startsWith('/uploads/testimonials/videos/') && 
+          !videoUrl.startsWith('http://') && 
+          !videoUrl.startsWith('https://')) {
+        return errorResponse('Video URL must be a valid upload path', 400);
+      }
+      if (videoUrl.length > 500) {
+        return errorResponse('Video URL is too long (max 500 characters)', 400);
+      }
+    }
+
+    // 13. Validate thumbnail URL (optional)
+    if (thumbnailUrl && thumbnailUrl.trim() !== '') {
+      if (!thumbnailUrl.startsWith('/uploads/testimonials/thumbnails/') && 
+          !thumbnailUrl.startsWith('/uploads/') &&
+          !thumbnailUrl.startsWith('http://') && 
+          !thumbnailUrl.startsWith('https://')) {
+        return errorResponse('Thumbnail URL must be a valid upload path', 400);
+      }
+      if (thumbnailUrl.length > 500) {
+        return errorResponse('Thumbnail URL is too long (max 500 characters)', 400);
+      }
+    }
+
+    // 14. Video testimonial validation: if video exists, thumbnail is required
+    const hasVideo = videoUrl && videoUrl.trim() !== '';
+    const hasThumbnail = thumbnailUrl && thumbnailUrl.trim() !== '';
+
+    if (hasVideo && !hasThumbnail) {
+      return errorResponse('Thumbnail is required for video testimonials', 400);
+    }
+
+    // 15. Validate rating
     if (rating < 1 || rating > 5) {
       return errorResponse('Rating must be between 1 and 5', 400);
     }
 
-    // 12. Validate position
+    // 16. Validate position
     if (position !== null) {
       if (isNaN(Number(position)) || Number(position) < 1) {
         return errorResponse('Position must be a positive number', 400);
@@ -209,23 +250,42 @@ export async function PUT(req, { params }) {
       }
     }
 
-    // 13. Check existence before update
+    // 17. Check existence before update
     const existingTestimonial = await prisma.testimonial.findUnique({
       where: { id },
-      select: { image: true, name: true },
+      select: { 
+        image: true, 
+        videoUrl: true, 
+        thumbnailUrl: true,
+        name: true 
+      },
     });
 
     if (!existingTestimonial) {
       return errorResponse('Testimonial not found', 404);
     }
 
-    // 14. Delete old image if it changed
-    const finalImage = image && image.trim() !== '' ? image : null;
+    // 18. Delete old files if they changed
+    const finalImage = image && image.trim() !== '' ? image.trim() : null;
+    const finalVideoUrl = videoUrl && videoUrl.trim() !== '' ? videoUrl.trim() : null;
+    const finalThumbnailUrl = thumbnailUrl && thumbnailUrl.trim() !== '' ? thumbnailUrl.trim() : null;
+
+    // Delete old profile image if changed
     if (existingTestimonial.image && existingTestimonial.image !== finalImage) {
       await deleteUploadedFile(existingTestimonial.image);
     }
 
-    // 15. Update testimonial
+    // Delete old video if changed
+    if (existingTestimonial.videoUrl && existingTestimonial.videoUrl !== finalVideoUrl) {
+      await deleteUploadedFile(existingTestimonial.videoUrl);
+    }
+
+    // Delete old thumbnail if changed
+    if (existingTestimonial.thumbnailUrl && existingTestimonial.thumbnailUrl !== finalThumbnailUrl) {
+      await deleteUploadedFile(existingTestimonial.thumbnailUrl);
+    }
+
+    // 19. Update testimonial
     const testimonial = await prisma.testimonial.update({
       where: { id },
       data: {
@@ -233,7 +293,10 @@ export async function PUT(req, { params }) {
         role: role.trim(),
         company: company?.trim() || null,
         message: message.trim(),
+        quoteExcerpt: quoteExcerpt?.trim() || null,
         image: finalImage,
+        videoUrl: finalVideoUrl,
+        thumbnailUrl: finalThumbnailUrl,
         rating,
         verified,
         position,
@@ -241,7 +304,7 @@ export async function PUT(req, { params }) {
       },
     });
 
-    // 16. Success response
+    // 20. Success response
     return NextResponse.json({
       ok: true,
       data: testimonial,
@@ -299,16 +362,29 @@ export async function DELETE(req, { params }) {
     // 3. Check existence before delete
     const testimonial = await prisma.testimonial.findUnique({
       where: { id },
-      select: { image: true, name: true },
+      select: { 
+        image: true, 
+        videoUrl: true, 
+        thumbnailUrl: true,
+        name: true 
+      },
     });
 
     if (!testimonial) {
       return errorResponse('Testimonial not found', 404);
     }
 
-    // 4. Delete image file if exists
+    // 4. Delete all associated files
     if (testimonial.image) {
       await deleteUploadedFile(testimonial.image);
+    }
+
+    if (testimonial.videoUrl) {
+      await deleteUploadedFile(testimonial.videoUrl);
+    }
+
+    if (testimonial.thumbnailUrl) {
+      await deleteUploadedFile(testimonial.thumbnailUrl);
     }
 
     // 5. Delete database record

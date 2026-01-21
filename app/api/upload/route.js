@@ -10,26 +10,40 @@ export const runtime = 'nodejs';
 
 // --- SECURITY CONFIGURATION ---
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ALLOWED_TYPES = [
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;   // 5MB for images
+const MAX_VIDEO_SIZE = 100 * 1024 * 1024;  // 100MB for videos
+
+const ALLOWED_IMAGE_TYPES = [
   'image/jpeg',
   'image/png',
   'image/gif',
   'image/webp',
   'image/svg+xml',
 ];
-const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
+
+const ALLOWED_VIDEO_TYPES = [
+  'video/mp4',
+  'video/webm',
+  'video/ogg',
+  'video/quicktime', // .mov files
+];
+
+const ALLOWED_TYPES = [...ALLOWED_IMAGE_TYPES, ...ALLOWED_VIDEO_TYPES];
+
+const ALLOWED_IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
+const ALLOWED_VIDEO_EXTENSIONS = ['.mp4', '.webm', '.ogg', '.mov'];
+const ALLOWED_EXTENSIONS = [...ALLOWED_IMAGE_EXTENSIONS, ...ALLOWED_VIDEO_EXTENSIONS];
 
 // Merged allowed folders from both versions
 const ALLOWED_FOLDERS = [
   'blogs', 
-  'blog', // Added for compatibility
+  'blog',        // Added for compatibility
   'portfolio', 
   'clients', 
   'testimonials', 
   'general', 
   'team', 
-  'about' // Added from first file
+  'about'
 ];
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_ACCESS_SECRET);
@@ -50,16 +64,30 @@ async function verifyAdmin(req) {
   }
 }
 
-// Magic bytes validation to ensure file content matches extension
-function isValidImageBuffer(buffer, mimeType) {
+// Check if file is a video type
+function isVideoType(mimeType) {
+  return ALLOWED_VIDEO_TYPES.includes(mimeType);
+}
+
+// Magic bytes validation for images and videos
+function isValidFileBuffer(buffer, mimeType) {
   if (buffer.length < 4) return false;
 
-  const signatures = {
+  // Image signatures
+  const imageSignatures = {
     'image/jpeg': [[0xFF, 0xD8, 0xFF]],
     'image/png': [[0x89, 0x50, 0x4E, 0x47]],
     'image/gif': [[0x47, 0x49, 0x46, 0x38]],
     'image/webp': [[0x52, 0x49, 0x46, 0x46]], // RIFF header
     'image/svg+xml': null, // Text-based, check differently
+  };
+
+  // Video signatures
+  const videoSignatures = {
+    'video/mp4': null,      // Complex, check separately
+    'video/webm': [[0x1A, 0x45, 0xDF, 0xA3]],
+    'video/ogg': [[0x4F, 0x67, 0x67, 0x53]],
+    'video/quicktime': null, // Complex, check separately
   };
 
   // SVG check (text-based)
@@ -68,12 +96,30 @@ function isValidImageBuffer(buffer, mimeType) {
     return text.includes('<svg') || text.includes('<?xml');
   }
 
-  const sigs = signatures[mimeType];
-  if (!sigs) return false;
+  // MP4/MOV check (ftyp box)
+  if (mimeType === 'video/mp4' || mimeType === 'video/quicktime') {
+    if (buffer.length < 12) return false;
+    const ftypCheck = buffer.slice(4, 8).toString('ascii');
+    return ftypCheck === 'ftyp';
+  }
 
-  return sigs.some(sig => 
-    sig.every((byte, i) => buffer[i] === byte)
-  );
+  // Check image signatures
+  const imgSigs = imageSignatures[mimeType];
+  if (imgSigs) {
+    return imgSigs.some(sig => 
+      sig.every((byte, i) => buffer[i] === byte)
+    );
+  }
+
+  // Check video signatures
+  const vidSigs = videoSignatures[mimeType];
+  if (vidSigs) {
+    return vidSigs.some(sig => 
+      sig.every((byte, i) => buffer[i] === byte)
+    );
+  }
+
+  return false;
 }
 
 // --- MAIN ROUTE HANDLER ---
@@ -109,17 +155,21 @@ export async function POST(req) {
       }, { status: 400 });
     }
 
-    // 3. Validate file size
-    if (file.size > MAX_FILE_SIZE) {
+    // 3. Validate file type first (to determine size limit)
+    if (!ALLOWED_TYPES.includes(file.type)) {
       return NextResponse.json({ 
-        error: `File too large. Maximum size is ${MAX_FILE_SIZE / 1024 / 1024}MB` 
+        error: 'Invalid file type. Allowed: JPEG, PNG, GIF, WebP, SVG, MP4, WebM, OGG, MOV' 
       }, { status: 400 });
     }
 
-    // 4. Validate file type
-    if (!ALLOWED_TYPES.includes(file.type)) {
+    // 4. Validate file size (different limits for images vs videos)
+    const isVideo = isVideoType(file.type);
+    const maxSize = isVideo ? MAX_VIDEO_SIZE : MAX_IMAGE_SIZE;
+    
+    if (file.size > maxSize) {
+      const maxMB = maxSize / 1024 / 1024;
       return NextResponse.json({ 
-        error: 'Invalid file type. Allowed: JPEG, PNG, GIF, WebP, SVG' 
+        error: `File too large. Maximum size is ${maxMB}MB for ${isVideo ? 'videos' : 'images'}` 
       }, { status: 400 });
     }
 
@@ -130,22 +180,23 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Invalid file extension' }, { status: 400 });
     }
 
-    // 6. Validate file content (magic bytes check)
+    // 6. Read file buffer
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    
-    if (!isValidImageBuffer(buffer, file.type)) {
+
+    // 7. Validate file content (magic bytes check)
+    if (!isValidFileBuffer(buffer, file.type)) {
       return NextResponse.json({ error: 'Invalid file content (Magic Bytes mismatch)' }, { status: 400 });
     }
 
-    // 7. Create safe filename
+    // 8. Create safe filename
     const safeName = originalName
       .replace(/\s+/g, '-')
       .replace(/[^a-zA-Z0-9-._]/g, '')
       .substring(0, 100); // Limit filename length
     const filename = `${Date.now()}-${safeName}`;
     
-    // 8. Safe directory creation
+    // 9. Safe directory creation
     const uploadsDir = path.join(process.cwd(), 'public', 'uploads', sanitizedFolder);
     if (!fs.existsSync(uploadsDir)) {
       fs.mkdirSync(uploadsDir, { recursive: true });
@@ -153,27 +204,28 @@ export async function POST(req) {
 
     const filepath = path.join(uploadsDir, filename);
 
-    // 9. Verify final path is within uploads directory (Anti-Path Traversal)
+    // 10. Verify final path is within uploads directory (Anti-Path Traversal)
     const resolvedPath = path.resolve(filepath);
     const uploadsRoot = path.resolve(process.cwd(), 'public', 'uploads');
     if (!resolvedPath.startsWith(uploadsRoot)) {
       return NextResponse.json({ error: 'Invalid file path security check' }, { status: 400 });
     }
 
-    // 10. Write File
+    // 11. Write File
     await fs.promises.writeFile(filepath, buffer, { mode: 0o644 });
 
     const url = `/uploads/${sanitizedFolder}/${filename}`;
-    console.log('✅ File uploaded:', url);
+    console.log(`✅ ${isVideo ? 'Video' : 'Image'} uploaded:`, url);
 
-    // Return combined response (Supports both frontend structures)
+    // Return combined response (supports both frontend structures)
     return NextResponse.json({
       success: true,
       url,
-      path: url, // Kept for secured version compatibility
+      path: url,       // Kept for compatibility
       filename,
       size: file.size,
-      type: file.type
+      type: file.type,
+      isVideo,         // Helps frontend know the file type
     });
 
   } catch (err) {

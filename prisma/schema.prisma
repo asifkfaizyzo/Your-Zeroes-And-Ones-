@@ -38,18 +38,21 @@ model Admin {
 // Add this model to your existing schema
 
 model Testimonial {
-  id          String   @id @default(uuid())
-  name        String
-  role        String
-  company     String?
-  message     String   @db.Text
-  image       String?
-  rating      Int      @default(5)
-  verified    Boolean  @default(false)
-  position    Int?     // Custom display position (optional)
-  published   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String   @id @default(uuid())
+  name          String
+  role          String
+  company       String?
+  message       String   @db.Text
+  quoteExcerpt  String?  @db.VarChar(300)  // Short quote for video testimonials
+  image         String?                     // Profile/avatar image
+  videoUrl      String?                     // Uploaded video file path
+  thumbnailUrl  String?                     // Custom video thumbnail
+  rating        Int      @default(5)
+  verified      Boolean  @default(false)
+  position      Int?
+  published     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 // prisma/schema.prisma - Update Portfolio model

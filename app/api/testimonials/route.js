@@ -1,6 +1,6 @@
 // app/api/testimonials/route.js
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma'; // ✅ Use singleton
+import prisma from '@/lib/prisma';
 
 export async function GET() {
   try {
@@ -16,7 +16,10 @@ export async function GET() {
         role: true,
         company: true,
         message: true,
+        quoteExcerpt: true,      // ✅ NEW
         image: true,
+        videoUrl: true,           // ✅ NEW
+        thumbnailUrl: true,       // ✅ NEW
         rating: true,
         verified: true,
         createdAt: true,
@@ -29,9 +32,13 @@ export async function GET() {
       role: t.role,
       company: t.company,
       message: t.message,
-      image: t.image || '/default-avatar.png',
+      quoteExcerpt: t.quoteExcerpt,           // ✅ NEW
+      image: t.image,
+      videoUrl: t.videoUrl,                   // ✅ NEW
+      thumbnailUrl: t.thumbnailUrl,           // ✅ NEW
       rating: t.rating,
       verified: t.verified,
+      hasVideo: !!(t.videoUrl && t.thumbnailUrl), // ✅ NEW: Helper flag
       date: new Date(t.createdAt).toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',

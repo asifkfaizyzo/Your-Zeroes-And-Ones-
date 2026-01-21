@@ -1,4 +1,5 @@
 // app/admin/about/content/page.jsx
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -19,7 +20,8 @@ import {
   Sparkles,
   ArrowLeft,
   Monitor,
-  AlertCircle
+  AlertCircle,
+  Video
 } from 'lucide-react';
 
 // Icon options for stats
@@ -162,12 +164,14 @@ export default function AboutContentPage() {
     setFormData(prev => ({ ...prev, stats: newStats }));
   };
 
+  // ✅ UPDATED handleFileUpload with video support
   const handleFileUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/gif'];
-    const validVideoTypes = ['video/mp4', 'video/webm', 'video/ogg'];
+    // Allowed types (images + videos)
+    const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
+    const validVideoTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'];
     const allValidTypes = [...validImageTypes, ...validVideoTypes];
 
     if (!allValidTypes.includes(file.type)) {
@@ -175,14 +179,18 @@ export default function AboutContentPage() {
       return;
     }
 
-    const maxSize = 50 * 1024 * 1024;
+    // Different size limits
+    const isVideo = validVideoTypes.includes(file.type);
+    const maxSize = isVideo ? 50 * 1024 * 1024 : 5 * 1024 * 1024; // 50MB video, 5MB image
+    
     if (file.size > maxSize) {
-      customToast.error('File size must be less than 50MB');
+      const maxMB = maxSize / 1024 / 1024;
+      customToast.error(`File size must be less than ${maxMB}MB for ${isVideo ? 'videos' : 'images'}`);
       return;
     }
 
     setUploading(true);
-    const uploadToast = customToast.loading('Uploading file...');
+    const uploadToast = customToast.loading(`Uploading ${isVideo ? 'video' : 'image'}...`);
 
     try {
       const formDataUpload = new FormData();
@@ -194,10 +202,15 @@ export default function AboutContentPage() {
         body: formDataUpload,
       });
 
-      if (!res.ok) throw new Error('Upload failed');
-
       const data = await res.json();
-      const isVideo = validVideoTypes.includes(file.type);
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Upload failed');
+      }
+
+      if (!data.url) {
+        throw new Error('No URL returned from upload');
+      }
       
       setFormData(prev => ({
         ...prev,
@@ -206,11 +219,11 @@ export default function AboutContentPage() {
       }));
 
       toast.dismiss(uploadToast);
-      customToast.success('File uploaded successfully!');
+      customToast.success(`${isVideo ? 'Video' : 'Image'} uploaded successfully!`);
     } catch (error) {
       console.error('Upload error:', error);
       toast.dismiss(uploadToast);
-      customToast.error('Failed to upload file');
+      customToast.error(error.message || 'Failed to upload file');
     } finally {
       setUploading(false);
     }
@@ -297,13 +310,6 @@ export default function AboutContentPage() {
         <div className="mb-8 mt-0">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-4">
-              {/* <button
-                onClick={() => router.push('/admin/dashboard')}
-                className="p-2 hover:bg-slate-100 rounded-xl transition-colors"
-                title="Back to Dashboard"
-              >
-                <ArrowLeft className="w-5 h-5 text-slate-600" />
-              </button> */}
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-slate-800">Who We Are Section</h1>
                 <p className="text-slate-600 mt-1 text-sm sm:text-base">Manage your About page content</p>
@@ -453,74 +459,31 @@ export default function AboutContentPage() {
                 </div>
               </div>
 
-              {/* Stats
-              <div className="bg-white rounded-xl border border-slate-200 p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
-                    <BarChart3 className="w-5 h-5 text-amber-600" />
-                  </div>
-                  <h2 className="text-lg font-bold text-slate-900">Statistics (4 Cards)</h2>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {formData.stats.map((stat, index) => (
-                    <div key={index} className="p-4 bg-gradient-to-br from-slate-50 to-white border-2 border-slate-200 rounded-xl hover:border-blue-300 transition-all">
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
-                          {index + 1}
-                        </div>
-                        <h3 className="font-bold text-slate-900 text-sm">Stat {index + 1}</h3>
-                      </div>
-
-                      <div className="space-y-3">
-                        <input
-                          type="text"
-                          value={stat.value}
-                          onChange={(e) => handleStatChange(index, 'value', e.target.value)}
-                          className="w-full px-3 py-2 bg-white border-2 border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-slate-900"
-                          placeholder="50+"
-                          required
-                        />
-
-                        <input
-                          type="text"
-                          value={stat.label}
-                          onChange={(e) => handleStatChange(index, 'label', e.target.value)}
-                          className="w-full px-3 py-2 bg-white border-2 border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-slate-900"
-                          placeholder="Projects Completed"
-                          required
-                        />
-
-                        <select
-                          value={stat.icon}
-                          onChange={(e) => handleStatChange(index, 'icon', e.target.value)}
-                          className="w-full px-3 py-2 bg-white border-2 border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-slate-900"
-                          required
-                        >
-                          {STAT_ICONS.map(icon => (
-                            <option key={icon.value} value={icon.value}>
-                              {icon.label}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div> */}
-
             </div>
 
             {/* RIGHT COLUMN - Media & Preview */}
             <div className="space-y-6">
               
-              {/* Media Upload */}
+              {/* ✅ UPDATED Media Upload Section with Video Support */}
               <div className="bg-white rounded-xl border border-slate-200 p-6 sticky top-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
-                    <Camera className="w-5 h-5 text-green-600" />
+                    {formData.mediaType === 'video' ? (
+                      <Video className="w-5 h-5 text-green-600" />
+                    ) : (
+                      <Camera className="w-5 h-5 text-green-600" />
+                    )}
                   </div>
                   <h2 className="text-lg font-bold text-slate-900">Featured Media</h2>
+                  {formData.media && (
+                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                      formData.mediaType === 'video' 
+                        ? 'bg-purple-100 text-purple-700' 
+                        : 'bg-blue-100 text-blue-700'
+                    }`}>
+                      {formData.mediaType === 'video' ? 'VIDEO' : 'IMAGE'}
+                    </span>
+                  )}
                 </div>
 
                 {formData.media ? (
@@ -538,6 +501,7 @@ export default function AboutContentPage() {
                             src={formData.media}
                             alt="Featured media"
                             fill
+                            priority
                             className="object-cover"
                           />
                         </div>
@@ -558,7 +522,7 @@ export default function AboutContentPage() {
                         Replace
                         <input
                           type="file"
-                          accept="image/*,video/*"
+                          accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml,video/mp4,video/webm,video/ogg,video/quicktime"
                           onChange={handleFileUpload}
                           className="hidden"
                           disabled={uploading}
@@ -580,14 +544,19 @@ export default function AboutContentPage() {
                       ) : (
                         <>
                           <Upload className="w-12 h-12 text-slate-400 mx-auto mb-3" />
-                          <p className="text-slate-700 font-semibold mb-1">Upload Media</p>
-                          <p className="text-xs text-slate-500">Image or Video (max 50MB)</p>
+                          <p className="text-slate-700 font-semibold mb-1">Upload Image or Video</p>
+                          <p className="text-xs text-slate-500">
+                            Images: JPEG, PNG, GIF, WebP, SVG (max 5MB)
+                          </p>
+                          <p className="text-xs text-slate-500">
+                            Videos: MP4, WebM, OGG, MOV (max 50MB)
+                          </p>
                         </>
                       )}
                     </div>
                     <input
                       type="file"
-                      accept="image/*,video/*"
+                      accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml,video/mp4,video/webm,video/ogg,video/quicktime"
                       onChange={handleFileUpload}
                       className="hidden"
                       disabled={uploading}

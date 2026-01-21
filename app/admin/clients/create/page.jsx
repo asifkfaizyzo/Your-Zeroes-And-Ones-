@@ -14,6 +14,7 @@ export default function CreateClientPage() {
   const [formData, setFormData] = useState({
     name: '',
     position: '',
+    color: '#4285F4', // ✅ Default color
     published: false,
   });
 
@@ -39,19 +40,16 @@ export default function CreateClientPage() {
   const handleLogoUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Validate file size (5MB)
       if (file.size > 5 * 1024 * 1024) {
         toastService.error('File size must be less than 5MB');
         return;
       }
 
-      // Validate file type
       if (!file.type.startsWith('image/')) {
         toastService.error('Please upload a valid image file');
         return;
       }
 
-      // Cleanup previous preview if it exists
       if (logoPreview?.preview) {
         URL.revokeObjectURL(logoPreview.preview);
       }
@@ -77,7 +75,6 @@ export default function CreateClientPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Form validation
     if (!formData.name.trim()) {
       toastService.error('Client name is required');
       return;
@@ -88,10 +85,16 @@ export default function CreateClientPage() {
       return;
     }
 
+    // ✅ Validate color format
+    const colorRegex = /^#[0-9A-Fa-f]{6}$/;
+    if (formData.color && !colorRegex.test(formData.color)) {
+      toastService.error('Please enter a valid hex color code (e.g., #4285F4)');
+      return;
+    }
+
     setIsLoading(true);
 
     const submitPromise = (async () => {
-      // Upload logo first if selected
       let uploadedLogo = null;
       if (logoPreview?.file) {
         const formDataImg = new FormData();
@@ -115,6 +118,7 @@ export default function CreateClientPage() {
       const payload = {
         name: formData.name.trim(),
         logo: uploadedLogo,
+        color: formData.color || null, // ✅ Include color
         position: formData.position ? parseInt(formData.position) : null,
         published: formData.published,
       };
@@ -222,6 +226,84 @@ export default function CreateClientPage() {
                 <p className="text-xs text-slate-500 mt-1">
                   Lower numbers appear first. Leave empty to sort by creation date
                 </p>
+              </div>
+            </div>
+          </div>
+
+          {/* ✅ NEW: Brand Color Input */}
+          <div className="bg-white rounded-xl border border-slate-200 p-6">
+            <h2 className="text-xl font-bold text-slate-800 mb-6">Brand Color</h2>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-3">
+                Brand Color (Hex Code) *
+              </label>
+              <p className="text-xs text-slate-500 mb-4">
+                This color will be used for hover effects and accent elements
+              </p>
+
+              <div className="flex items-center gap-4">
+                {/* Color Picker */}
+                <div className="flex-shrink-0">
+                  <input
+                    type="color"
+                    name="color"
+                    value={formData.color}
+                    onChange={handleInputChange}
+                    className="w-20 h-20 rounded-lg border-2 border-slate-200 cursor-pointer shadow-sm hover:shadow-md transition-shadow"
+                  />
+                </div>
+
+                {/* Hex Input */}
+                <div className="flex-1">
+                  <input
+                    type="text"
+                    name="color"
+                    value={formData.color}
+                    onChange={handleInputChange}
+                    placeholder="#4285F4"
+                    className="w-full px-4 py-3 text-slate-900 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-lg uppercase"
+                    pattern="^#[0-9A-Fa-f]{6}$"
+                    maxLength={7}
+                    required
+                  />
+                  <p className="text-xs text-slate-500 mt-2">
+                    💡 Enter a 6-digit hex color code (e.g., #4285F4, #FF5733)
+                  </p>
+                </div>
+              </div>
+
+              {/* Color Preview */}
+              <div className="mt-6 p-5 rounded-xl border border-slate-200 bg-slate-50">
+                <p className="text-sm font-medium text-slate-700 mb-3">Preview</p>
+                <div className="flex items-center gap-4">
+                  {/* Large Preview Circle */}
+                  <div
+                    className="w-24 h-24 rounded-full shadow-lg transition-all"
+                    style={{ backgroundColor: formData.color }}
+                  />
+                  
+                  {/* Preview with Glow Effect */}
+                  <div className="flex-1 bg-white rounded-lg p-4 relative overflow-hidden">
+                    <div
+                      className="absolute inset-0 opacity-20 blur-2xl"
+                      style={{ backgroundColor: formData.color }}
+                    />
+                    <div className="relative flex items-center gap-3">
+                      <div
+                        className="w-16 h-16 rounded-lg"
+                        style={{ backgroundColor: formData.color }}
+                      />
+                      <div>
+                        <p className="text-sm font-semibold text-slate-700">
+                          Hover Effect Preview
+                        </p>
+                        <p className="text-xs text-slate-500 font-mono mt-1">
+                          {formData.color}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

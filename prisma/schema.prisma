@@ -97,6 +97,7 @@ model Client {
   id        String   @id @default(uuid())
   name      String
   logo      String?        // Uploaded logo image path (via /api/upload)
+  color     String?        // Hex color code for hover effects
   position  Int?           // Manual sort order (optional)
   published Boolean  @default(false)
   createdAt DateTime @default(now())

@@ -16,6 +16,7 @@ export async function GET() {
         id: true,
         name: true,
         logo: true,
+        color: true, // ✅ Added color field
       },
     });
 

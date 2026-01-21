@@ -19,79 +19,55 @@ function getInitials(name = "") {
 
 function GlassmorphicCard({ client, index, fallbackColor }) {
   const [isHovered, setIsHovered] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const initials = getInitials(client.name);
   const clientColor = client.color || fallbackColor;
 
   return (
     <div
-      className={`group relative backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 ${
-        isHovered ? "scale-105 -translate-y-2 bg-white/10 border-white/20" : ""
+      className={`group relative rounded-2xl overflow-hidden cursor-pointer transition-transform duration-500 ${
+        isHovered ? "scale-105" : ""
       }`}
       style={{ 
-        transitionDelay: `${index * 30}ms`,
-        boxShadow: isHovered ? `0 20px 60px -15px ${clientColor}40` : 'none'
+        transitionDelay: `${index * 30}ms`
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Animated border gradient */}
-      <div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"
-        style={{
-          background: `linear-gradient(135deg, ${clientColor}30, transparent, ${clientColor}20)`,
-        }}
-      />
-
-      {/* Corner accent */}
-      <div
-        className="absolute -top-10 -right-10 w-20 h-20 rounded-full blur-2xl opacity-0 group-hover:opacity-60 transition-opacity duration-500"
-        style={{ backgroundColor: clientColor }}
-      />
-
-      <div className="p-6 sm:p-8 flex flex-col items-center relative z-10">
-        {/* Logo Container */}
+      <div className="p-5 sm:p-6 lg:p-7 flex flex-col items-center relative z-10">
+        
+        {/* Logo Container - MEDIUM SIZE */}
         <div
-          className={`w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-xl flex items-center justify-center mb-4 transition-all duration-500 ${
+          className={`w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 flex items-center justify-center mb-3 transition-transform duration-500 ${
             isHovered ? "scale-110" : ""
           }`}
-          style={{
-            backgroundColor: client.logo ? "rgba(255,255,255,0.05)" : `${clientColor}15`,
-            border: `2px solid ${clientColor}30`,
-          }}
         >
-          {client.logo ? (
+          {client.logo && !imageError ? (
             <img
               src={client.logo}
               alt={client.name}
-              className="max-w-[75%] max-h-[75%] object-contain filter brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300"
-              onError={(e) => {
-                e.target.style.display = "none";
-                e.target.nextSibling?.classList.remove("hidden");
-              }}
+              className="max-w-full max-h-full object-contain brightness-0 invert opacity-90"
+              onError={() => setImageError(true)}
             />
-          ) : null}
-          <span
-            className={`text-xl sm:text-2xl lg:text-3xl font-bold ${client.logo ? "hidden" : ""}`}
-            style={{ color: clientColor }}
-          >
-            {initials}
-          </span>
+          ) : (
+            <span
+              className="text-lg sm:text-xl lg:text-2xl font-bold text-white opacity-90"
+            >
+              {initials}
+            </span>
+          )}
         </div>
 
         {/* Client name */}
-        <h3 className="text-sm sm:text-base lg:text-lg font-medium text-white/90 group-hover:text-white transition-colors duration-300 text-center line-clamp-2">
+        <h3 className="text-xs sm:text-sm lg:text-base font-medium text-white/90 text-center line-clamp-2">
           {client.name}
         </h3>
 
-        {/* Glow dot */}
+        {/* Glow dot - static, no hover effect */}
         <div
-          className={`
-            mt-3 transition-all duration-500 ${
-            isHovered ? "scale-150" : "scale-100"
-          }`}
+          className="mt-2"
           style={{
-            backgroundColor: clientColor,
-            boxShadow: isHovered ? `0 0 20px ${clientColor}` : 'none'
+            backgroundColor: clientColor
           }}
         />
       </div>
@@ -102,7 +78,7 @@ function GlassmorphicCard({ client, index, fallbackColor }) {
 export default function ClientsSection() {
   const [clients, setClients] = useState([]);
   const [clientsLoading, setClientsLoading] = useState(true);
-  const [displayCount, setDisplayCount] = useState(10); // Show limited clients initially
+  const [displayCount, setDisplayCount] = useState(10);
 
   useEffect(() => {
     const fetchClients = async () => {
@@ -132,7 +108,7 @@ export default function ClientsSection() {
       id="clients"
     >
       {/* Dark gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#203E7F] to-cyan-600" />
+      <div className="absolute inset-0 bg-[#152137]" />
 
       {/* Animated grid pattern */}
       <div className="absolute inset-0 opacity-20">
@@ -141,11 +117,6 @@ export default function ClientsSection() {
           backgroundSize: '50px 50px'
         }} />
       </div>
-
-      {/* Floating orbs */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-[150px] animate-pulse" />
-      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-cyan-500/20 rounded-full blur-[130px] animate-pulse" style={{ animationDelay: '1s' }} />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[200px]" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
@@ -191,7 +162,7 @@ export default function ClientsSection() {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6 lg:gap-8">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-5 lg:gap-7">
               {displayedClients.map((client, index) => (
                 <GlassmorphicCard
                   key={client.id}

@@ -1,9 +1,10 @@
-// app/components/landingpages/HeroSection.js
 "use client";
 
 import { useState, useEffect } from "react";
 import { Cpu, TrendingUp, Palette } from "lucide-react";
 import Link from "next/link";
+import LiquidEther from "../LiquidEther";
+import CardSwap, { Card } from "../CardSwap";
 
 export default function HeroSection() {
   const [isVisible, setIsVisible] = useState(false);
@@ -17,7 +18,7 @@ export default function HeroSection() {
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     const element = document.getElementById("hero-content");
@@ -28,12 +29,30 @@ export default function HeroSection() {
 
   return (
     <section className="bg-white relative overflow-hidden min-h-[80vh] sm:min-h-[85vh] lg:min-h-[90vh] flex items-center">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#20427f]/5 via-white to-cyan-50" />
+      {/* LiquidEther Background */}
+      <div className="absolute inset-0 w-full h-full">
+        <LiquidEther
+          colors={["#20427f", "#53cbec", "#407def"]}
+          mouseForce={20}
+          cursorSize={100}
+          isViscous={true}
+          viscous={30}
+          resolution={0.5}
+          autoDemo={true}
+          autoSpeed={0.3}
+          autoIntensity={1.5}
+          takeoverDuration={0.25}
+          autoResumeDelay={3000}
+        />
+      </div>
+
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-white/60 to-white/80" />
 
       {/* Floating Shapes */}
-      <div className="absolute top-10 sm:top-20 left-5 sm:left-10 w-48 sm:w-72 lg:w-80 xl:w-96 h-48 sm:h-72 lg:h-80 xl:h-96 bg-[#407def] rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob" />
-      <div className="absolute top-20 sm:top-40 right-5 sm:right-10 w-48 sm:w-72 lg:w-80 xl:w-96 h-48 sm:h-72 lg:h-80 xl:h-96 bg-cyan-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000" />
-      <div className="absolute -bottom-8 left-10 sm:left-20 w-48 sm:w-72 lg:w-80 xl:w-96 h-48 sm:h-72 lg:h-80 xl:h-96 bg-[#53cbec] rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000" />
+      <div className="absolute top-10 sm:top-20 left-5 sm:left-10 w-48 sm:w-72 lg:w-80 xl:w-96 h-48 sm:h-72 lg:h-80 xl:h-96 bg-[#407def] rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-blob" />
+      <div className="absolute top-20 sm:top-40 right-5 sm:right-10 w-48 sm:w-72 lg:w-80 xl:w-96 h-48 sm:h-72 lg:h-80 xl:h-96 bg-cyan-300 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-blob animation-delay-2000" />
+      <div className="absolute -bottom-8 left-10 sm:left-20 w-48 sm:w-72 lg:w-80 xl:w-96 h-48 sm:h-72 lg:h-80 xl:h-96 bg-[#53cbec] rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-blob animation-delay-4000" />
 
       <div className="relative z-10 py-12 sm:py-16 lg:py-10 w-full">
         <div
@@ -123,60 +142,103 @@ export default function HeroSection() {
               </div>
             </div>
 
-            {/* Hero Cards */}
+            {/* Hero Cards - Mobile: Simple Stack */}
             <div className="relative w-full mt-8 lg:mt-0">
-              {/* Mobile/Tablet: Horizontal scroll */}
-              <div className="flex flex-row gap-4 overflow-x-auto pb-4 snap-x snap-mandatory lg:hidden px-2">
-                <HeroCard
+              {/* Mobile/Tablet: Simple vertical stack */}
+              <div className="flex flex-col gap-4 lg:hidden px-2">
+                <HeroCardMobile
                   title="Technology"
-                  icon={<Cpu className="w-12 sm:w-14 h-12 sm:h-14 mx-auto mt-3" strokeWidth={1.5} />}
+                  icon={<Cpu className="w-12 h-12" strokeWidth={1.5} />}
                   gradient="from-[#20427f] to-cyan-600"
-                  rotation="rotate-3 hover:rotate-6"
+                  description="Custom software, web & mobile apps"
                 />
-                <HeroCard
+                <HeroCardMobile
                   title="Digital Marketing"
-                  icon={<TrendingUp className="w-12 sm:w-14 h-12 sm:h-14 mx-auto mt-3" strokeWidth={1.5} />}
+                  icon={<TrendingUp className="w-12 h-12" strokeWidth={1.5} />}
                   gradient="from-purple-500 to-pink-500"
-                  rotation="-rotate-3 hover:-rotate-6"
+                  description="SEO, social media & growth strategies"
                 />
-                <HeroCard
-                  title="Branding & Designing"
-                  icon={<Palette className="w-12 sm:w-14 h-12 sm:h-14 mx-auto mt-3" strokeWidth={1.5} />}
-                  gradient="from-green-500 to-emerald-500"
-                  rotation="rotate-2 hover:scale-105"
+                <HeroCardMobile
+                  title="Branding & Design"
+                  icon={<Palette className="w-12 h-12" strokeWidth={1.5} />}
+                  gradient="from-emerald-500 to-teal-500"
+                  description="Logo, identity & creative solutions"
                 />
               </div>
 
-              {/* Desktop: Absolute positioned layout */}
-              <div className="hidden lg:block relative w-full h-[400px] lg:h-[450px] xl:h-[500px] 2xl:h-[600px]">
-                <div className="absolute top-0 right-0">
-                  <HeroCard
-                    title="Technology"
-                    icon={<Cpu className="w-14 lg:w-16 xl:w-20 2xl:w-24 h-14 lg:h-16 xl:h-20 2xl:h-24 mx-auto mt-3 lg:mt-4" strokeWidth={1.5} />}
-                    gradient="from-[#20427f] to-cyan-600"
-                    rotation="rotate-6 hover:rotate-12"
-                    size="w-48 lg:w-52 xl:w-60 2xl:w-64 h-60 lg:h-64 xl:h-72 2xl:h-80"
-                  />
-                </div>
+              {/* Desktop: CardSwap Animation */}
+              <div className="hidden lg:block relative w-full h-[450px] xl:h-[500px] 2xl:h-[600px] ">
+                <div className="absolute top-5/6 left-5/6 -translate-x-1/4 -translate-y-1/4">
+                  <CardSwap
+                    width={280}
+                    height={340}
+                    cardDistance={50}
+                    verticalDistance={80}
+                    delay={4000}
+                    pauseOnHover={true}
+                    skewAmount={4}
+                    easing="elastic"
+                  >
+                    <Card className="bg-gradient-to-br from-[#20427f] to-cyan-600">
+                      <div className="w-full h-full flex flex-col items-center justify-center text-white p-8">
+                        <div className="bg-white/20 p-4 rounded-2xl mb-6 backdrop-blur-sm">
+                          <Cpu className="w-16 h-16" strokeWidth={1.5} />
+                        </div>
+                        <h3 className="text-2xl font-bold mb-3 text-center">
+                          Technology
+                        </h3>
+                        <p className="text-white/90 text-center text-sm leading-relaxed">
+                          Custom software development, web applications, and
+                          mobile solutions
+                        </p>
+                        <div className="mt-6 flex gap-2">
+                          <div className="w-2 h-2 bg-white/60 rounded-full"></div>
+                          <div className="w-2 h-2 bg-white rounded-full"></div>
+                          <div className="w-2 h-2 bg-white/60 rounded-full"></div>
+                        </div>
+                      </div>
+                    </Card>
 
-                <div className="absolute top-10 left-0">
-                  <HeroCard
-                    title="Digital Marketing"
-                    icon={<TrendingUp className="w-14 lg:w-16 xl:w-20 2xl:w-24 h-14 lg:h-16 xl:h-20 2xl:h-24 mx-auto mt-3 lg:mt-4" strokeWidth={1.5} />}
-                    gradient="from-purple-500 to-pink-500"
-                    rotation="-rotate-6 hover:-rotate-12"
-                    size="w-48 lg:w-52 xl:w-60 2xl:w-64 h-60 lg:h-64 xl:h-72 2xl:h-80"
-                  />
-                </div>
+                    <Card className="bg-gradient-to-br from-purple-500 to-pink-500">
+                      <div className="w-full h-full flex flex-col items-center justify-center text-white p-8">
+                        <div className="bg-white/20 p-4 rounded-2xl mb-6 backdrop-blur-sm">
+                          <TrendingUp className="w-16 h-16" strokeWidth={1.5} />
+                        </div>
+                        <h3 className="text-2xl font-bold mb-3 text-center">
+                          Digital Marketing
+                        </h3>
+                        <p className="text-white/90 text-center text-sm leading-relaxed">
+                          SEO optimization, social media management, and
+                          data-driven growth
+                        </p>
+                        <div className="mt-6 flex gap-2">
+                          <div className="w-2 h-2 bg-white/60 rounded-full"></div>
+                          <div className="w-2 h-2 bg-white rounded-full"></div>
+                          <div className="w-2 h-2 bg-white/60 rounded-full"></div>
+                        </div>
+                      </div>
+                    </Card>
 
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
-                  <HeroCard
-                    title="Branding & Designing"
-                    icon={<Palette className="w-14 lg:w-16 xl:w-20 2xl:w-24 h-14 lg:h-16 xl:h-20 2xl:h-24 mx-auto mt-3 lg:mt-4" strokeWidth={1.5} />}
-                    gradient="from-green-500 to-emerald-500"
-                    rotation="hover:scale-110"
-                    size="w-48 lg:w-52 xl:w-60 2xl:w-64 h-60 lg:h-64 xl:h-72 2xl:h-80"
-                  />
+                    <Card className="bg-gradient-to-br from-emerald-500 to-teal-500">
+                      <div className="w-full h-full flex flex-col items-center justify-center text-white p-8">
+                        <div className="bg-white/20 p-4 rounded-2xl mb-6 backdrop-blur-sm">
+                          <Palette className="w-16 h-16" strokeWidth={1.5} />
+                        </div>
+                        <h3 className="text-2xl font-bold mb-3 text-center">
+                          Branding & Design
+                        </h3>
+                        <p className="text-white/90 text-center text-sm leading-relaxed">
+                          Brand identity, logo design, and creative visual
+                          solutions
+                        </p>
+                        <div className="mt-6 flex gap-2">
+                          <div className="w-2 h-2 bg-white/60 rounded-full"></div>
+                          <div className="w-2 h-2 bg-white rounded-full"></div>
+                          <div className="w-2 h-2 bg-white/60 rounded-full"></div>
+                        </div>
+                      </div>
+                    </Card>
+                  </CardSwap>
                 </div>
               </div>
             </div>
@@ -187,16 +249,20 @@ export default function HeroSection() {
   );
 }
 
-function HeroCard({ title, icon, gradient, rotation, size = "w-40 sm:w-48 h-52 sm:h-60" }) {
+// Mobile Card Component
+function HeroCardMobile({ title, icon, gradient, description }) {
   return (
     <div
-      className={`flex-shrink-0 ${size} bg-gradient-to-br ${gradient} rounded-2xl shadow-xl transform ${rotation} transition-transform duration-500 flex items-center justify-center snap-center`}
+      className={`w-full bg-gradient-to-br ${gradient} rounded-2xl shadow-xl p-6 backdrop-blur-sm transform hover:scale-105 transition-all duration-300`}
     >
-      <div className="text-white text-center p-4 lg:p-6 xl:p-8">
-        <h3 className="text-sm sm:text-base lg:base xl:text-1xl 2xl:text-2xl font-bold">
-          {title}
-        </h3>
-        {icon}
+      <div className="flex items-center gap-4">
+        <div className="bg-white/20 p-3 rounded-xl backdrop-blur-sm flex-shrink-0">
+          {icon}
+        </div>
+        <div className="text-white flex-1">
+          <h3 className="text-lg font-bold mb-1">{title}</h3>
+          <p className="text-white/90 text-sm">{description}</p>
+        </div>
       </div>
     </div>
   );

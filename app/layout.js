@@ -2,10 +2,13 @@
 import { Suspense } from "react";
 import "./globals.css";
 import { Inter } from "next/font/google";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import ConsoleBranding from "@/components/ConsoleBranding";
 import PageLoader from "@/components/PageLoader";
 import { ToastContainer } from "react-toastify";
 import ReCaptchaProvider from "../components/ReCaptchaProvider";
+
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
@@ -23,7 +26,11 @@ export default function RootLayout({ children }) {
         <ConsoleBranding />
         <Suspense fallback={null}>
           <PageLoader>
-            <ReCaptchaProvider>{children}</ReCaptchaProvider>
+            <ReCaptchaProvider>
+              <Header />
+              <main className="min-h-screen">{children}</main>
+              <Footer />
+            </ReCaptchaProvider>
             <ToastContainer />
           </PageLoader>
         </Suspense>

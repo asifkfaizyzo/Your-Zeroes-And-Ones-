@@ -1,8 +1,6 @@
 // app/page.js
 "use client";
 
-import Header from "../components/Header";
-import Footer from "../components/Footer";
 import {
   HeroSection,
   StatsSection,
@@ -16,17 +14,17 @@ import {
 export default function Home() {
   return (
     <>
-      <Header />
-      <main className="min-h-screen bg-white overflow-hidden">
-        <HeroSection />
-        <StatsSection />
-        <ServicesSection />
-        <ClientsSection />
-        <ProcessSection />
-        <TestimonialsSection />
-        <CTASection />
-      </main>
-      <Footer />
+      
+      <div className="bg-white overflow-hidden">
+      <HeroSection />
+      <StatsSection />
+      <ServicesSection />
+      <ClientsSection />
+      <ProcessSection />
+      <TestimonialsSection />
+      <CTASection />
+    </div>
+      
 
       <style jsx global>{`
         @keyframes scale-in {

@@ -133,6 +133,9 @@ export default function TestimonialsPage() {
     });
   };
 
+  // Calculate video testimonials count
+  const videoTestimonialsCount = testimonials.filter(t => t.videoUrl).length;
+
   const stats = [
     {
       label: 'Total Testimonials',
@@ -167,7 +170,24 @@ export default function TestimonialsPage() {
       color: 'amber',
       bgGradient: 'from-amber-500 to-amber-600',
     },
+    {
+      label: 'Video Testimonials',
+      value: videoTestimonialsCount,
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
+      color: 'purple',
+      bgGradient: 'from-purple-500 to-purple-600',
+    },
   ];
+
+  // Helper function to check if testimonial has video
+  const isVideoTestimonial = (testimonial) => {
+    return testimonial.videoUrl && testimonial.videoUrl.trim() !== '';
+  };
 
   return (
     <AdminLayoutNew>
@@ -193,7 +213,7 @@ export default function TestimonialsPage() {
 
         {/* Stats Cards */}
         {!loading && testimonials.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             {stats.map((stat) => (
               <div
                 key={stat.label}
@@ -412,13 +432,27 @@ export default function TestimonialsPage() {
                     <tr key={testimonial.id} className="hover:bg-slate-50/50 transition-colors group">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-4">
-                          {/* Thumbnail */}
-                          <div className="w-12 h-12 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0 hidden sm:block">
-                            {testimonial.image ? (
+                          {/* Thumbnail with Video Badge */}
+                          <div className="w-12 h-12 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0 hidden sm:block relative">
+                            {/* Display thumbnail if video exists, otherwise profile image */}
+                            {isVideoTestimonial(testimonial) && testimonial.thumbnailUrl ? (
+                              <img src={testimonial.thumbnailUrl} alt={testimonial.name} className="w-full h-full object-cover" />
+                            ) : testimonial.image ? (
                               <img src={testimonial.image} alt={testimonial.name} className="w-full h-full object-cover" />
                             ) : (
                               <div className="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">
                                 {testimonial.name.charAt(0)}
+                              </div>
+                            )}
+                            
+                            {/* Video Badge Overlay */}
+                            {isVideoTestimonial(testimonial) && (
+                              <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                                <div className="w-6 h-6 rounded-full bg-white/90 flex items-center justify-center">
+                                  <svg className="w-3 h-3 text-purple-600" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z" />
+                                  </svg>
+                                </div>
                               </div>
                             )}
                           </div>
@@ -431,6 +465,15 @@ export default function TestimonialsPage() {
                                 <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                 </svg>
+                              )}
+                              {isVideoTestimonial(testimonial) && (
+                                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded text-xs font-medium flex-shrink-0">
+                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                  </svg>
+                                  Video
+                                </span>
                               )}
                             </div>
                             <p className="text-sm text-slate-500 truncate max-w-[200px] sm:max-w-[300px]">{testimonial.role}</p>
@@ -597,13 +640,28 @@ export default function TestimonialsPage() {
                 <div key={testimonial.id} className="group bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-xl hover:border-slate-300 transition-all duration-300">
                   {/* Card Image */}
                   <div className="relative h-36 overflow-hidden bg-slate-100">
-                    {testimonial.image ? (
+                    {/* Display thumbnail if video exists, otherwise profile image */}
+                    {isVideoTestimonial(testimonial) && testimonial.thumbnailUrl ? (
+                      <img src={testimonial.thumbnailUrl} alt={testimonial.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    ) : testimonial.image ? (
                       <img src={testimonial.image} alt={testimonial.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
                         <span className="text-4xl font-bold text-white/30">{testimonial.name.charAt(0)}</span>
                       </div>
                     )}
+
+                    {/* Video Play Button Overlay */}
+                    {isVideoTestimonial(testimonial) && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
+                        <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
+                          <svg className="w-6 h-6 text-purple-600 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        </div>
+                      </div>
+                    )}
+
                     {/* Status Badge */}
                     <div className="absolute top-3 right-3">
                       <span
@@ -616,14 +674,24 @@ export default function TestimonialsPage() {
                         {testimonial.published ? 'Published' : 'Draft'}
                       </span>
                     </div>
-                    {/* Verified Badge */}
-                    {testimonial.verified && (
-                      <div className="absolute top-3 left-3">
+                    
+                    {/* Verified & Video Badges */}
+                    <div className="absolute top-3 left-3 flex gap-1">
+                      {testimonial.verified && (
                         <span className="inline-flex items-center px-2 py-0.5 bg-green-500/90 text-white rounded-full text-xs font-medium backdrop-blur-sm">
                           ✓ Verified
                         </span>
-                      </div>
-                    )}
+                      )}
+                      {isVideoTestimonial(testimonial) && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-500/90 text-white rounded-full text-xs font-medium backdrop-blur-sm">
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                          </svg>
+                          Video
+                        </span>
+                      )}
+                    </div>
+
                     {/* Quick Actions Overlay */}
                     <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                       <Link
@@ -647,13 +715,18 @@ export default function TestimonialsPage() {
                       </button>
                     </div>
                   </div>
+                  
                   {/* Card Content */}
                   <div className="p-4">
                     <h3 className="font-semibold text-slate-800 line-clamp-1 mb-1 group-hover:text-blue-600 transition-colors">
                       {testimonial.name}
                     </h3>
                     <p className="text-sm text-slate-500 line-clamp-1 mb-2">{testimonial.role}</p>
-                    <p className="text-xs text-slate-600 line-clamp-2 mb-3">{testimonial.message}</p>
+                    <p className="text-xs text-slate-600 line-clamp-2 mb-3">
+                      {isVideoTestimonial(testimonial) && testimonial.quoteExcerpt 
+                        ? testimonial.quoteExcerpt 
+                        : testimonial.message}
+                    </p>
                     <div className="flex items-center justify-between text-xs text-slate-500">
                       <div className="flex items-center gap-1">
                         {[...Array(5)].map((_, i) => (
@@ -731,17 +804,28 @@ export default function TestimonialsPage() {
             {/* Content */}
             <h3 className="text-xl font-bold text-slate-800 text-center mb-2">Delete this testimonial?</h3>
             <p className="text-slate-500 text-center mb-6 text-sm">
-              This will permanently remove the testimonial. This action cannot be undone.
+              This will permanently remove the testimonial{isVideoTestimonial(testimonials.find(t => t.id === deleteConfirm)) ? ', including video and thumbnail files' : ''}. This action cannot be undone.
             </p>
             
             {/* Testimonial preview */}
             <div className="bg-slate-50 rounded-xl p-4 mb-6 border border-slate-200">
-              <p className="font-medium text-slate-800 text-sm line-clamp-1">
-                {testimonials.find(t => t.id === deleteConfirm)?.name}
-              </p>
-              <p className="text-xs text-slate-500 mt-1">
-                {testimonials.find(t => t.id === deleteConfirm)?.role}
-              </p>
+              <div className="flex items-center gap-3">
+                {isVideoTestimonial(testimonials.find(t => t.id === deleteConfirm)) && (
+                  <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
+                    <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                    </svg>
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-slate-800 text-sm line-clamp-1">
+                    {testimonials.find(t => t.id === deleteConfirm)?.name}
+                  </p>
+                  <p className="text-xs text-slate-500 mt-1">
+                    {testimonials.find(t => t.id === deleteConfirm)?.role}
+                  </p>
+                </div>
+              </div>
             </div>
             
             {/* Actions */}

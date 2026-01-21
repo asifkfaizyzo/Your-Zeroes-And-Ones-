@@ -95,7 +95,7 @@ export default function ContactForm() {
       label: 'Full Name',
       type: 'text',
       required: true,
-      placeholder: 'John Doe',
+      placeholder: 'Type Your Name',
       icon: (
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -108,7 +108,7 @@ export default function ContactForm() {
       label: 'Email Address',
       type: 'email',
       required: true,
-      placeholder: 'john@example.com',
+      placeholder: 'Type Your Email',
       icon: (
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -203,7 +203,7 @@ export default function ContactForm() {
                   onChange={handleChange}
                   disabled={isSubmitting}
                   className="w-full pl-10 text-slate-900 pr-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:border-[#203E7F] focus:ring-2 focus:ring-[#203E7F]/20 bg-gray-50 focus:bg-white transition-all outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-                  placeholder="+91 98765 43210"
+                  placeholder="Type Your Phone Number"
                 />
               </div>
             </div>

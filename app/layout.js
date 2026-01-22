@@ -8,7 +8,7 @@ import ConsoleBranding from "@/components/ConsoleBranding";
 import PageLoader from "@/components/PageLoader";
 import { ToastContainer } from "react-toastify";
 import ReCaptchaProvider from "../components/ReCaptchaProvider";
-
+import NewNavbar from "@/components/landing/NewNavbar";
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
@@ -27,7 +27,8 @@ export default function RootLayout({ children }) {
         <Suspense fallback={null}>
           <PageLoader>
             <ReCaptchaProvider>
-              <Header />
+              <NewNavbar />
+              {/* <Header /> */}
               <main className="min-h-screen">{children}</main>
               <Footer />
             </ReCaptchaProvider>

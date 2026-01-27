@@ -50,11 +50,26 @@ const socialLinks = [
   }
 ]
 
-export default function Footer() {
+export default function Footer({ isDark = false }) {
   const currentYear = new Date().getFullYear()
   
+  // Theme classes based on isDark prop
+  const theme = {
+    bg: isDark ? 'bg-gradient-to-br from-[#060812] via-[#141620] to-[#060812]' : 'bg-gray-100',
+    text: isDark ? 'text-white' : 'text-black',
+    textMuted: isDark ? 'text-blue-200/70' : 'text-gray-600',
+    textHover: isDark ? 'hover:text-white' : 'hover:text-[#20427f]',
+    socialBg: isDark ? 'bg-white/10' : 'bg-white',
+    socialHover: isDark ? 'hover:bg-white/20' : 'hover:bg-[#20427f] hover:text-white',
+    socialText: isDark ? 'text-blue-200/80' : 'text-gray-600',
+    iconBg: isDark ? 'bg-white/10' : 'bg-[#20427f]/10',
+    iconColor: isDark ? 'text-blue-200' : 'text-[#20427f]',
+    border: isDark ? 'border-white/10' : 'border-gray-200',
+    divider: isDark ? 'border-white/10' : 'border-gray-300',
+  }
+  
   return (
-    <footer className="bg-gray-100 text-black py-8 ">
+    <footer className={`${theme.bg} ${theme.text} py-8`}>
       <div 
         className="max-w-[1800px] mx-auto"
         style={{
@@ -68,7 +83,7 @@ export default function Footer() {
             <div className="mb-4">
               <div className="w-10 sm:w-14 md:w-16">
                 <Image 
-                  src="/logo.svg" 
+                  src={isDark ? "/logo-white.svg" : "/logo.svg"}
                   alt="YourZerosAndOnes" 
                   width={50} 
                   height={11}
@@ -76,7 +91,7 @@ export default function Footer() {
                 />
               </div>
             </div>
-            <p className="text-gray-600 text-sm sm:text-base mb-4">
+            <p className={`${theme.textMuted} text-sm sm:text-base mb-4`}>
               We complete your zeros and ones
             </p>
             <div className="flex space-x-2 sm:space-x-3">
@@ -86,7 +101,7 @@ export default function Footer() {
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-white hover:bg-[#20427f] hover:text-white text-gray-600 p-2 rounded-lg transition-all duration-300"
+                  className={`${theme.socialBg} ${theme.socialHover} ${theme.socialText} p-2 rounded-lg transition-all duration-300`}
                   aria-label={`Follow us on ${social.name}`}
                 >
                   {social.icon}
@@ -99,10 +114,10 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-4 text-base sm:text-lg">Quick Links</h4>
             <div className="space-y-2">
-              <Link href="/services" className="block text-gray-600 hover:text-[#20427f] text-sm sm:text-base">Services</Link>
-              <Link href="/portfolio" className="block text-gray-600 hover:text-[#20427f] text-sm sm:text-base">Portfolio</Link>
-              <Link href="/about" className="block text-gray-600 hover:text-[#20427f] text-sm sm:text-base">About</Link>
-              <Link href="/contact" className="block text-gray-600 hover:text-[#20427f] text-sm sm:text-base">Contact</Link>
+              <Link href="/services" className={`block ${theme.textMuted} ${theme.textHover} text-sm sm:text-base transition-colors`}>Services</Link>
+              <Link href="/portfolio" className={`block ${theme.textMuted} ${theme.textHover} text-sm sm:text-base transition-colors`}>Portfolio</Link>
+              <Link href="/about" className={`block ${theme.textMuted} ${theme.textHover} text-sm sm:text-base transition-colors`}>About</Link>
+              <Link href="/contact" className={`block ${theme.textMuted} ${theme.textHover} text-sm sm:text-base transition-colors`}>Contact</Link>
             </div>
           </div>
 
@@ -110,29 +125,29 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-4 text-base sm:text-lg">Services</h4>
             <div className="space-y-2">
-              <Link href="/services/branding-design" className="block text-gray-600 hover:text-[#20427f] text-sm sm:text-base">
+              <Link href="/services/branding-design" className={`block ${theme.textMuted} ${theme.textHover} text-sm sm:text-base transition-colors`}>
                 Branding and Design
               </Link>
-              <Link href="/services/digital-marketing" className="block text-gray-600 hover:text-[#20427f] text-sm sm:text-base">
+              <Link href="/services/digital-marketing" className={`block ${theme.textMuted} ${theme.textHover} text-sm sm:text-base transition-colors`}>
                 Digital Marketing
               </Link>
-              <Link href="/services/technology" className="block text-gray-600 hover:text-[#20427f] text-sm sm:text-base">
+              <Link href="/services/technology" className={`block ${theme.textMuted} ${theme.textHover} text-sm sm:text-base transition-colors`}>
                 Technology
               </Link>
             </div>
             
             {/* Horizontal Divider */}
-            <hr className="my-4 border-gray-300" />
+            <hr className={`my-4 ${theme.divider}`} />
             
             {/* Testimonials & Privacy Policy */}
             <div className="space-y-2">
-              <Link href="/testimonials" className="block text-gray-600 hover:text-[#20427f] text-sm sm:text-base">
+              <Link href="/testimonials" className={`block ${theme.textMuted} ${theme.textHover} text-sm sm:text-base transition-colors`}>
                 Testimonials
               </Link>
-              <Link href="/privacy-policy" className="block text-gray-600 hover:text-[#20427f] text-sm sm:text-base">
+              <Link href="/privacy-policy" className={`block ${theme.textMuted} ${theme.textHover} text-sm sm:text-base transition-colors`}>
                 Privacy & Policy
               </Link>
-              <Link href="/sitemap" className="block text-gray-600 hover:text-[#20427f] text-sm sm:text-base">
+              <Link href="/sitemap" className={`block ${theme.textMuted} ${theme.textHover} text-sm sm:text-base transition-colors`}>
                 Sitemap
               </Link>
             </div>
@@ -143,34 +158,34 @@ export default function Footer() {
             <h4 className="font-semibold mb-4 text-base sm:text-lg">Contact Info</h4>
             <div className="space-y-4">
               <div className="flex items-start">
-                <div className="bg-[#20427f]/10 p-2 rounded-lg mr-3 flex-shrink-0">
-                  <svg className="w-4 h-4 text-[#20427f]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className={`${theme.iconBg} p-2 rounded-lg mr-3 flex-shrink-0`}>
+                  <svg className={`w-4 h-4 ${theme.iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                 </div>
                 <div>
-                  <p className="text-gray-600 text-sm">info@yourzerosandones.com</p>
+                  <p className={`${theme.textMuted} text-sm`}>info@yourzerosandones.com</p>
                 </div>
               </div>
               <div className="flex items-start">
-                <div className="bg-[#20427f]/10 p-2 rounded-lg mr-3 flex-shrink-0">
-                  <svg className="w-4 h-4 text-[#20427f]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className={`${theme.iconBg} p-2 rounded-lg mr-3 flex-shrink-0`}>
+                  <svg className={`w-4 h-4 ${theme.iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
                 </div>
                 <div>
-                  <p className="text-gray-600 text-sm">+91 96053 05453</p>
+                  <p className={`${theme.textMuted} text-sm`}>+91 96053 05453</p>
                 </div>
               </div>
               <div className="flex items-start">
-                <div className="bg-[#20427f]/10 p-2 rounded-lg mr-3 flex-shrink-0">
-                  <svg className="w-4 h-4 text-[#20427f]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className={`${theme.iconBg} p-2 rounded-lg mr-3 flex-shrink-0`}>
+                  <svg className={`w-4 h-4 ${theme.iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                 </div>
                 <div>
-                  <p className="text-gray-600 text-sm">
+                  <p className={`${theme.textMuted} text-sm`}>
                     1st floor, Valentine Estate,<br />
                     Palachuvadu, Kakkanad,<br />
                     Kochi - Kerala 682030
@@ -182,7 +197,7 @@ export default function Footer() {
         </div>
 
         {/* Copyright */}
-        <div className="border-t border-gray-200 mt-8 pt-8 text-center text-gray-600">
+        <div className={`border-t ${theme.border} mt-8 pt-8 text-center ${theme.textMuted}`}>
           <p className="text-sm sm:text-base">&copy; {currentYear} YourZerosAndOnes. All rights reserved.</p>
         </div>
       </div>

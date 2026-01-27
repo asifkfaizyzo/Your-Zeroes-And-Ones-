@@ -3,10 +3,11 @@ import Link from "next/link";
 
 export default function CTASection() {
   return (
-    <section className="py-12 sm:py-16 lg:py-20 2xl:py-24 bg-gradient-to-r from-[#203E7F] to-cyan-600 relative overflow-hidden">
+    <section className="py-12 sm:py-16 lg:py-20 2xl:py-24 bg-gradient-to-br from-[#0a1628] via-[#0f1d32] to-[#0a1628] relative overflow-hidden">
+      {/* Background Effects */}
       <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-0 left-0 w-48 sm:w-72 lg:w-96 h-48 sm:h-72 lg:h-96 bg-white rounded-full filter blur-3xl animate-pulse" />
-        <div className="absolute bottom-0 right-0 w-48 sm:w-72 lg:w-96 h-48 sm:h-72 lg:h-96 bg-white rounded-full filter blur-3xl animate-pulse animation-delay-2000" />
+        <div className="absolute top-0 left-0 w-48 sm:w-72 lg:w-96 h-48 sm:h-72 lg:h-96 bg-[#203E7F] rounded-full filter blur-3xl animate-pulse" />
+        <div className="absolute bottom-0 right-0 w-48 sm:w-72 lg:w-96 h-48 sm:h-72 lg:h-96 bg-[#203E7F] rounded-full filter blur-3xl animate-pulse animation-delay-2000" />
       </div>
 
       <div
@@ -19,7 +20,7 @@ export default function CTASection() {
         <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl 2xl:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight">
           Ready to Transform Your Business?
         </h2>
-        <p className="text-base sm:text-lg md:text-xl lg:text-2xl 2xl:text-3xl text-blue-100 mb-6 sm:mb-8 lg:mb-10 max-w-2xl 2xl:max-w-3xl mx-auto leading-relaxed">
+        <p className="text-base sm:text-lg md:text-xl lg:text-2xl 2xl:text-3xl text-blue-200/70 mb-6 sm:mb-8 lg:mb-10 max-w-2xl 2xl:max-w-3xl mx-auto leading-relaxed">
           Let's discuss how our comprehensive services can help you achieve
           your digital goals and drive real results.
         </p>
@@ -27,7 +28,7 @@ export default function CTASection() {
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-6 sm:mb-8">
           <Link
             href="/contact"
-            className="group bg-white text-[#20427f] px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 rounded-xl hover:bg-gray-100 transition-all duration-300 font-bold text-sm sm:text-base lg:text-lg shadow-2xl hover:scale-105 inline-flex items-center justify-center"
+            className="group bg-white text-[#0f1d32] px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 rounded-xl hover:bg-blue-50 transition-all duration-300 font-bold text-sm sm:text-base lg:text-lg shadow-2xl hover:scale-105 inline-flex items-center justify-center"
           >
             Get Free Consultation
             <svg
@@ -46,7 +47,7 @@ export default function CTASection() {
           </Link>
           <Link
             href="/portfolio"
-            className="group border-2 border-white text-white px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 rounded-xl hover:bg-white hover:text-[#20427f] transition-all duration-300 font-bold text-sm sm:text-base lg:text-lg hover:scale-105 inline-flex items-center justify-center"
+            className="group border-2 border-white/30 text-white px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 rounded-xl hover:bg-white/10 hover:border-white/50 transition-all duration-300 font-bold text-sm sm:text-base lg:text-lg hover:scale-105 inline-flex items-center justify-center"
           >
             View Our Work
             <svg
@@ -65,8 +66,8 @@ export default function CTASection() {
           </Link>
         </div>
 
-        <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4 sm:gap-6 lg:gap-8 pt-6 sm:pt-8 border-t border-white/20">
-          <div className="text-white/90 flex items-center justify-center gap-2">
+        <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4 sm:gap-6 lg:gap-8 pt-6 sm:pt-8 border-t border-white/10">
+          <div className="text-blue-200/80 flex items-center justify-center gap-2">
             <svg
               className="w-5 h-5 sm:w-6 sm:h-6"
               fill="currentColor"
@@ -82,7 +83,7 @@ export default function CTASection() {
               Secure & Confidential
             </span>
           </div>
-          <div className="text-white/90 flex items-center justify-center gap-2">
+          <div className="text-blue-200/80 flex items-center justify-center gap-2">
             <svg
               className="w-5 h-5 sm:w-6 sm:h-6"
               fill="currentColor"

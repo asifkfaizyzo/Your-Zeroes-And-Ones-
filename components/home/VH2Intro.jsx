@@ -35,17 +35,14 @@ export default function VH2Intro() {
 
         {/* Main heading - Now uses ScrollReveal */}
         <div className="mb-8">
-          <ScrollReveal
-            baseOpacity={0.0}
-            enableBlur={true}
-            baseRotation={0.1}
-            blurStrength={1}
-            rotationEnd="center center"
-            wordAnimationEnd="center center"
-            textClassName="text-3xl md:text-5xl lg:text-6xl font-bold text-white leading-tight"
-          >
-            We craft digital experiences that drive results
-          </ScrollReveal>
+          <BlurText
+            text="We craft digital experiences that drive results"
+            delay={40}
+            animateBy="words"
+            direction="top"
+            align="center"
+            className="text-3xl md:text-5xl lg:text-6xl font-bold text-white leading-tight"
+          />
         </div>
 
         {/* Description - Now uses BlurText */}

@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import BlurText from "@/components/effects/BlurText/BlurText";
-import ScrollReveal from "@/components/effects/ScrollReveal/ScrollReveal";
 import LightRays from "@/components/effects/LightRays/LightRays";
 
 function getInitials(name = "") {
@@ -13,10 +12,6 @@ function getInitials(name = "") {
   const parts = name.trim().split(" ").filter(Boolean).slice(0, 2);
   return parts.map((p) => p.charAt(0).toUpperCase()).join("");
 }
-
-// Inside components/home/ClientsSection.jsx
-
-import GlareHover from "@/components/effects/GlareHover/GlareHover";
 
 function LogoItem({ client, index }) {
   const [imageError, setImageError] = useState(false);
@@ -33,25 +28,23 @@ function LogoItem({ client, index }) {
       onMouseLeave={() => setIsHovered(false)}
       className="flex items-center justify-center cursor-pointer"
     >
-      
-        <motion.div
-          animate={{ scale: isHovered ? 1.15 : 1 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
-        >
-          {client.logo && !imageError ? (
-            <img
-              src={client.logo}
-              alt={client.name}
-              className="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 object-contain brightness-0 invert"
-              onError={() => setImageError(true)}
-            />
-          ) : (
-            <span className="text-lg sm:text-xl lg:text-2xl font-bold text-white">
-              {initials}
-            </span>
-          )}
-        </motion.div>
-      
+      <motion.div
+        animate={{ scale: isHovered ? 1.15 : 1 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+      >
+        {client.logo && !imageError ? (
+          <img
+            src={client.logo}
+            alt={client.name}
+            className="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 object-contain brightness-0 invert"
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          <span className="text-lg sm:text-xl lg:text-2xl font-bold text-white">
+            {initials}
+          </span>
+        )}
+      </motion.div>
     </motion.div>
   );
 }
@@ -84,12 +77,9 @@ export default function ClientsSection() {
 
   return (
     <section className="relative overflow-hidden bg-[#060812]">
-      {/* Curved top edge - connects from Technology section */}
       <div className="absolute top-0 left-0 right-0 h-16 bg-[#060812]" />
 
-      {/* Main content */}
       <div className="relative min-h-screen flex items-center justify-center">
-        {/* Background - LightRays */}
         <div className="absolute inset-0 z-0">
           <LightRays
             raysOrigin="top-center"
@@ -98,7 +88,7 @@ export default function ClientsSection() {
             lightSpread={0.5}
             rayLength={2}
             followMouse={true}
-            mouseInfluence={0.06}
+            mouseInfluence={0.02}
             noiseAmount={0}
             distortion={0}
             pulsating={false}
@@ -107,67 +97,57 @@ export default function ClientsSection() {
           />
         </div>
 
-        {/* Overlay */}
         <div className="absolute inset-0 bg-[#060812]/50 z-[1]" />
 
-        {/* Decorative side lines */}
         <div className="absolute left-8 top-1/4 bottom-1/4 w-px bg-gradient-to-b from-transparent via-[#5b8def]/15 to-transparent hidden lg:block z-[2]" />
         <div className="absolute right-8 top-1/4 bottom-1/4 w-px bg-gradient-to-b from-transparent via-[#5b8def]/15 to-transparent hidden lg:block z-[2]" />
 
         <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          {/* Header */}
-<div className="text-center mb-10 lg:mb-16">
-  <motion.div
-    initial={{ opacity: 0, y: 10 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    className="mb-4"
-  >
-    <span className="text-[#5b8def] text-sm font-semibold uppercase tracking-[0.2em]">
-      Our Clients
-    </span>
-  </motion.div>
+          <div className="text-center mb-10 lg:mb-16">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mb-4"
+            >
+              <span className="text-[#5b8def] text-sm font-semibold uppercase tracking-[0.2em]">
+                Our Clients
+              </span>
+            </motion.div>
 
-  {/* Main heading - Now uses ScrollReveal */}
-  <div className="mb-4">
-    <ScrollReveal
-      baseOpacity={0.1}
-      enableBlur={true}
-      baseRotation={3}
-      blurStrength={4}
-      rotationEnd="center center"
-      wordAnimationEnd="center center"
-      textClassName="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white"
-    >
-      Trusted Partners
-    </ScrollReveal>
-  </div>
+            <div className="mb-4">
+              <BlurText
+                text="Trusted Partners"
+                delay={80}
+                animateBy="words"
+                direction="top"
+                align="center"
+                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white"
+              />
+            </div>
 
-  {/* Subtext line */}
-  <motion.p
-    initial={{ opacity: 0 }}
-    whileInView={{ opacity: 1 }}
-    viewport={{ once: true }}
-    transition={{ delay: 0.3 }}
-    className="text-white/30 text-sm sm:text-base mb-6"
-  >
-    From startups to enterprises — we deliver excellence
-  </motion.p>
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+              className="text-white/30 text-sm sm:text-base mb-6"
+            >
+              From startups to enterprises — we deliver excellence
+            </motion.p>
 
-  {/* Description - Now uses BlurText */}
-  <div>
-    <BlurText
-      text="Building digital excellence with industry-leading organizations across technology, healthcare, finance, and beyond."
-      delay={40}
-      animateBy="words"
-      direction="top"
-      align="center"
-      className="text-white/50 text-base sm:text-lg max-w-xl mx-auto leading-relaxed font-normal"
-    />
-  </div>
-</div>
+            <div>
+              <BlurText
+                text="Building digital excellence with industry-leading organizations across technology, healthcare, finance, and beyond."
+                delay={40}
+                animateBy="words"
+                direction="top"
+                align="center"
+                className="text-white/50 text-base sm:text-lg max-w-xl mx-auto leading-relaxed font-normal"
+              />
+            </div>
+          </div>
 
-          {/* Logo Grid */}
           {clientsLoading ? (
             <div className="flex justify-center py-12">
               <div className="w-10 h-10 border-2 border-[#5b8def]/30 border-t-[#5b8def] rounded-full animate-spin" />
@@ -180,7 +160,6 @@ export default function ClientsSection() {
                 ))}
               </div>
 
-              {/* "and X more" */}
               {hasMoreClients && (
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -198,7 +177,6 @@ export default function ClientsSection() {
             </>
           )}
 
-          {/* CTA */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

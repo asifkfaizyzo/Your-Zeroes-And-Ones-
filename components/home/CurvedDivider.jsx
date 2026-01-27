@@ -11,7 +11,7 @@ export default function CurvedDivider() {
       >
         <path
           d="M0,64 C480,128 960,0 1440,64 L1440,128 L0,128 Z"
-          fill="#ffffff"
+          fill="#141620"
         />
       </svg>
     </div>

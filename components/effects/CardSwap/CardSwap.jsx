@@ -10,10 +10,10 @@ export const Card = forwardRef(({ customClass, ...rest }, ref) => (
 ));
 Card.displayName = 'Card';
 
-const makeSlot = (i, distX, distY, total) => ({
+const makeSlot = (i, distX, distY, zMultiplier, total) => ({
   x: i * distX,
   y: -i * distY,
-  z: -i * distX * 1.5,
+  z: -i * distX * zMultiplier,
   zIndex: total - i
 });
 
@@ -35,6 +35,7 @@ const CardSwap = ({
   height = 400,
   cardDistance = 60,
   verticalDistance = 70,
+  zDepthMultiplier = 1.5,  // ✅ Added prop with default
   delay = 5000,
   pauseOnHover = false,
   onCardClick,
@@ -64,7 +65,6 @@ const CardSwap = ({
   const childArr = useMemo(() => Children.toArray(children), [children]);
   const refs = useMemo(
     () => childArr.map(() => React.createRef()),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [childArr.length]
   );
 
@@ -76,7 +76,15 @@ const CardSwap = ({
 
   useEffect(() => {
     const total = refs.length;
-    refs.forEach((r, i) => placeNow(r.current, makeSlot(i, cardDistance, verticalDistance, total), skewAmount));
+    
+    // ✅ Fixed: Pass zDepthMultiplier to makeSlot
+    refs.forEach((r, i) => 
+      placeNow(
+        r.current, 
+        makeSlot(i, cardDistance, verticalDistance, zDepthMultiplier, total), 
+        skewAmount
+      )
+    );
 
     const swap = () => {
       if (order.current.length < 2) return;
@@ -95,7 +103,8 @@ const CardSwap = ({
       tl.addLabel('promote', `-=${config.durDrop * config.promoteOverlap}`);
       rest.forEach((idx, i) => {
         const el = refs[idx].current;
-        const slot = makeSlot(i, cardDistance, verticalDistance, refs.length);
+        // ✅ Fixed: Pass zDepthMultiplier
+        const slot = makeSlot(i, cardDistance, verticalDistance, zDepthMultiplier, refs.length);
         tl.set(el, { zIndex: slot.zIndex }, 'promote');
         tl.to(
           el,
@@ -110,7 +119,8 @@ const CardSwap = ({
         );
       });
 
-      const backSlot = makeSlot(refs.length - 1, cardDistance, verticalDistance, refs.length);
+      // ✅ Fixed: Pass zDepthMultiplier
+      const backSlot = makeSlot(refs.length - 1, cardDistance, verticalDistance, zDepthMultiplier, refs.length);
       tl.addLabel('return', `promote+=${config.durMove * config.returnDelay}`);
       tl.call(
         () => {
@@ -158,8 +168,7 @@ const CardSwap = ({
       };
     }
     return () => clearInterval(intervalRef.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cardDistance, verticalDistance, delay, pauseOnHover, skewAmount, easing]);
+  }, [cardDistance, verticalDistance, zDepthMultiplier, delay, pauseOnHover, skewAmount, easing, config, refs]);
 
   const rendered = childArr.map((child, i) =>
     isValidElement(child)

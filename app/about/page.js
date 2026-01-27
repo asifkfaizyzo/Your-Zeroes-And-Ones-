@@ -103,7 +103,7 @@ export default function About() {
 
   return (
     <>
-      <Header />
+      
       <main className="min-h-screen bg-gray-100">
         <AboutHero />
         <WhoWeAre aboutContent={aboutContent} displayStats={displayStats} />
@@ -113,7 +113,7 @@ export default function About() {
         <WhyChooseUs />
         <AboutCTA />
       </main>
-      <Footer />
+      
     </>
   );
 }

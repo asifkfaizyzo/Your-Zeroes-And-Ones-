@@ -26,7 +26,6 @@ export default function HomePage() {
 
   return (
     <main className="bg-[#060010] font-['Inter',sans-serif]">
-      <NewNavbar />
 
       {/* VH1 - Hero Welcome */}
       <VH1Hero />
@@ -43,7 +42,7 @@ export default function HomePage() {
       />
 
       {/* Curved Divider */}
-      <CurvedDivider />
+      {/* <CurvedDivider /> */}
 
       {/* Clients Section */}
       <div className="bg-white">

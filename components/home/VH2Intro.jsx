@@ -33,35 +33,34 @@ export default function VH2Intro() {
           </span>
         </motion.div>
 
-        {/* Main heading */}
+        {/* Main heading - Now uses ScrollReveal */}
         <div className="mb-8">
-          <BlurText
-            text="We craft digital experiences that drive results"
-            delay={80}
-            animateBy="words"
-            direction="top"
-            align="center"
-            className="text-3xl md:text-5xl lg:text-6xl font-bold text-white leading-tight"
-          />
-        </div>
-
-        {/* Description */}
-        <div className="mb-16">
           <ScrollReveal
-            baseOpacity={0.1}
+            baseOpacity={0.0}
             enableBlur={true}
-            baseRotation={1}
-            blurStrength={2}
+            baseRotation={0.1}
+            blurStrength={1}
+            rotationEnd="center center"
+            wordAnimationEnd="center center"
+            textClassName="text-3xl md:text-5xl lg:text-6xl font-bold text-white leading-tight"
           >
-            <p className="text-white/50 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
-              From cutting-edge technology solutions to data-driven marketing
-              strategies and stunning brand identities — we're your complete
-              digital partner.
-            </p>
+            We craft digital experiences that drive results
           </ScrollReveal>
         </div>
 
-        {/* Scroll down indicator for services */}
+        {/* Description - Now uses BlurText */}
+        <div className="mb-16">
+          <BlurText
+            text="From cutting-edge technology solutions to data-driven marketing strategies and stunning brand identities — we're your complete digital partner."
+            delay={40}
+            animateBy="words"
+            direction="top"
+            align="center"
+            className="text-white/50 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto font-normal"
+          />
+        </div>
+
+        {/* Scroll down indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}

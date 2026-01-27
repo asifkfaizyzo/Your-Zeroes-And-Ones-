@@ -15,8 +15,40 @@ export default function NewNavbar() {
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
 
-  // 🎯 Check if we're on the homepage (adjust paths as needed)
+  // 🎯 Check if we're on the homepage
   const isHomepage = pathname === "/" || pathname === "/rehome";
+
+  // ============================================
+  // 🎛️ CONFIGURABLE VH INTERVALS FOR WIDTH CHANGES
+  // ============================================
+  const widthConfig = {
+    // Starting width (before any scroll)
+    startWidth: 60, // percentage
+    
+    // Width stages: [startVh, endVh, targetWidth]
+    // Each stage defines when to transition to a new width
+    stages: [
+      { startVh: 0, endVh: 0, width: 60 },      // 0-0vh: 60% width
+      { startVh: 0, endVh: 1.05, width: 60 },    // 0-1.05vh: stay at 60%
+      { startVh: 1.05, endVh: 1.6, width: 100 },    // 1.5-3vh: transition to 100%
+      { startVh: 3, endVh: 4.5, width: 100 },   // 3-4.5vh: transition to 100%
+      { startVh: 4.5, endVh: 999, width: 100 }, // 4.5vh+: stay at 100%
+    ],
+    
+    // Border radius stages
+    radiusStages: [
+      { startVh: 0, endVh: 3, radius: 9999 },   // Pill shape until 3vh
+      { startVh: 3, endVh: 5, radius: 9999 },     // Transition to rounded
+      { startVh: 5, endVh: 999, radius: 9999 },   // Final rounded corners
+    ],
+    
+    // Top padding stages (space above navbar)
+    paddingStages: [
+      { startVh: 0, endVh: 3, padding: 16 },    // 16px padding until 3vh
+      { startVh: 3, endVh: 5, padding: 16 },     // Transition to 0
+      { startVh: 5, endVh: 999, padding: 16 },   // Stay at 0
+    ],
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -35,6 +67,28 @@ export default function NewNavbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isHomepage]);
+
+  // 🎯 Interpolate value between stages
+  const getInterpolatedValue = (stages, progress, key) => {
+    for (let i = 0; i < stages.length; i++) {
+      const stage = stages[i];
+      if (progress >= stage.startVh && progress < stage.endVh) {
+        // Check if we're in a transition zone
+        const nextStage = stages[i + 1];
+        if (nextStage && progress >= stage.startVh) {
+          const t = (progress - stage.startVh) / (stage.endVh - stage.startVh);
+          const currentValue = stage[key];
+          const nextValue = nextStage ? nextStage[key] : currentValue;
+          // Smooth easing
+          const easedT = 1 - Math.pow(1 - Math.min(t, 1), 3);
+          return currentValue + (nextValue - currentValue) * easedT;
+        }
+        return stage[key];
+      }
+    }
+    // Return last stage value if beyond all stages
+    return stages[stages.length - 1][key];
+  };
 
   const navItems = [
     { href: "/services", label: "Services", hasDropdown: true },
@@ -100,125 +154,45 @@ export default function NewNavbar() {
     return pathname === href;
   };
 
-  // 🎯 Get interpolated styles - returns FINAL STATE for non-homepage
-  const getInterpolatedStyles = () => {
-    // ✅ NON-HOMEPAGE: Always return final solid bar state
+  // 🎯 Get styles based on page type
+  const getStyles = () => {
+    // ✅ NON-HOMEPAGE: Always solid white, full width
     if (!isHomepage) {
       return {
-        widthPercent: 120,
+        widthPercent: 100,
         borderRadius: 0,
-        bgOpacity: 1,
+        topPadding: 0,
         isGlass: false,
         isSolid: true,
-        topPadding: 0,
         logoTextOpacity: 1,
-        isDarkText: true,
+        isDarkText: true, // Dark text on white background
       };
     }
 
-    // ✅ HOMEPAGE: Use scroll-based transformation
+    // ✅ HOMEPAGE: Glass navbar, width changes based on scroll
     const p = scrollProgress;
-
-    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
-
-    // Width interpolation: 60% -> 90% -> 120%
-    let widthPercent;
-    if (p < 1.5) {
-      widthPercent = 60;
-    } else if (p < 3.5) {
-      const t = (p - 1.5) / 2;
-      widthPercent = 60 + (30 * t);
-    } else if (p < 5.5) {
-      const t = (p - 3.5) / 2;
-      widthPercent = 90 + (30 * t);
-    } else {
-      widthPercent = 120;
-    }
-
-    // Border radius with smooth easing: 9999px (pill) -> 0px (square)
-    let borderRadius;
-    if (p < 3.5) {
-      borderRadius = 9999;
-    } else if (p < 5.5) {
-      const t = (p - 3.5) / 2;
-      const easedT = easeOutCubic(t);
-      borderRadius = 9999 * (1 - easedT);
-    } else {
-      borderRadius = 0;
-    }
-
-    // Background opacity
-    let bgOpacity;
-    let isGlass;
-    let isSolid;
-    if (p < 1.5) {
-      bgOpacity = 0.1;
-      isGlass = true;
-      isSolid = false;
-    } else if (p < 3.5) {
-      bgOpacity = 0.1;
-      isGlass = true;
-      isSolid = false;
-    } else if (p < 5.1) {
-      const t = (p - 4.5) / 2;
-      bgOpacity = 0.1;
-      isGlass = t < 0.5;
-      isSolid = t >= 0.5;
-    } else {
-      bgOpacity = 1;
-      isGlass = false;
-      isSolid = true;
-    }
-
-    // Top padding: 16px -> 0px
-    let topPadding;
-    if (p < 3.5) {
-      topPadding = 16;
-    } else if (p < 5.5) {
-      const t = (p - 3.5) / 2;
-      topPadding = 16 * (1 - t);
-    } else {
-      topPadding = 0;
-    }
-
-    // Logo text opacity
-    let logoTextOpacity;
-    if (p < 4.8) {
-      logoTextOpacity = 0;
-    } else if (p < 5.1) {
-      const t = (p - 4.8) / 2;
-      logoTextOpacity = t;
-    } else {
-      logoTextOpacity = 1;
-    }
-
-    // Text color: white -> dark
-    const isDarkText = p > 5.1;
-
+    
     return {
-      widthPercent,
-      borderRadius,
-      bgOpacity,
-      isGlass,
-      isSolid,
-      topPadding,
-      logoTextOpacity,
-      isDarkText,
+      widthPercent: getInterpolatedValue(widthConfig.stages, p, 'width'),
+      borderRadius: getInterpolatedValue(widthConfig.radiusStages, p, 'radius'),
+      topPadding: getInterpolatedValue(widthConfig.paddingStages, p, 'padding'),
+      isGlass: true,  // Always glass on homepage
+      isSolid: false, // Never solid on homepage
+      logoTextOpacity: 0, // Hide "Your Zeros and Ones" text on homepage
+      isDarkText: false, // White text on glass background
     };
   };
 
-  const styles = getInterpolatedStyles();
+  const styles = getStyles();
 
   if (!mounted) {
-    // 🎯 Different loading states based on page
     if (isHomepage) {
       return (
         <header className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4">
-          <div className="w-[60%] min-w-[320px] max-w-[900px] h-12 bg-white/10 backdrop-blur-xl rounded-full animate-pulse" />
+          <div className="w-[60%] min-w-[320px] max-w-[1400px] h-12 bg-white/10 backdrop-blur-xl rounded-full animate-pulse" />
         </header>
       );
     }
-    // Non-homepage: solid bar loading state
     return (
       <header className="fixed top-0 left-0 right-0 z-50 flex justify-center">
         <div className="w-full max-w-[1600px] h-12 bg-white border-b border-gray-200 animate-pulse" />
@@ -226,20 +200,16 @@ export default function NewNavbar() {
     );
   }
 
-  const navBgStyle = styles.isSolid
-    ? { backgroundColor: `rgba(255, 255, 255, ${styles.bgOpacity})` }
-    : { backgroundColor: `rgba(255, 255, 255, ${styles.bgOpacity})` };
-
   return (
     <>
       <motion.header
         className="fixed top-0 left-0 right-0 z-50 flex justify-center"
         style={{ paddingTop: styles.topPadding }}
         animate={{ paddingTop: styles.topPadding }}
-        transition={{ duration: 0.1, ease: "linear" }}
+        transition={{ duration: 0.15, ease: "easeOut" }}
       >
         <motion.nav
-          className="transition-all duration-100 ease-linear"
+          className="transition-all duration-150 ease-out"
           style={{
             width: `min(${styles.widthPercent}%, 1600px)`,
             minWidth: "320px",
@@ -247,25 +217,27 @@ export default function NewNavbar() {
           animate={{
             width: `min(${styles.widthPercent}%, 1600px)`,
           }}
-          transition={{ duration: 0.1, ease: "linear" }}
+          transition={{ duration: 0.15, ease: "easeOut" }}
         >
           <motion.div
-            className={`transition-all duration-100 ease-linear ${
+            className={`transition-all duration-150 ease-out ${
               styles.isGlass ? "backdrop-blur-xl" : ""
             } ${styles.isSolid ? "shadow-sm" : "shadow-lg shadow-black/5"}`}
             style={{
-              ...navBgStyle,
+              backgroundColor: styles.isSolid 
+                ? "rgba(255, 255, 255, 1)" 
+                : "rgba(255, 255, 255, 0.1)",
               borderRadius: styles.borderRadius,
               borderWidth: 1,
               borderStyle: "solid",
               borderColor: styles.isSolid
                 ? "rgba(229, 231, 235, 1)"
-                : `rgba(255, 255, 255, ${0.2 + styles.bgOpacity * 0.2})`,
+                : "rgba(255, 255, 255, 0.2)",
             }}
             animate={{
               borderRadius: styles.borderRadius,
             }}
-            transition={{ duration: 0.1, ease: "linear" }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
           >
             <div className="flex justify-between items-center py-2 px-4 lg:px-6">
               {/* Logo */}
@@ -286,7 +258,7 @@ export default function NewNavbar() {
                   }`}
                   style={{ opacity: styles.logoTextOpacity }}
                   animate={{ opacity: styles.logoTextOpacity }}
-                  transition={{ duration: 0.1 }}
+                  transition={{ duration: 0.15 }}
                 >
                   Your Zeros and Ones
                 </motion.span>
@@ -307,7 +279,7 @@ export default function NewNavbar() {
                               ? "bg-[#20427f] text-white shadow-lg shadow-[#20427f]/25"
                               : styles.isDarkText
                               ? "text-gray-600 hover:bg-gray-100"
-                              : "text-white/80 hover:bg-white/10"
+                              : "text-white/90 hover:bg-white/10"
                           }`}
                         >
                           {item.label}
@@ -453,7 +425,7 @@ export default function NewNavbar() {
                             ? "bg-[#20427f] text-white shadow-lg shadow-[#20427f]/25"
                             : styles.isDarkText
                             ? "text-gray-600 hover:bg-gray-100"
-                            : "text-white/80 hover:bg-white/10"
+                            : "text-white/90 hover:bg-white/10"
                         }`}
                       >
                         {item.label}

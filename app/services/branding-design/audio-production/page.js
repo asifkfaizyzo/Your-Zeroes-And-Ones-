@@ -284,7 +284,7 @@ export default function AudioProduction() {
 
   return (
     <>
-      <Header />
+      
       <main className="min-h-screen bg-white">
         {/* Hero Section with Split Layout */}
         <section className="bg-gradient-to-br from-blue-50 via-white to-blue-50/50 py-20">

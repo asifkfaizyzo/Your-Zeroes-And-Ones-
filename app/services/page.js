@@ -68,7 +68,7 @@ export default function Services() {
 
   return (
     <>
-      <Header />
+      
       <main className="min-h-screen bg-white">
         {/* Hero Section */}
         <section className="py-16 sm:py-20">

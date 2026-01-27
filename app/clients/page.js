@@ -72,7 +72,7 @@ export default function ClientsPage() {
 
   return (
     <>
-      <Header />
+      
       <main className="min-h-screen bg-white relative z-0">
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-[#0f1c3f] via-[#203E7F] to-[#1a5a7a] relative overflow-hidden py-20 sm:py-24 lg:py-32">

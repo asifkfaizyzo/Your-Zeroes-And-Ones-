@@ -12,7 +12,7 @@ export const metadata = {
 export default function NotFound() {
   return (
     <>
-      <Header />
+      
       <main className="min-h-screen bg-white">
         <section className="bg-gradient-to-br from-[#20427f]/10 via-white to-[#20427f]/5 py-6">
           <div className="max-w-4xl mx-auto px-6 text-center">

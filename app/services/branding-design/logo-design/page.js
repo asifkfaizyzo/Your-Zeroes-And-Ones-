@@ -149,7 +149,6 @@ function LogoDesign() {
 
   return (
     <>
-      <Header />
       <main className="min-h-screen bg-white">
         {/* Hero Section */}
         <section className="relative bg-gradient-to-br from-[#20427f] to-[#1a3566] py-16 overflow-hidden">
@@ -157,11 +156,11 @@ function LogoDesign() {
           <div className="absolute top-10 left-10 w-16 h-16 bg-white/10 rounded-full"></div>
           <div className="absolute bottom-10 right-10 w-24 h-24 bg-white/5 rounded-full"></div>
 
-          <div 
+          <div
             className="max-w-[1800px] mx-auto text-center relative z-10"
             style={{
-              paddingLeft: 'clamp(2rem, 8vw, 12rem)',
-              paddingRight: 'clamp(2rem, 8vw, 12rem)'
+              paddingLeft: "clamp(2rem, 8vw, 12rem)",
+              paddingRight: "clamp(2rem, 8vw, 12rem)",
             }}
           >
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
@@ -176,11 +175,11 @@ function LogoDesign() {
 
         {/* Process Section with Image */}
         <section className="py-12 bg-white">
-          <div 
+          <div
             className="max-w-[1800px] mx-auto"
             style={{
-              paddingLeft: 'clamp(2rem, 8vw, 12rem)',
-              paddingRight: 'clamp(2rem, 8vw, 12rem)'
+              paddingLeft: "clamp(2rem, 8vw, 12rem)",
+              paddingRight: "clamp(2rem, 8vw, 12rem)",
             }}
           >
             <h2 className="text-3xl font-bold text-center text-gray-900 mb-4">
@@ -255,11 +254,11 @@ function LogoDesign() {
 
         {/* CTA Section */}
         <section className="py-12 bg-[#20427f]">
-          <div 
+          <div
             className="max-w-[1800px] mx-auto text-center"
             style={{
-              paddingLeft: 'clamp(2rem, 8vw, 12rem)',
-              paddingRight: 'clamp(2rem, 8vw, 12rem)'
+              paddingLeft: "clamp(2rem, 8vw, 12rem)",
+              paddingRight: "clamp(2rem, 8vw, 12rem)",
             }}
           >
             <h2 className="text-2xl font-bold text-white mb-4">

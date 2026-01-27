@@ -35,12 +35,13 @@ const CardSwap = ({
   height = 400,
   cardDistance = 60,
   verticalDistance = 70,
-  zDepthMultiplier = 1.5,  // ✅ Added prop with default
+  zDepthMultiplier = 1.5,
   delay = 5000,
   pauseOnHover = false,
   onCardClick,
   skewAmount = 6,
   easing = 'elastic',
+  centered = false, // 👈 NEW PROP - set to true for centered layout (mobile)
   children
 }) => {
   const config =
@@ -77,7 +78,6 @@ const CardSwap = ({
   useEffect(() => {
     const total = refs.length;
     
-    // ✅ Fixed: Pass zDepthMultiplier to makeSlot
     refs.forEach((r, i) => 
       placeNow(
         r.current, 
@@ -103,7 +103,6 @@ const CardSwap = ({
       tl.addLabel('promote', `-=${config.durDrop * config.promoteOverlap}`);
       rest.forEach((idx, i) => {
         const el = refs[idx].current;
-        // ✅ Fixed: Pass zDepthMultiplier
         const slot = makeSlot(i, cardDistance, verticalDistance, zDepthMultiplier, refs.length);
         tl.set(el, { zIndex: slot.zIndex }, 'promote');
         tl.to(
@@ -119,7 +118,6 @@ const CardSwap = ({
         );
       });
 
-      // ✅ Fixed: Pass zDepthMultiplier
       const backSlot = makeSlot(refs.length - 1, cardDistance, verticalDistance, zDepthMultiplier, refs.length);
       tl.addLabel('return', `promote+=${config.durMove * config.returnDelay}`);
       tl.call(
@@ -184,10 +182,15 @@ const CardSwap = ({
       : child
   );
 
+  // 👇 CONDITIONAL CLASSES BASED ON `centered` PROP
+  const containerClasses = centered
+    ? "relative perspective-[900px] overflow-visible" // Centered layout (for mobile)
+    : "absolute bottom-0 right-0 transform translate-x-[5%] translate-y-[20%] origin-bottom-right perspective-[900px] overflow-visible max-[768px]:translate-x-[25%] max-[768px]:translate-y-[25%] max-[768px]:scale-[0.75] max-[480px]:translate-x-[25%] max-[480px]:translate-y-[25%] max-[480px]:scale-[0.55]"; // Original desktop layout
+
   return (
     <div
       ref={container}
-      className="absolute bottom-0 right-0 transform translate-x-[5%] translate-y-[20%] origin-bottom-right perspective-[900px] overflow-visible max-[768px]:translate-x-[25%] max-[768px]:translate-y-[25%] max-[768px]:scale-[0.75] max-[480px]:translate-x-[25%] max-[480px]:translate-y-[25%] max-[480px]:scale-[0.55]"
+      className={containerClasses}
       style={{ width, height }}
     >
       {rendered}

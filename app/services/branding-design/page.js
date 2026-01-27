@@ -92,7 +92,7 @@ export default function BrandingDesign() {
 
   return (
     <>
-      <Header />
+      
       <main className="min-h-screen bg-white">
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-[#f0f4ff] to-[#e8efff] py-20">

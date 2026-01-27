@@ -19,7 +19,7 @@ export default function BrandConsulting() {
         setError(null);
 
         const response = await fetch(
-          "/api/projects?category=branding-design&subcategory=brand-consulting&limit=6"
+          "/api/projects?category=branding-design&subcategory=brand-consulting&limit=6",
         );
 
         if (!response.ok) {
@@ -165,18 +165,17 @@ export default function BrandConsulting() {
 
   return (
     <>
-      <Header />
       <main className="min-h-screen bg-white">
         {/* Hero Section with Side Elements */}
         <section className="relative bg-white py-20 overflow-hidden">
           <div className="absolute left-0 top-1/4 w-32 h-32 bg-[#20427f]/5 rounded-full"></div>
           <div className="absolute right-0 bottom-1/4 w-24 h-24 bg-[#20427f]/10 rounded-full"></div>
 
-          <div 
+          <div
             className="max-w-[1800px] mx-auto text-center relative z-10"
             style={{
-              paddingLeft: 'clamp(2rem, 8vw, 12rem)',
-              paddingRight: 'clamp(2rem, 8vw, 12rem)'
+              paddingLeft: "clamp(2rem, 8vw, 12rem)",
+              paddingRight: "clamp(2rem, 8vw, 12rem)",
             }}
           >
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
@@ -191,11 +190,11 @@ export default function BrandConsulting() {
 
         {/* Side-by-Section Layout */}
         <section className="py-16 bg-gray-50">
-          <div 
+          <div
             className="max-w-[1800px] mx-auto"
             style={{
-              paddingLeft: 'clamp(2rem, 8vw, 12rem)',
-              paddingRight: 'clamp(2rem, 8vw, 12rem)'
+              paddingLeft: "clamp(2rem, 8vw, 12rem)",
+              paddingRight: "clamp(2rem, 8vw, 12rem)",
             }}
           >
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -265,11 +264,11 @@ export default function BrandConsulting() {
 
         {/* Simple CTA */}
         <section className="py-16 bg-white border-t border-gray-200">
-          <div 
+          <div
             className="max-w-[1800px] mx-auto text-center"
             style={{
-              paddingLeft: 'clamp(2rem, 8vw, 12rem)',
-              paddingRight: 'clamp(2rem, 8vw, 12rem)'
+              paddingLeft: "clamp(2rem, 8vw, 12rem)",
+              paddingRight: "clamp(2rem, 8vw, 12rem)",
             }}
           >
             <h2 className="text-3xl font-bold text-gray-900 mb-4">

@@ -9,7 +9,7 @@ import ContactCTA from './sections/ContactCTA'
 export default function ContactPage() {
   return (
     <>
-      <Header />
+      
       <main className="min-h-screen bg-gray-100">
         <ContactHero />
         <ContactSection />

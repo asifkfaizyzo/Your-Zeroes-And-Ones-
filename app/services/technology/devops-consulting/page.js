@@ -271,15 +271,14 @@ export default function DevOps() {
 
   return (
     <>
-      <Header />
       <main className="min-h-screen bg-white">
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-[#f0f4ff] to-[#e8efff] py-20">
-          <div 
+          <div
             className="max-w-[1800px] mx-auto text-center"
             style={{
-              paddingLeft: 'clamp(2rem, 8vw, 12rem)',
-              paddingRight: 'clamp(2rem, 8vw, 12rem)'
+              paddingLeft: "clamp(2rem, 8vw, 12rem)",
+              paddingRight: "clamp(2rem, 8vw, 12rem)",
             }}
           >
             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
@@ -308,11 +307,11 @@ export default function DevOps() {
 
         {/* Why DevOps Section */}
         <section className="py-20 bg-white">
-          <div 
+          <div
             className="max-w-[1800px] mx-auto"
             style={{
-              paddingLeft: 'clamp(2rem, 8vw, 12rem)',
-              paddingRight: 'clamp(2rem, 8vw, 12rem)'
+              paddingLeft: "clamp(2rem, 8vw, 12rem)",
+              paddingRight: "clamp(2rem, 8vw, 12rem)",
             }}
           >
             <div className="text-center mb-16">
@@ -441,11 +440,11 @@ export default function DevOps() {
 
         {/* Services Section */}
         <section className="py-20 bg-gray-50">
-          <div 
+          <div
             className="max-w-[1800px] mx-auto"
             style={{
-              paddingLeft: 'clamp(2rem, 8vw, 12rem)',
-              paddingRight: 'clamp(2rem, 8vw, 12rem)'
+              paddingLeft: "clamp(2rem, 8vw, 12rem)",
+              paddingRight: "clamp(2rem, 8vw, 12rem)",
             }}
           >
             <div className="text-center mb-16">
@@ -481,11 +480,11 @@ export default function DevOps() {
 
         {/* Tools & Technologies Section */}
         <section className="py-20 bg-white">
-          <div 
+          <div
             className="max-w-[1800px] mx-auto"
             style={{
-              paddingLeft: 'clamp(2rem, 8vw, 12rem)',
-              paddingRight: 'clamp(2rem, 8vw, 12rem)'
+              paddingLeft: "clamp(2rem, 8vw, 12rem)",
+              paddingRight: "clamp(2rem, 8vw, 12rem)",
             }}
           >
             <div className="text-center mb-16">
@@ -528,11 +527,11 @@ export default function DevOps() {
 
         {/* Process Section */}
         <section className="py-20 bg-gray-50">
-          <div 
+          <div
             className="max-w-[1800px] mx-auto"
             style={{
-              paddingLeft: 'clamp(2rem, 8vw, 12rem)',
-              paddingRight: 'clamp(2rem, 8vw, 12rem)'
+              paddingLeft: "clamp(2rem, 8vw, 12rem)",
+              paddingRight: "clamp(2rem, 8vw, 12rem)",
             }}
           >
             <div className="text-center mb-16">
@@ -588,11 +587,11 @@ export default function DevOps() {
 
         {/* CTA Section */}
         <section className="py-20 bg-gradient-to-r from-[#20427f] to-[#2c5aa0]">
-          <div 
+          <div
             className="max-w-[1800px] mx-auto text-center"
             style={{
-              paddingLeft: 'clamp(2rem, 8vw, 12rem)',
-              paddingRight: 'clamp(2rem, 8vw, 12rem)'
+              paddingLeft: "clamp(2rem, 8vw, 12rem)",
+              paddingRight: "clamp(2rem, 8vw, 12rem)",
             }}
           >
             <h2 className="text-4xl font-bold text-white mb-6">

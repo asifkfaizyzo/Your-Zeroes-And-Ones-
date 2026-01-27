@@ -148,7 +148,7 @@ export default function Portfolio() {
 
   return (
     <>
-      <Header />
+      
       <main className="min-h-screen bg-white">
         {/* ✅ UPDATED: Pass dynamic stats to hero */}
         <PortfolioHero stats={stats} />

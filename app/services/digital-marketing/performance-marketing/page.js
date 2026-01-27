@@ -262,15 +262,14 @@ export default function PerformanceMarketing() {
 
   return (
     <>
-      <Header />
       <main className="min-h-screen bg-white">
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-[#20427f]/10 via-white to-[#20427f]/5 py-20">
-          <div 
+          <div
             className="max-w-[1800px] mx-auto text-center"
             style={{
-              paddingLeft: 'clamp(2rem, 8vw, 12rem)',
-              paddingRight: 'clamp(2rem, 8vw, 12rem)'
+              paddingLeft: "clamp(2rem, 8vw, 12rem)",
+              paddingRight: "clamp(2rem, 8vw, 12rem)",
             }}
           >
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
@@ -300,11 +299,11 @@ export default function PerformanceMarketing() {
 
         {/* Services Grid */}
         <section id="services" className="py-20 bg-white">
-          <div 
+          <div
             className="max-w-[1800px] mx-auto"
             style={{
-              paddingLeft: 'clamp(2rem, 8vw, 12rem)',
-              paddingRight: 'clamp(2rem, 8vw, 12rem)'
+              paddingLeft: "clamp(2rem, 8vw, 12rem)",
+              paddingRight: "clamp(2rem, 8vw, 12rem)",
             }}
           >
             <div className="text-center mb-16">
@@ -340,11 +339,11 @@ export default function PerformanceMarketing() {
 
         {/* Performance Focus Section */}
         <section className="py-20 bg-gray-50">
-          <div 
+          <div
             className="max-w-[1800px] mx-auto"
             style={{
-              paddingLeft: 'clamp(2rem, 8vw, 12rem)',
-              paddingRight: 'clamp(2rem, 8vw, 12rem)'
+              paddingLeft: "clamp(2rem, 8vw, 12rem)",
+              paddingRight: "clamp(2rem, 8vw, 12rem)",
             }}
           >
             <div className="text-center mb-16">
@@ -386,11 +385,11 @@ export default function PerformanceMarketing() {
 
         {/* Results Section */}
         <section className="py-20 bg-white">
-          <div 
+          <div
             className="max-w-[1800px] mx-auto"
             style={{
-              paddingLeft: 'clamp(2rem, 8vw, 12rem)',
-              paddingRight: 'clamp(2rem, 8vw, 12rem)'
+              paddingLeft: "clamp(2rem, 8vw, 12rem)",
+              paddingRight: "clamp(2rem, 8vw, 12rem)",
             }}
           >
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -587,11 +586,11 @@ export default function PerformanceMarketing() {
 
         {/* CTA Section */}
         <section className="py-20 bg-gray-50">
-          <div 
+          <div
             className="max-w-[1800px] mx-auto text-center"
             style={{
-              paddingLeft: 'clamp(2rem, 8vw, 12rem)',
-              paddingRight: 'clamp(2rem, 8vw, 12rem)'
+              paddingLeft: "clamp(2rem, 8vw, 12rem)",
+              paddingRight: "clamp(2rem, 8vw, 12rem)",
             }}
           >
             <h2 className="text-4xl font-bold text-gray-900 mb-6">

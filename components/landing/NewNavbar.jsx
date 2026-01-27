@@ -5,53 +5,32 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
 
-export default function NewNavbar() {
+export default function NewNavbar({ isDark = true }) {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
-  const [activeService, setActiveService] = useState(0);
-  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
 
-  // 🎯 Check if we're on the homepage
   const isHomepage = pathname === "/" || pathname === "/rehome";
 
-  // ============================================
-  // 🎛️ CONFIGURABLE VH INTERVALS FOR WIDTH CHANGES
-  // ============================================
   const widthConfig = {
-    startWidth: 60,
     stages: [
-      { startVh: 0, endVh: 0, width: 60 },
-      { startVh: 0, endVh: 1.00, width: 60 },
-      { startVh: 1.05, endVh: 1.06, width: 100 },
-      { startVh: 3, endVh: 4.5, width: 100 },
-      { startVh: 4.5, endVh: 999, width: 100 },
+      { startVh: 0, endVh: 1.0, width: 60 },
+      { startVh: 1.0, endVh: 1.06, width: 100 },
+      { startVh: 1.06, endVh: 999, width: 100 },
     ],
-    radiusStages: [
-      { startVh: 0, endVh: 3, radius: 9999 },
-      { startVh: 3, endVh: 5, radius: 9999 },
-      { startVh: 5, endVh: 999, radius: 9999 },
-    ],
-    paddingStages: [
-      { startVh: 0, endVh: 3, padding: 16 },
-      { startVh: 3, endVh: 5, padding: 16 },
-      { startVh: 5, endVh: 999, padding: 16 },
-    ],
+    radiusStages: [{ startVh: 0, endVh: 999, radius: 9999 }],
+    paddingStages: [{ startVh: 0, endVh: 999, padding: 16 }],
   };
 
   useEffect(() => {
-    setMounted(true);
-
     if (!isHomepage) return;
 
     const handleScroll = () => {
       const vh = window.innerHeight;
       const scrollY = window.scrollY;
-      const progress = scrollY / vh;
-      setScrollProgress(progress);
+      setScrollProgress(scrollY / vh);
     };
 
     handleScroll();
@@ -59,17 +38,20 @@ export default function NewNavbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isHomepage]);
 
+  useEffect(() => {
+    setIsMenuOpen(false);
+    setIsServicesOpen(false);
+  }, [pathname]);
+
   const getInterpolatedValue = (stages, progress, key) => {
     for (let i = 0; i < stages.length; i++) {
       const stage = stages[i];
       if (progress >= stage.startVh && progress < stage.endVh) {
         const nextStage = stages[i + 1];
-        if (nextStage && progress >= stage.startVh) {
+        if (nextStage) {
           const t = (progress - stage.startVh) / (stage.endVh - stage.startVh);
-          const currentValue = stage[key];
-          const nextValue = nextStage ? nextStage[key] : currentValue;
           const easedT = 1 - Math.pow(1 - Math.min(t, 1), 3);
-          return currentValue + (nextValue - currentValue) * easedT;
+          return stage[key] + (nextStage[key] - stage[key]) * easedT;
         }
         return stage[key];
       }
@@ -89,6 +71,11 @@ export default function NewNavbar() {
       category: "Branding & Design",
       href: "/services/branding-design",
       description: "Build a memorable brand identity",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+        </svg>
+      ),
       subServices: [
         { name: "Brand Consulting", href: "/services/branding-design/brand-consulting" },
         { name: "Logo Design", href: "/services/branding-design/logo-design" },
@@ -102,7 +89,13 @@ export default function NewNavbar() {
     {
       category: "Digital Marketing",
       href: "/services/digital-marketing",
-      description: "Reach and engage your target audience",
+      description: "Reach and engage your audience",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+        </svg>
+      ),
       subServices: [
         { name: "SEO", href: "/services/digital-marketing/seo" },
         { name: "Social Media Management", href: "/services/digital-marketing/social-media-management" },
@@ -116,6 +109,11 @@ export default function NewNavbar() {
       category: "Technology",
       href: "/services/technology",
       description: "Cutting-edge digital solutions",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+        </svg>
+      ),
       subServices: [
         { name: "AI & Machine Learning", href: "/services/technology/ai-ml" },
         { name: "DevOps Consulting", href: "/services/technology/devops-consulting" },
@@ -140,9 +138,7 @@ export default function NewNavbar() {
     return pathname === href;
   };
 
-  // 🎯 Get styles based on page type - with SSR-safe defaults
   const getStyles = () => {
-    // NON-HOMEPAGE: Always solid white, full width
     if (!isHomepage) {
       return {
         widthPercent: 100,
@@ -151,386 +147,343 @@ export default function NewNavbar() {
         isGlass: false,
         isSolid: true,
         logoTextOpacity: 1,
-        isDarkText: true,
+        useDarkText: !isDark,
       };
     }
 
-    // HOMEPAGE: Glass navbar, width changes based on scroll
     const p = scrollProgress;
-    
     return {
-      widthPercent: getInterpolatedValue(widthConfig.stages, p, 'width'),
-      borderRadius: getInterpolatedValue(widthConfig.radiusStages, p, 'radius'),
-      topPadding: getInterpolatedValue(widthConfig.paddingStages, p, 'padding'),
+      widthPercent: getInterpolatedValue(widthConfig.stages, p, "width"),
+      borderRadius: getInterpolatedValue(widthConfig.radiusStages, p, "radius"),
+      topPadding: getInterpolatedValue(widthConfig.paddingStages, p, "padding"),
       isGlass: true,
       isSolid: false,
       logoTextOpacity: 0,
-      isDarkText: false,
+      useDarkText: false,
     };
   };
 
   const styles = getStyles();
 
-  // 🎯 NO MORE LOADING SKELETON - Render actual content immediately
-  return (
-    <header
-      className="fixed top-0 left-0 right-0 z-50 flex justify-center"
-      style={{ paddingTop: styles.topPadding }}
-    >
-      <nav
-        className="transition-all duration-150 ease-out"
-        style={{
-          width: `min(${styles.widthPercent}%, 1600px)`,
-          minWidth: "320px",
-        }}
-      >
-        <div
-          className={`transition-all duration-150 ease-out ${
-            styles.isGlass ? "backdrop-blur-xl" : ""
-          } ${styles.isSolid ? "shadow-sm" : "shadow-lg shadow-black/5"}`}
-          style={{
-            backgroundColor: styles.isSolid 
-              ? "rgba(255, 255, 255, 1)" 
-              : "rgba(255, 255, 255, 0.1)",
-            borderRadius: styles.borderRadius,
-            borderWidth: 1,
-            borderStyle: "solid",
-            borderColor: styles.isSolid
-              ? "rgba(229, 231, 235, 1)"
-              : "rgba(255, 255, 255, 0.2)",
-          }}
+  // Theme object
+  const theme = {
+    navBg: isMenuOpen
+      ? isDark ? "rgba(6, 8, 18, 0.98)" : "rgba(255, 255, 255, 1)"
+      : styles.isSolid
+        ? isDark ? "rgba(6, 8, 18, 1)" : "rgba(255, 255, 255, 1)"
+        : "rgba(255, 255, 255, 0.1)",
+
+    borderColor: isMenuOpen || styles.isSolid
+      ? isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(229, 231, 235, 1)"
+      : "rgba(255, 255, 255, 0.2)",
+
+    logoText: styles.useDarkText || isMenuOpen
+      ? isDark ? "text-white" : "text-gray-900"
+      : "text-white",
+
+    navText: styles.useDarkText || isMenuOpen
+      ? isDark ? "text-blue-200/80 hover:bg-white/10 hover:text-white" : "text-gray-600 hover:bg-gray-100"
+      : "text-white/90 hover:bg-white/10",
+
+    navTextActive: "bg-[#20427f] text-white shadow-lg shadow-[#20427f]/25",
+
+    dropdown: {
+      bg: isDark
+        ? "bg-gradient-to-br from-[#060812] via-[#141620] to-[#060812]"
+        : "bg-white",
+      border: isDark ? "border-white/10" : "border-gray-200",
+      divider: isDark ? "divide-white/10" : "divide-gray-100",
+      headerBorder: isDark ? "border-white/10" : "border-gray-100",
+      title: isDark ? "text-white" : "text-gray-900",
+      subtitle: isDark ? "text-blue-200/70" : "text-gray-500",
+      categoryTitle: isDark ? "text-white" : "text-gray-900",
+      categoryTitleHover: isDark ? "group-hover:text-blue-200" : "group-hover:text-[#20427f]",
+      categoryDesc: isDark ? "text-blue-200/60" : "text-gray-500",
+      categoryIconBg: isDark ? "bg-white/10" : "bg-[#20427f]/10",
+      categoryIconColor: isDark ? "text-blue-200" : "text-[#20427f]",
+      subServiceText: isDark
+        ? "text-blue-200/70 hover:bg-white/10 hover:text-white"
+        : "text-gray-600 hover:bg-[#20427f]/5 hover:text-[#20427f]",
+      subServiceIcon: isDark ? "text-blue-200/40" : "text-[#20427f]/40",
+      viewAllBtn: isDark
+        ? "bg-white/10 text-blue-200 hover:bg-white/20 hover:text-white border-white/10"
+        : "bg-[#20427f] text-white hover:bg-[#1a3668]",
+      footerBg: isDark ? "bg-white/5" : "bg-gray-50",
+      footerText: isDark ? "text-blue-200/70" : "text-gray-600",
+      footerLink: isDark ? "text-blue-200 hover:text-white" : "text-[#20427f] hover:text-[#1a3668]",
+    },
+
+    mobile: {
+      menuBg: isDark ? "bg-[#060812]" : "bg-white",
+      menuBorder: isDark ? "border-white/10" : "border-gray-100",
+      itemDefault: isDark
+        ? "bg-white/5 text-blue-200/80 hover:bg-white/10 hover:text-white"
+        : "bg-gray-50 text-gray-700 hover:bg-gray-100",
+      itemActive: "bg-[#20427f] text-white",
+      subMenuBg: isDark ? "bg-white/5" : "bg-gray-50",
+      subMenuTitle: isDark ? "text-white" : "text-gray-900",
+      subMenuText: isDark
+        ? "text-blue-200/70 hover:text-white"
+        : "text-gray-600 hover:text-[#20427f]",
+      subMenuDivider: isDark ? "border-white/10" : "border-gray-200",
+      viewAllBtn: isDark
+        ? "text-blue-200 border-white/10 bg-white/5 hover:bg-white/10"
+        : "text-[#20427f] border-gray-200 bg-white",
+    },
+
+    hamburgerBg: styles.useDarkText || isMenuOpen
+      ? isDark ? "bg-white/10 hover:bg-white/20" : "bg-gray-100 hover:bg-gray-200"
+      : "bg-white/10 hover:bg-white/20",
+    hamburgerLines: styles.useDarkText || isMenuOpen
+      ? isDark ? "bg-white" : "bg-gray-700"
+      : "bg-white",
+
+    contactBtn: styles.useDarkText || isMenuOpen
+      ? "bg-[#20427f] hover:bg-[#1a3668] text-white"
+      : "bg-white/20 hover:bg-white/30 text-white border border-white/30",
+
+    logoFilter: !styles.useDarkText && !isMenuOpen
+      ? "brightness-0 invert"
+      : isDark ? "brightness-0 invert" : "",
+  };
+
+  // ========================================
+  // RENDER: Non-Homepage (Full-width header)
+  // ========================================
+  if (!isHomepage) {
+    return (
+      <>
+        <header
+          className={`fixed top-0 left-0 right-0 z-50 shadow-sm border-b transition-all duration-300 ${
+            isDark ? "bg-[#060812] border-white/10" : "bg-white border-gray-200"
+          }`}
         >
-          <div className="flex justify-between items-center py-2 px-4 lg:px-6">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-2.5 group">
-              <Image
-                src="/logo.svg"
-                alt="YZO"
-                width={32}
-                height={32}
-                className={`object-contain transition-all duration-300 ${
-                  !styles.isDarkText ? "brightness-0 invert" : ""
-                }`}
-                priority
-              />
-              <span
-                className={`font-bold text-sm transition-all duration-300 whitespace-nowrap ${
-                  styles.isDarkText ? "text-gray-900" : "text-white"
-                }`}
-                style={{ 
-                  opacity: styles.logoTextOpacity,
-                  // Prevent layout shift by keeping space but hiding
-                  visibility: styles.logoTextOpacity === 0 ? 'hidden' : 'visible',
-                  width: styles.logoTextOpacity === 0 ? 0 : 'auto',
-                  overflow: 'hidden'
-                }}
-              >
-                Your Zeros and Ones
-              </span>
-            </Link>
-
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-1">
-              {navItems.map((item) => (
-                <div key={item.href} className="relative">
-                  {item.hasDropdown ? (
-                    <div
-                      onMouseEnter={() => setIsServicesOpen(true)}
-                      onMouseLeave={() => setIsServicesOpen(false)}
-                    >
-                      <button
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
-                          isActivePath("/services")
-                            ? "bg-[#20427f] text-white shadow-lg shadow-[#20427f]/25"
-                            : styles.isDarkText
-                            ? "text-gray-600 hover:bg-gray-100"
-                            : "text-white/90 hover:bg-white/10"
-                        }`}
-                      >
-                        {item.label}
-                        <svg
-                          className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                            isServicesOpen ? "rotate-180" : ""
-                          }`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 9l-7 7-7-7"
-                          />
-                        </svg>
-                      </button>
-
-                      {/* Mega Menu Dropdown */}
-                      <div
-                        className={`absolute top-full left-1/2 -translate-x-1/2 pt-4 transition-all duration-200 ${
-                          isServicesOpen
-                            ? "opacity-100 visible"
-                            : "opacity-0 invisible pointer-events-none"
-                        }`}
-                      >
-                        <div className="w-[700px] bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100">
-                          <div className="flex">
-                            <div className="w-1/3 bg-gray-50 p-4">
-                              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-                                Categories
-                              </p>
-                              {services.map((service, idx) => (
-                                <button
-                                  key={service.category}
-                                  className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                                    activeService === idx
-                                      ? "bg-[#20427f] text-white shadow-lg"
-                                      : "text-gray-700 hover:bg-gray-100"
-                                  }`}
-                                  onMouseEnter={() => setActiveService(idx)}
-                                >
-                                  {service.category}
-                                </button>
-                              ))}
-
-                              <div className="mt-4 pt-4 border-t border-gray-200">
-                                <Link
-                                  href="/services"
-                                  className="flex items-center gap-2 px-4 py-2 text-sm text-[#20427f] font-medium hover:underline"
-                                  onClick={closeAllMenus}
-                                >
-                                  View All Services
-                                  <svg
-                                    className="w-4 h-4"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth={2}
-                                      d="M17 8l4 4m0 0l-4 4m4-4H3"
-                                    />
-                                  </svg>
-                                </Link>
-                              </div>
-                            </div>
-
-                            <div className="w-2/3 p-6">
-                              <div className="mb-4">
-                                <h3 className="text-lg font-bold text-gray-900">
-                                  {services[activeService].category}
-                                </h3>
-                                <p className="text-sm text-gray-500 mt-1">
-                                  {services[activeService].description}
-                                </p>
-                              </div>
-
-                              <div className="grid grid-cols-2 gap-2">
-                                {services[activeService].subServices.map(
-                                  (sub, idx) => (
-                                    <Link
-                                      key={idx}
-                                      href={sub.href}
-                                      className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-[#20427f]/5 hover:text-[#20427f] transition-colors"
-                                      onClick={closeAllMenus}
-                                    >
-                                      <svg
-                                        className="w-4 h-4 text-[#20427f]"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                      >
-                                        <path
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          strokeWidth={2}
-                                          d="M9 5l7 7-7 7"
-                                        />
-                                      </svg>
-                                      {sub.name}
-                                    </Link>
-                                  )
-                                )}
-                              </div>
-
-                              <div className="mt-6 pt-4 border-t border-gray-100">
-                                <Link
-                                  href={services[activeService].href}
-                                  className="inline-flex items-center gap-2 text-sm font-medium text-[#20427f]"
-                                  onClick={closeAllMenus}
-                                >
-                                  Explore {services[activeService].category}
-                                  <svg
-                                    className="w-4 h-4"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth={2}
-                                      d="M17 8l4 4m0 0l-4 4m4-4H3"
-                                    />
-                                  </svg>
-                                </Link>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <Link
-                      href={item.href}
-                      className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
-                        isActivePath(item.href)
-                          ? "bg-[#20427f] text-white shadow-lg shadow-[#20427f]/25"
-                          : styles.isDarkText
-                          ? "text-gray-600 hover:bg-gray-100"
-                          : "text-white/90 hover:bg-white/10"
-                      }`}
-                    >
-                      {item.label}
-                    </Link>
-                  )}
-                </div>
-              ))}
-
-              {/* Contact Button */}
-              <Link
-                href="/contact"
-                className={`ml-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
-                  styles.isDarkText
-                    ? "bg-[#20427f] hover:bg-[#1a3668] text-white"
-                    : "bg-white/20 hover:bg-white/30 text-white border border-white/30"
-                }`}
-              >
-                Contact Us
-              </Link>
-            </div>
-
-            {/* Mobile Menu Button */}
-            <button
-              className={`md:hidden relative w-9 h-9 flex items-center justify-center rounded-lg transition-all ${
-                styles.isDarkText
-                  ? "bg-gray-100 hover:bg-gray-200"
-                  : "bg-white/10 hover:bg-white/20"
-              }`}
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              aria-label="Toggle menu"
-            >
-              <div className="w-4 h-3.5 flex flex-col justify-between">
-                <span
-                  className={`w-full h-0.5 rounded-full transition-all duration-300 origin-center ${
-                    styles.isDarkText ? "bg-gray-700" : "bg-white"
-                  } ${isMenuOpen ? "rotate-45 translate-y-1.5" : ""}`}
-                />
-                <span
-                  className={`w-full h-0.5 rounded-full transition-all duration-300 ${
-                    styles.isDarkText ? "bg-gray-700" : "bg-white"
-                  } ${isMenuOpen ? "opacity-0 scale-0" : ""}`}
-                />
-                <span
-                  className={`w-full h-0.5 rounded-full transition-all duration-300 origin-center ${
-                    styles.isDarkText ? "bg-gray-700" : "bg-white"
-                  } ${isMenuOpen ? "-rotate-45 -translate-y-1.5" : ""}`}
-                />
-              </div>
-            </button>
-          </div>
-
-          {/* Mobile Menu */}
-          <div
-            className={`md:hidden transition-all duration-300 overflow-hidden ${
-              isMenuOpen ? "max-h-[80vh] opacity-100" : "max-h-0 opacity-0"
-            }`}
+          <nav
+            className="w-full max-w-[1800px] mx-auto"
+            style={{
+              paddingLeft: "clamp(2rem, 8vw, 12rem)",
+              paddingRight: "clamp(2rem, 8vw, 12rem)",
+            }}
           >
-            <div className="bg-white border-t border-gray-100 rounded-b-3xl max-h-[calc(80vh-64px)] overflow-y-auto">
-              <div className="py-4 px-6 space-y-2">
+            <div className="flex justify-between items-center py-3">
+              {/* Logo */}
+              <Link href="/" className="flex items-center gap-2.5" onClick={closeAllMenus}>
+                <Image
+                  src="/logo.svg"
+                  alt="YZO"
+                  width={36}
+                  height={36}
+                  className={`object-contain ${theme.logoFilter}`}
+                  priority
+                />
+                <span className={`font-bold text-sm whitespace-nowrap ${theme.logoText}`}>
+                  Your Zeros and Ones
+                </span>
+              </Link>
+
+              {/* Desktop Navigation */}
+              <div className="hidden md:flex items-center gap-1">
                 {navItems.map((item) => (
-                  <div key={item.href}>
+                  <div key={item.href} className="relative">
                     {item.hasDropdown ? (
-                      <div>
+                      <div
+                        onMouseEnter={() => setIsServicesOpen(true)}
+                        onMouseLeave={() => setIsServicesOpen(false)}
+                      >
                         <button
-                          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-base font-medium transition-colors ${
-                            isActivePath("/services")
-                              ? "bg-[#20427f] text-white"
-                              : "bg-gray-50 text-gray-700 hover:bg-gray-100"
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
+                            isActivePath("/services") ? theme.navTextActive : theme.navText
                           }`}
-                          onClick={() => setIsServicesOpen(!isServicesOpen)}
                         >
-                          <span>{item.label}</span>
+                          {item.label}
                           <svg
-                            className={`w-5 h-5 transition-transform duration-200 ${
+                            className={`w-3.5 h-3.5 transition-transform duration-300 ${
                               isServicesOpen ? "rotate-180" : ""
                             }`}
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M19 9l-7 7-7-7"
-                            />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                           </svg>
                         </button>
 
+                        {/* Mega Menu Dropdown */}
                         <div
-                          className={`transition-all duration-300 overflow-hidden ${
+                          className={`absolute top-full right-0 pt-4 transition-all duration-300 ${
                             isServicesOpen
-                              ? "max-h-[1000px] opacity-100 mt-2"
-                              : "max-h-0 opacity-0"
+                              ? "opacity-100 visible translate-y-0"
+                              : "opacity-0 invisible -translate-y-2 pointer-events-none"
                           }`}
                         >
-                          <div className="bg-gray-50 rounded-xl p-4 space-y-4">
-                            {services.map((service) => (
-                              <div
-                                key={service.category}
-                                className="border-b border-gray-200 last:border-0 pb-4 last:pb-0"
-                              >
+                          <div className={`w-[900px] rounded-2xl shadow-2xl border overflow-hidden ${theme.dropdown.bg} ${theme.dropdown.border}`}>
+                            {/* Header */}
+                            <div className={`px-8 py-5 border-b ${theme.dropdown.headerBorder}`}>
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <h3 className={`text-xl font-bold ${theme.dropdown.title}`}>Our Services</h3>
+                                  <p className={`text-sm mt-1 ${theme.dropdown.subtitle}`}>
+                                    Comprehensive digital solutions for your business
+                                  </p>
+                                </div>
                                 <Link
-                                  href={service.href}
-                                  className="font-semibold text-gray-900 mb-3 block"
+                                  href="/services"
+                                  className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all border ${theme.dropdown.viewAllBtn}`}
                                   onClick={closeAllMenus}
                                 >
-                                  {service.category}
+                                  View All Services
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                  </svg>
                                 </Link>
-                                <div className="grid grid-cols-2 gap-2">
-                                  {service.subServices.map((sub, idx) => (
-                                    <Link
-                                      key={idx}
-                                      href={sub.href}
-                                      className="text-sm text-gray-600 hover:text-[#20427f] py-1"
-                                      onClick={closeAllMenus}
-                                    >
-                                      {sub.name}
-                                    </Link>
-                                  ))}
-                                </div>
                               </div>
-                            ))}
-                            <Link
-                              href="/services"
-                              className="block w-full text-center py-3 bg-white rounded-xl font-medium text-[#20427f] border border-gray-200"
-                              onClick={closeAllMenus}
-                            >
-                              View All Services
-                            </Link>
+                            </div>
+
+                            {/* All 3 Service Categories Grid */}
+                            <div className={`grid grid-cols-3 divide-x ${theme.dropdown.divider}`}>
+                              {services.map((service) => (
+                                <div key={service.category} className="p-6">
+                                  <Link href={service.href} className="group block mb-5" onClick={closeAllMenus}>
+                                    <div className="flex items-start gap-3">
+                                      <div className={`p-2.5 rounded-xl ${theme.dropdown.categoryIconBg}`}>
+                                        <span className={theme.dropdown.categoryIconColor}>{service.icon}</span>
+                                      </div>
+                                      <div className="flex-1">
+                                        <h4 className={`text-base font-bold flex items-center gap-2 ${theme.dropdown.categoryTitle} ${theme.dropdown.categoryTitleHover} transition-colors`}>
+                                          {service.category}
+                                          <svg className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                          </svg>
+                                        </h4>
+                                        <p className={`text-xs mt-0.5 ${theme.dropdown.categoryDesc}`}>{service.description}</p>
+                                      </div>
+                                    </div>
+                                  </Link>
+                                  <div className="space-y-0.5">
+                                    {service.subServices.map((sub, idx) => (
+                                      <Link
+                                        key={idx}
+                                        href={sub.href}
+                                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all ${theme.dropdown.subServiceText}`}
+                                        onClick={closeAllMenus}
+                                      >
+                                        <svg className={`w-3 h-3 flex-shrink-0 ${theme.dropdown.subServiceIcon}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                        </svg>
+                                        <span className="truncate">{sub.name}</span>
+                                      </Link>
+                                    ))}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+
+                            {/* Footer */}
+                            <div className={`px-8 py-4 ${theme.dropdown.footerBg} border-t ${theme.dropdown.headerBorder}`}>
+                              <div className="flex items-center justify-between">
+                                <p className={`text-sm ${theme.dropdown.footerText}`}>Need help choosing? We're here to guide you.</p>
+                                <Link href="/contact" className={`text-sm font-medium ${theme.dropdown.footerLink} transition-colors`} onClick={closeAllMenus}>
+                                  Contact our team →
+                                </Link>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
                     ) : (
                       <Link
                         href={item.href}
-                        className={`block px-4 py-3 rounded-xl text-base font-medium transition-colors ${
-                          isActivePath(item.href)
-                            ? "bg-[#20427f] text-white"
-                            : "bg-gray-50 text-gray-700 hover:bg-gray-100"
+                        className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
+                          isActivePath(item.href) ? theme.navTextActive : theme.navText
+                        }`}
+                      >
+                        {item.label}
+                      </Link>
+                    )}
+                  </div>
+                ))}
+
+                <Link
+                  href="/contact"
+                  className={`ml-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${theme.contactBtn}`}
+                >
+                  Contact Us
+                </Link>
+              </div>
+
+              {/* Mobile Menu Button */}
+              <button
+                className={`md:hidden relative w-9 h-9 flex items-center justify-center rounded-lg ${theme.hamburgerBg}`}
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                aria-label="Toggle menu"
+              >
+                <div className="w-4 h-3.5 flex flex-col justify-between">
+                  <span className={`w-full h-0.5 rounded-full origin-center transition-all duration-300 ${theme.hamburgerLines} ${isMenuOpen ? "rotate-45 translate-y-1.5" : ""}`} />
+                  <span className={`w-full h-0.5 rounded-full transition-all duration-300 ${theme.hamburgerLines} ${isMenuOpen ? "opacity-0" : ""}`} />
+                  <span className={`w-full h-0.5 rounded-full origin-center transition-all duration-300 ${theme.hamburgerLines} ${isMenuOpen ? "-rotate-45 -translate-y-1.5" : ""}`} />
+                </div>
+              </button>
+            </div>
+          </nav>
+
+          {/* Mobile Menu */}
+          <div className={`md:hidden transition-all duration-300 overflow-hidden ${isMenuOpen ? "max-h-[80vh] opacity-100" : "max-h-0 opacity-0"}`}>
+            <div className={`border-t ${theme.mobile.menuBorder} ${isDark ? "bg-[#060812]" : "bg-white"}`}>
+              <div
+                className="py-4 space-y-2 max-h-[70vh] overflow-y-auto"
+                style={{
+                  paddingLeft: "clamp(2rem, 8vw, 12rem)",
+                  paddingRight: "clamp(2rem, 8vw, 12rem)",
+                }}
+              >
+                {navItems.map((item) => (
+                  <div key={item.href}>
+                    {item.hasDropdown ? (
+                      <div>
+                        <button
+                          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-base font-medium ${
+                            isActivePath("/services") ? theme.mobile.itemActive : theme.mobile.itemDefault
+                          }`}
+                          onClick={() => setIsServicesOpen(!isServicesOpen)}
+                        >
+                          <span>{item.label}</span>
+                          <svg
+                            className={`w-5 h-5 transition-transform duration-200 ${isServicesOpen ? "rotate-180" : ""}`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+
+                        {isServicesOpen && (
+                          <div className={`mt-2 rounded-xl p-3 space-y-3 ${theme.mobile.subMenuBg}`}>
+                            {services.map((service) => (
+                              <div key={service.category} className={`border-b last:border-0 pb-3 last:pb-0 ${theme.mobile.subMenuDivider}`}>
+                                <Link href={service.href} className={`font-semibold mb-2 block text-sm ${theme.mobile.subMenuTitle}`} onClick={closeAllMenus}>
+                                  {service.category}
+                                </Link>
+                                <div className="grid grid-cols-2 gap-1">
+                                  {service.subServices.map((sub, idx) => (
+                                    <Link key={idx} href={sub.href} className={`text-xs py-1 truncate ${theme.mobile.subMenuText}`} onClick={closeAllMenus}>
+                                      {sub.name}
+                                    </Link>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                            <Link href="/services" className={`block w-full text-center py-2.5 rounded-lg font-medium text-sm border ${theme.mobile.viewAllBtn}`} onClick={closeAllMenus}>
+                              View All Services
+                            </Link>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        className={`block px-4 py-3 rounded-xl text-base font-medium ${
+                          isActivePath(item.href) ? theme.mobile.itemActive : theme.mobile.itemDefault
                         }`}
                         onClick={closeAllMenus}
                       >
@@ -540,7 +493,7 @@ export default function NewNavbar() {
                   </div>
                 ))}
 
-                <div className="pt-4 border-t border-gray-200">
+                <div className={`pt-3 border-t ${theme.mobile.menuBorder}`}>
                   <Link
                     href="/contact"
                     className="block w-full text-center bg-gradient-to-r from-[#20427f] to-[#2d5aa8] text-white py-3 rounded-xl font-medium"
@@ -552,8 +505,278 @@ export default function NewNavbar() {
               </div>
             </div>
           </div>
-        </div>
-      </nav>
-    </header>
+        </header>
+      </>
+    );
+  }
+
+  // ========================================
+  // RENDER: Homepage (Floating pill navbar)
+  // ========================================
+  return (
+    <>
+      {isMenuOpen && (
+        <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={closeAllMenus} />
+      )}
+
+      <header
+        className="fixed top-0 left-0 right-0 z-50 flex justify-center"
+        style={{ paddingTop: styles.topPadding }}
+      >
+        <nav
+          style={{
+            width: isMenuOpen ? "min(95%, 1600px)" : `min(${styles.widthPercent}%, 1600px)`,
+            minWidth: "320px",
+          }}
+        >
+          <div
+            className={`${isMenuOpen ? "overflow-hidden" : ""} ${
+              styles.isGlass && !isMenuOpen ? "backdrop-blur-xl" : ""
+            } shadow-lg shadow-black/5`}
+            style={{
+              backgroundColor: theme.navBg,
+              borderRadius: isMenuOpen ? 24 : styles.borderRadius,
+              border: `1px solid ${theme.borderColor}`,
+            }}
+          >
+            {/* Main navbar row */}
+            <div className="flex justify-between items-center py-2 px-4 lg:px-6">
+              {/* Logo */}
+              <Link href="/" className="flex items-center gap-2.5" onClick={closeAllMenus}>
+                <Image
+                  src="/logo.svg"
+                  alt="YZO"
+                  width={32}
+                  height={32}
+                  className={`object-contain ${theme.logoFilter}`}
+                  priority
+                />
+                <span
+                  className={`font-bold text-sm whitespace-nowrap ${theme.logoText}`}
+                  style={{
+                    opacity: isMenuOpen ? 1 : styles.logoTextOpacity,
+                    visibility: styles.logoTextOpacity === 0 && !isMenuOpen ? "hidden" : "visible",
+                    width: styles.logoTextOpacity === 0 && !isMenuOpen ? 0 : "auto",
+                    overflow: "hidden",
+                  }}
+                >
+                  Your Zeros and Ones
+                </span>
+              </Link>
+
+              {/* Desktop Navigation */}
+              <div className="hidden md:flex items-center gap-1">
+                {navItems.map((item) => (
+                  <div key={item.href} className="relative">
+                    {item.hasDropdown ? (
+                      <div
+                        onMouseEnter={() => setIsServicesOpen(true)}
+                        onMouseLeave={() => setIsServicesOpen(false)}
+                      >
+                        <button
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
+                            isActivePath("/services") ? theme.navTextActive : theme.navText
+                          }`}
+                        >
+                          {item.label}
+                          <svg
+                            className={`w-3.5 h-3.5 transition-transform duration-300 ${isServicesOpen ? "rotate-180" : ""}`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+
+                        {/* Mega Menu Dropdown */}
+                        <div
+                          className={`absolute top-full right-0 pt-4 transition-all duration-300 ${
+                            isServicesOpen
+                              ? "opacity-100 visible translate-y-0"
+                              : "opacity-0 invisible -translate-y-2 pointer-events-none"
+                          }`}
+                        >
+                          <div className={`w-[900px] rounded-2xl shadow-2xl border overflow-hidden ${theme.dropdown.bg} ${theme.dropdown.border}`}>
+                            <div className={`px-8 py-5 border-b ${theme.dropdown.headerBorder}`}>
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <h3 className={`text-xl font-bold ${theme.dropdown.title}`}>Our Services</h3>
+                                  <p className={`text-sm mt-1 ${theme.dropdown.subtitle}`}>Comprehensive digital solutions for your business</p>
+                                </div>
+                                <Link
+                                  href="/services"
+                                  className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all border ${theme.dropdown.viewAllBtn}`}
+                                  onClick={closeAllMenus}
+                                >
+                                  View All Services
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                  </svg>
+                                </Link>
+                              </div>
+                            </div>
+
+                            <div className={`grid grid-cols-3 divide-x ${theme.dropdown.divider}`}>
+                              {services.map((service) => (
+                                <div key={service.category} className="p-6">
+                                  <Link href={service.href} className="group block mb-5" onClick={closeAllMenus}>
+                                    <div className="flex items-start gap-3">
+                                      <div className={`p-2.5 rounded-xl ${theme.dropdown.categoryIconBg}`}>
+                                        <span className={theme.dropdown.categoryIconColor}>{service.icon}</span>
+                                      </div>
+                                      <div className="flex-1">
+                                        <h4 className={`text-base font-bold flex items-center gap-2 ${theme.dropdown.categoryTitle} ${theme.dropdown.categoryTitleHover} transition-colors`}>
+                                          {service.category}
+                                          <svg className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                          </svg>
+                                        </h4>
+                                        <p className={`text-xs mt-0.5 ${theme.dropdown.categoryDesc}`}>{service.description}</p>
+                                      </div>
+                                    </div>
+                                  </Link>
+                                  <div className="space-y-0.5">
+                                    {service.subServices.map((sub, idx) => (
+                                      <Link
+                                        key={idx}
+                                        href={sub.href}
+                                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all ${theme.dropdown.subServiceText}`}
+                                        onClick={closeAllMenus}
+                                      >
+                                        <svg className={`w-3 h-3 flex-shrink-0 ${theme.dropdown.subServiceIcon}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                        </svg>
+                                        <span className="truncate">{sub.name}</span>
+                                      </Link>
+                                    ))}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+
+                            <div className={`px-8 py-4 ${theme.dropdown.footerBg} border-t ${theme.dropdown.headerBorder}`}>
+                              <div className="flex items-center justify-between">
+                                <p className={`text-sm ${theme.dropdown.footerText}`}>Need help choosing? We're here to guide you.</p>
+                                <Link href="/contact" className={`text-sm font-medium ${theme.dropdown.footerLink} transition-colors`} onClick={closeAllMenus}>
+                                  Contact our team →
+                                </Link>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
+                          isActivePath(item.href) ? theme.navTextActive : theme.navText
+                        }`}
+                      >
+                        {item.label}
+                      </Link>
+                    )}
+                  </div>
+                ))}
+
+                <Link
+                  href="/contact"
+                  className={`ml-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${theme.contactBtn}`}
+                >
+                  Contact Us
+                </Link>
+              </div>
+
+              {/* Mobile Menu Button */}
+              <button
+                className={`md:hidden relative w-9 h-9 flex items-center justify-center rounded-lg ${theme.hamburgerBg}`}
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                aria-label="Toggle menu"
+              >
+                <div className="w-4 h-3.5 flex flex-col justify-between">
+                  <span className={`w-full h-0.5 rounded-full origin-center transition-all duration-300 ${theme.hamburgerLines} ${isMenuOpen ? "rotate-45 translate-y-1.5" : ""}`} />
+                  <span className={`w-full h-0.5 rounded-full transition-all duration-300 ${theme.hamburgerLines} ${isMenuOpen ? "opacity-0" : ""}`} />
+                  <span className={`w-full h-0.5 rounded-full origin-center transition-all duration-300 ${theme.hamburgerLines} ${isMenuOpen ? "-rotate-45 -translate-y-1.5" : ""}`} />
+                </div>
+              </button>
+            </div>
+
+            {/* Mobile Menu */}
+            {isMenuOpen && (
+              <div className={`md:hidden border-t ${theme.mobile.menuBorder}`}>
+                <div className="py-4 px-4 space-y-2 max-h-[70vh] overflow-y-auto">
+                  {navItems.map((item) => (
+                    <div key={item.href}>
+                      {item.hasDropdown ? (
+                        <div>
+                          <button
+                            className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-base font-medium ${
+                              isActivePath("/services") ? theme.mobile.itemActive : theme.mobile.itemDefault
+                            }`}
+                            onClick={() => setIsServicesOpen(!isServicesOpen)}
+                          >
+                            <span>{item.label}</span>
+                            <svg
+                              className={`w-5 h-5 transition-transform duration-200 ${isServicesOpen ? "rotate-180" : ""}`}
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </button>
+
+                          {isServicesOpen && (
+                            <div className={`mt-2 rounded-xl p-3 space-y-3 ${theme.mobile.subMenuBg}`}>
+                              {services.map((service) => (
+                                <div key={service.category} className={`border-b last:border-0 pb-3 last:pb-0 ${theme.mobile.subMenuDivider}`}>
+                                  <Link href={service.href} className={`font-semibold mb-2 block text-sm ${theme.mobile.subMenuTitle}`} onClick={closeAllMenus}>
+                                    {service.category}
+                                  </Link>
+                                  <div className="grid grid-cols-2 gap-1">
+                                    {service.subServices.map((sub, idx) => (
+                                      <Link key={idx} href={sub.href} className={`text-xs py-1 truncate ${theme.mobile.subMenuText}`} onClick={closeAllMenus}>
+                                        {sub.name}
+                                      </Link>
+                                    ))}
+                                  </div>
+                                </div>
+                              ))}
+                              <Link href="/services" className={`block w-full text-center py-2.5 rounded-lg font-medium text-sm border ${theme.mobile.viewAllBtn}`} onClick={closeAllMenus}>
+                                View All Services
+                              </Link>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <Link
+                          href={item.href}
+                          className={`block px-4 py-3 rounded-xl text-base font-medium ${
+                            isActivePath(item.href) ? theme.mobile.itemActive : theme.mobile.itemDefault
+                          }`}
+                          onClick={closeAllMenus}
+                        >
+                          {item.label}
+                        </Link>
+                      )}
+                    </div>
+                  ))}
+
+                  <div className={`pt-3 border-t ${theme.mobile.menuBorder}`}>
+                    <Link
+                      href="/contact"
+                      className="block w-full text-center bg-gradient-to-r from-[#20427f] to-[#2d5aa8] text-white py-3 rounded-xl font-medium"
+                      onClick={closeAllMenus}
+                    >
+                      Contact Us
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </nav>
+      </header>
+    </>
   );
 }

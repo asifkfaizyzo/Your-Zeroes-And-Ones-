@@ -85,7 +85,7 @@ export default async function PostPage({ params }) {
   if (!post) {
     return (
       <>
-        <Header />
+        
         <main className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
           <div className="text-center max-w-md">
             <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
@@ -131,7 +131,7 @@ export default async function PostPage({ params }) {
 
   return (
     <>
-      <Header />
+      
 
       <article className="min-h-screen">
         {/* HERO - Compact & Responsive */}

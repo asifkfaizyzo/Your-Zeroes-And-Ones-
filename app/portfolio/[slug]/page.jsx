@@ -67,7 +67,7 @@ export default async function ProjectDetailPage({ params }) {
 
   return (
     <>
-      <Header />
+      
       <ProjectDetail project={project} relatedProjects={relatedProjects} />
       <Footer />
     </>

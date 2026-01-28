@@ -9,21 +9,14 @@ import { LogoMorphAnimation } from './LogoAnimation'
 // CONFIGURATION - Set these to true/false
 // ============================================
 const LOADER_CONFIG = {
-  enableFirstLoad: false,      // Show full loader on initial page load
-  enableNavigation: false,    // Show minimal loader on page navigation
-  
-  // Timing (in milliseconds)
-  firstLoadDuration: 2500,    // How long to show first load animation
-  navigationDuration: 800,    // How long to show navigation animation
-  
-  // Sizes
-  firstLoadLogoSize: 160,     // Logo size for first load
-  navigationLogoSize: 100,    // Logo size for navigation
+  enableFirstLoad: true,
+  enableNavigation: false,
+  firstLoadDuration: 2500,
+  navigationDuration: 800,
+  firstLoadLogoSize: 160,
+  navigationLogoSize: 100,
 }
 
-// ============================================
-// STATES
-// ============================================
 const STATES = {
   HIDDEN: 'hidden',
   ENTERING: 'entering',
@@ -50,9 +43,6 @@ export default function PageLoader({ children }) {
     })
   }, [])
 
-  // ============================================
-  // FIRST LOAD SEQUENCE
-  // ============================================
   useEffect(() => {
     if (hasInitialized.current) return
     hasInitialized.current = true
@@ -82,9 +72,6 @@ export default function PageLoader({ children }) {
     runInitialSequence()
   }, [transitionToState])
 
-  // ============================================
-  // NAVIGATION SEQUENCE
-  // ============================================
   useEffect(() => {
     if (isFirstLoad) return
     if (!LOADER_CONFIG.enableNavigation) return
@@ -113,15 +100,11 @@ export default function PageLoader({ children }) {
     runTransitionSequence()
   }, [pathname, searchParams, isFirstLoad, transitionToState])
 
-  // ============================================
-  // HELPER FUNCTIONS
-  // ============================================
   const getOverlayClasses = () => {
     switch (loaderState) {
       case STATES.HIDDEN:
         return 'opacity-0 pointer-events-none'
       case STATES.ENTERING:
-        return 'opacity-100'
       case STATES.VISIBLE:
         return 'opacity-100'
       case STATES.EXITING:
@@ -146,9 +129,6 @@ export default function PageLoader({ children }) {
     return <>{children}</>
   }
 
-  // ============================================
-  // FULL LOADER (First Load) - INVERTED COLORS
-  // ============================================
   const renderFullLoader = () => (
     <div 
       className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center 
@@ -158,9 +138,7 @@ export default function PageLoader({ children }) {
         visibility: loaderState === STATES.HIDDEN ? 'hidden' : 'visible'
       }}
     >
-      {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Grid */}
         <div 
           className="absolute inset-0 transition-opacity duration-1000"
           style={{
@@ -173,7 +151,6 @@ export default function PageLoader({ children }) {
           }}
         />
         
-        {/* Orbs - Lighter, softer colors for white background */}
         <div 
           className={`absolute top-1/4 left-1/4 w-72 h-72 rounded-full transition-all duration-1000
                       ${loaderState === STATES.VISIBLE ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}
@@ -203,12 +180,10 @@ export default function PageLoader({ children }) {
         />
       </div>
 
-      {/* Main Content */}
       <div 
         className={`relative z-10 flex flex-col items-center transition-all duration-500 
                     ease-[cubic-bezier(0.34,1.56,0.64,1)] ${getContentClasses()}`}
       >
-        {/* Logo */}
         <div className="mb-8">
           <LogoMorphAnimation 
             size={LOADER_CONFIG.firstLoadLogoSize} 
@@ -217,7 +192,6 @@ export default function PageLoader({ children }) {
           />
         </div>
 
-        {/* Company Name - Dark blue gradient text */}
         <div className="mb-6 overflow-hidden">
           <div 
             className={`transition-all duration-700 delay-200 ease-out ${
@@ -234,7 +208,6 @@ export default function PageLoader({ children }) {
           </div>
         </div>
 
-        {/* Tagline - Dark text */}
         <div 
           className={`mb-8 transition-all duration-700 delay-300 ease-out ${
             loaderState === STATES.VISIBLE 
@@ -249,7 +222,6 @@ export default function PageLoader({ children }) {
           </p>
         </div>
 
-        {/* Progress Bar */}
         <div 
           className={`flex flex-col items-center gap-4 transition-all duration-500 delay-400 ${
             loaderState === STATES.VISIBLE ? 'opacity-100' : 'opacity-0'
@@ -266,37 +238,9 @@ export default function PageLoader({ children }) {
               }}
             />
           </div>
-          
-          {/* Dots
-          <div className="flex gap-1.5">
-            {[0, 1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-[#0f172a] to-[#3b82f6]"
-                style={{
-                  animation: loaderState === STATES.VISIBLE 
-                    ? `bounce-dot 1.4s ease-in-out ${i * 0.1}s infinite` 
-                    : 'none',
-                  opacity: loaderState === STATES.VISIBLE ? 1 : 0,
-                  transition: 'opacity 0.3s ease-out',
-                  transitionDelay: `${i * 0.05}s`
-                }}
-              />
-            ))}
-          </div> */}
         </div>
       </div>
 
-      {/* Bottom Text */}
-      <div 
-        className={`absolute bottom-8 left-0 right-0 flex justify-center transition-all duration-500 delay-500 ${
-          loaderState === STATES.VISIBLE ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-        }`}
-      >
-
-      </div>
-
-      {/* Corner Decorations - Dark blue borders */}
       <div className={`absolute top-6 left-6 w-16 h-16 border-l-2 border-t-2 border-[#0f172a]/20 rounded-tl-lg
                       transition-all duration-700 ${loaderState === STATES.VISIBLE ? 'opacity-100' : 'opacity-0'}`} />
       <div className={`absolute top-6 right-6 w-16 h-16 border-r-2 border-t-2 border-[#0f172a]/20 rounded-tr-lg
@@ -308,9 +252,6 @@ export default function PageLoader({ children }) {
     </div>
   )
 
-  // ============================================
-  // MINIMAL LOADER (Navigation) - INVERTED COLORS
-  // ============================================
   const renderMinimalLoader = () => (
     <div 
       className={`fixed inset-0 z-[9999] flex items-center justify-center 
@@ -320,7 +261,6 @@ export default function PageLoader({ children }) {
         visibility: loaderState === STATES.HIDDEN ? 'hidden' : 'visible'
       }}
     >
-      {/* Subtle Background */}
       <div 
         className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full 
                     transition-all duration-500 ${loaderState === STATES.VISIBLE ? 'opacity-100' : 'opacity-0'}`}
@@ -330,7 +270,6 @@ export default function PageLoader({ children }) {
         }}
       />
 
-      {/* Logo Only */}
       <div 
         className={`relative z-10 transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
           loaderState === STATES.VISIBLE 
@@ -350,9 +289,6 @@ export default function PageLoader({ children }) {
     </div>
   )
 
-  // ============================================
-  // RENDER
-  // ============================================
   const shouldShowLoader = loaderState !== STATES.HIDDEN
   const showFullLoader = isFirstLoad && LOADER_CONFIG.enableFirstLoad
   const showMinimalLoader = !isFirstLoad && LOADER_CONFIG.enableNavigation
@@ -363,19 +299,20 @@ export default function PageLoader({ children }) {
       {shouldShowLoader && showFullLoader && renderFullLoader()}
       {shouldShowLoader && showMinimalLoader && renderMinimalLoader()}
 
-      {/* Page Content */}
+      {/* 
+        IMPORTANT: No wrapper div with transform! 
+        Transform creates a new stacking context that breaks position:fixed in children.
+        Instead, render children directly and use CSS classes for animation.
+      */}
       <div 
-        className="transition-all duration-500 ease-out"
-        style={{
-          opacity: showContent ? 1 : 0,
-          transform: showContent ? 'translateY(0)' : 'translateY(20px)',
-          visibility: showContent ? 'visible' : 'hidden'
-        }}
+        className={`transition-opacity duration-500 ease-out ${
+          showContent ? 'opacity-100' : 'opacity-0'
+        }`}
       >
         {children}
       </div>
 
-      <style jsx>{`
+      <style jsx global>{`
         @keyframes float-orb-1 {
           0%, 100% { transform: translate(0, 0) scale(1); }
           33% { transform: translate(30px, -20px) scale(1.1); }
@@ -385,10 +322,6 @@ export default function PageLoader({ children }) {
           0%, 100% { transform: translate(0, 0) scale(1); }
           33% { transform: translate(-40px, 30px) scale(1.05); }
           66% { transform: translate(30px, -30px) scale(0.9); }
-        }
-        @keyframes bounce-dot {
-          0%, 80%, 100% { transform: translateY(0); }
-          40% { transform: translateY(-6px); }
         }
         @keyframes shimmer-bar {
           0% { background-position: -200% 0; }

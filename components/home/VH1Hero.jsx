@@ -21,11 +21,19 @@ const CONFIG = {
 
   // Enable/disable mouse interaction on mobile (only if MOBILE_LIQUID_ETHER is true)
   MOBILE_MOUSE_INTERACTION: true,
+
+  // Delay for text animations on FIRST LOAD (accounts for page loader)
+  // PageLoader: entering(300) + visible(2500) + exiting(600) + buffer(200) ≈ 3600ms
+  FIRST_LOAD_DELAY: 3600,
+
+  // Delay for navigation (no loader, just slight stagger)
+  NAVIGATION_DELAY: 100,
 };
 
 export default function VH1Hero() {
   const [isMobile, setIsMobile] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [shouldAnimate, setShouldAnimate] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
@@ -36,7 +44,27 @@ export default function VH1Hero() {
 
     checkMobile();
     window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+
+    // Check if this is the first load or a navigation
+    const hasVisited = sessionStorage.getItem("yzo-has-visited");
+    const delay = hasVisited
+      ? CONFIG.NAVIGATION_DELAY
+      : CONFIG.FIRST_LOAD_DELAY;
+
+    // Mark as visited for future navigations
+    if (!hasVisited) {
+      sessionStorage.setItem("yzo-has-visited", "true");
+    }
+
+    // Delay animations accordingly
+    const animationTimer = setTimeout(() => {
+      setShouldAnimate(true);
+    }, delay);
+
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+      clearTimeout(animationTimer);
+    };
   }, []);
 
   return (
@@ -44,27 +72,23 @@ export default function VH1Hero() {
       {/* Background - Conditional based on screen size */}
       <div className="absolute inset-0 z-0">
         {!isClient ? (
-          // SSR/Initial load: Show neutral dark background
           <div className="absolute inset-0 bg-[#060010]" />
         ) : isMobile ? (
-          // 📱 MOBILE/TABLET
           CONFIG.MOBILE_LIQUID_ETHER ? (
-            // Animated LiquidEther for mobile
             <LiquidEther
               colors={["#3b6cc9", "#5b8def", "#2d5aa8"]}
-              mouseForce={CONFIG.MOBILE_MOUSE_INTERACTION ? 15 : 0} // Reduced force for mobile
-              cursorSize={80} // Smaller cursor for mobile
+              mouseForce={CONFIG.MOBILE_MOUSE_INTERACTION ? 15 : 0}
+              cursorSize={80}
               isViscous={true}
-              viscous={20} // Less viscous on mobile (smoother)
-              resolution={0.6} // Lower resolution for better mobile performance
+              viscous={20}
+              resolution={0.6}
               autoDemo={true}
-              autoSpeed={0.3} // Slightly slower auto movement
-              autoIntensity={1.5} // Less intense auto demo
+              autoSpeed={0.3}
+              autoIntensity={1.5}
               takeoverDuration={0.3}
               autoResumeDelay={2000}
             />
           ) : (
-            // Static gradient fallback
             <>
               <div className="absolute inset-0 bg-gradient-to-br from-[#060010] via-[#010e24] to-[#060010]" />
               <div
@@ -81,7 +105,6 @@ export default function VH1Hero() {
             </>
           )
         ) : (
-          // 💻 LAPTOP/DESKTOP: LiquidEther animated background
           <LiquidEther
             colors={["#3b6cc9", "#5b8def", "#2d5aa8"]}
             mouseForce={CONFIG.DESKTOP_MOUSE_INTERACTION ? 25 : 0}
@@ -111,51 +134,70 @@ export default function VH1Hero() {
 
       {/* Content */}
       <div className="relative z-10 text-center px-6 sm:px-6 md:px-8 max-w-6xl mx-auto flex flex-col justify-center min-h-[80vh] md:min-h-0">
-        {/* Welcome text - inline on mobile */}
+        {/* Welcome text */}
         <h1 className="mb-5 md:mb-8">
           <span className="block text-white/60 text-xs tracking-[0.2em] uppercase mb-3 md:mb-4">
-            <BlurText
-              text="Welcome to"
-              delay={100}
-              animateBy="words"
-              direction="top"
-              align="center"
-              className="md:text-lg lg:text-xl md:tracking-widest"
-            />
+            {shouldAnimate ? (
+              <BlurText
+                text="Welcome to"
+                delay={100}
+                animateBy="words"
+                direction="top"
+                align="center"
+                className="md:text-lg lg:text-xl md:tracking-widest"
+              />
+            ) : (
+              <span className="md:text-lg lg:text-xl md:tracking-widest opacity-0">
+                Welcome to
+              </span>
+            )}
           </span>
 
           <span className="block text-[2.25rem] leading-[1.15] sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold">
-            <ShinyText
-              text="Your Zeros and Ones"
-              speed={1.5}
-              delay={0}
-              color="#5b8def"
-              shineColor="#ffffff"
-              spread={150}
-              direction="left"
-              className="font-bold"
-              loop={true}
-            />
+            {shouldAnimate ? (
+              <ShinyText
+                text="Your Zeros and Ones"
+                speed={2}
+                delay={0.8}
+                color="#5b8def"
+                shineColor="#ffffff"
+                spread={150}
+                direction="left"
+                className="font-bold"
+                loop={true}
+              />
+            ) : (
+              <span className="font-bold text-[#5b8def] opacity-0">
+                Your Zeros and Ones
+              </span>
+            )}
           </span>
         </h1>
 
         {/* Tagline */}
         <div className="mb-8 md:mb-12 px-2">
-          <BlurText
-            text="We complete your zeros and ones — transforming your digital vision into reality."
-            delay={50}
-            animateBy="words"
-            direction="bottom"
-            align="center"
-            className="text-white/60 text-sm leading-relaxed md:text-lg lg:text-xl max-w-md md:max-w-2xl mx-auto md:leading-relaxed"
-          />
+          {shouldAnimate ? (
+            <BlurText
+              text="We complete your zeros and ones — transforming your digital vision into reality."
+              delay={50}
+              animateBy="words"
+              direction="bottom"
+              align="center"
+              className="text-white/60 text-sm leading-relaxed md:text-lg lg:text-xl max-w-md md:max-w-2xl mx-auto md:leading-relaxed"
+            />
+          ) : (
+            <span className="text-white/60 text-sm leading-relaxed md:text-lg lg:text-xl max-w-md md:max-w-2xl mx-auto md:leading-relaxed opacity-0 block">
+              We complete your zeros and ones — transforming your digital vision
+              into reality.
+            </span>
+          )}
         </div>
 
         {/* CTA Buttons */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.5 }}
+          animate={shouldAnimate ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.8, delay: shouldAnimate ? 1.2 : 0 }}
           className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center px-4 sm:px-0"
         >
           {/* Explore Services */}
@@ -189,7 +231,7 @@ export default function VH1Hero() {
             </Link>
           </GlareHover>
 
-          {/* Get in Touch – Transparent */}
+          {/* Get in Touch */}
           <GlareHover
             glareColor="#ffffff"
             glareOpacity={0.28}
@@ -222,11 +264,11 @@ export default function VH1Hero() {
         </motion.div>
       </div>
 
-      {/* Scroll indicator - Hidden on mobile */}
+      {/* Scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2.5 }}
+        animate={shouldAnimate ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ delay: shouldAnimate ? 2 : 0 }}
         className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 z-20 hidden sm:block"
       >
         <motion.div

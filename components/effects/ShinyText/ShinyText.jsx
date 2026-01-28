@@ -1,5 +1,6 @@
+// components/effects/ShinyText/ShinyText.jsx
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { motion, useMotionValue, useAnimationFrame, useTransform } from 'motion/react';
+import { motion, useMotionValue, useAnimationFrame, useTransform } from 'framer-motion';
 
 const ShinyText = ({
   text,
@@ -12,19 +13,23 @@ const ShinyText = ({
   yoyo = false,
   pauseOnHover = false,
   direction = 'left',
-  delay = 0
+  delay = 0,
+  loop = true,
 }) => {
   const [isPaused, setIsPaused] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
   const progress = useMotionValue(0);
   const elapsedRef = useRef(0);
   const lastTimeRef = useRef(null);
   const directionRef = useRef(direction === 'left' ? 1 : -1);
+  const hasCompletedOnce = useRef(false);
 
-  const animationDuration = speed * 1000;
-  const delayDuration = delay * 1000;
+  // FIXED: Both in milliseconds now
+  const animationDuration = speed * 1000;      // speed is in seconds -> convert to ms
+  const delayDuration = delay * 1000;          // delay is in seconds -> convert to ms
 
-  useAnimationFrame(time => {
-    if (disabled || isPaused) {
+  useAnimationFrame((time) => {
+    if (disabled || isPaused || (!loop && isComplete)) {
       lastTimeRef.current = null;
       return;
     }
@@ -39,39 +44,44 @@ const ShinyText = ({
 
     elapsedRef.current += deltaTime;
 
-    // Animation goes from 0 to 100
     if (yoyo) {
       const cycleDuration = animationDuration + delayDuration;
       const fullCycle = cycleDuration * 2;
       const cycleTime = elapsedRef.current % fullCycle;
 
       if (cycleTime < animationDuration) {
-        // Forward animation: 0 -> 100
         const p = (cycleTime / animationDuration) * 100;
         progress.set(directionRef.current === 1 ? p : 100 - p);
       } else if (cycleTime < cycleDuration) {
-        // Delay at end
         progress.set(directionRef.current === 1 ? 100 : 0);
       } else if (cycleTime < cycleDuration + animationDuration) {
-        // Reverse animation: 100 -> 0
         const reverseTime = cycleTime - cycleDuration;
         const p = 100 - (reverseTime / animationDuration) * 100;
         progress.set(directionRef.current === 1 ? p : 100 - p);
       } else {
-        // Delay at start
         progress.set(directionRef.current === 1 ? 0 : 100);
+      }
+
+      if (!loop && elapsedRef.current >= fullCycle && !hasCompletedOnce.current) {
+        hasCompletedOnce.current = true;
+        setIsComplete(true);
       }
     } else {
       const cycleDuration = animationDuration + delayDuration;
-      const cycleTime = elapsedRef.current % cycleDuration;
+      const cycleTime = loop
+        ? elapsedRef.current % cycleDuration
+        : Math.min(elapsedRef.current, cycleDuration);
 
       if (cycleTime < animationDuration) {
-        // Animation phase: 0 -> 100
         const p = (cycleTime / animationDuration) * 100;
         progress.set(directionRef.current === 1 ? p : 100 - p);
       } else {
-        // Delay phase - hold at end (shine off-screen)
         progress.set(directionRef.current === 1 ? 100 : 0);
+
+        if (!loop && !hasCompletedOnce.current) {
+          hasCompletedOnce.current = true;
+          setIsComplete(true);
+        }
       }
     }
   });
@@ -79,12 +89,22 @@ const ShinyText = ({
   useEffect(() => {
     directionRef.current = direction === 'left' ? 1 : -1;
     elapsedRef.current = 0;
-    progress.set(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [direction]);
+    lastTimeRef.current = null;
+    hasCompletedOnce.current = false;
+    setIsComplete(false);
+    progress.set(direction === 'left' ? 0 : 100);
+  }, [direction, loop, progress]);
 
-  // Transform: p=0 -> 150% (shine off right), p=100 -> -50% (shine off left)
-  const backgroundPosition = useTransform(progress, p => `${150 - p * 2}% center`);
+  useEffect(() => {
+    if (!disabled) {
+      elapsedRef.current = 0;
+      lastTimeRef.current = null;
+      hasCompletedOnce.current = false;
+      setIsComplete(false);
+    }
+  }, [disabled]);
+
+  const backgroundPosition = useTransform(progress, (p) => `${150 - p * 2}% center`);
 
   const handleMouseEnter = useCallback(() => {
     if (pauseOnHover) setIsPaused(true);
@@ -99,7 +119,7 @@ const ShinyText = ({
     backgroundSize: '200% auto',
     WebkitBackgroundClip: 'text',
     backgroundClip: 'text',
-    WebkitTextFillColor: 'transparent'
+    WebkitTextFillColor: 'transparent',
   };
 
   return (

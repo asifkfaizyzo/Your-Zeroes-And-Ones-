@@ -149,7 +149,7 @@ function LogoDesign() {
 
   return (
     <>
-      <main className="min-h-screen bg-white">
+      <main className="min-h-screen bg-white pt-10">
         {/* Hero Section */}
         <section className="relative bg-gradient-to-br from-[#20427f] to-[#1a3566] py-16 overflow-hidden">
           <div className="absolute inset-0 bg-black/10"></div>

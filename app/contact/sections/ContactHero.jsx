@@ -100,7 +100,7 @@ export default function ContactHero() {
         }}
       >
         {/* Badge with Pulse Effect */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, y: -20, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
@@ -113,7 +113,7 @@ export default function ContactHero() {
           <span className="text-sm font-medium text-white/90">
             We're here to help you succeed
           </span>
-        </motion.div>
+        </motion.div> */}
 
         {/* Heading with Jump Animation */}
         <motion.div

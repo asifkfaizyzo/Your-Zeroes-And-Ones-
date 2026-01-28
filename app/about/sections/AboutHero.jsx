@@ -117,21 +117,6 @@ export default function AboutHero() {
           paddingRight: 'clamp(2rem, 8vw, 12rem)'
         }}
       >
-        {/* Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: -20, scale: 0.9 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
-          className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 mb-6"
-        >
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400"></span>
-          </span>
-          <span className="text-sm font-medium text-white/90">
-            Transforming Ideas into Reality Since 2010
-          </span>
-        </motion.div>
 
         {/* Heading */}
         <motion.div
@@ -139,7 +124,7 @@ export default function AboutHero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2, type: "spring", bounce: 0.3 }}
         >
-          <motion.h1 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight">
+          <motion.h1 className="pt-10 text-3xl md:text-5xl lg:text-6xl font-bold leading-tight">
             <motion.span
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

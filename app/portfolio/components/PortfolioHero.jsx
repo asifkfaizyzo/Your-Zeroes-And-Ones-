@@ -44,7 +44,7 @@ export default function PortfolioHero({ stats }) {
       >
         <div className="text-center py-8  xl:pb-35">
           {/* Badge - ✅ Dynamic projects count */}
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -57,14 +57,14 @@ export default function PortfolioHero({ stats }) {
             <span className="text-sm font-medium text-white/90">
               {heroStats.projects}+ Projects Delivered
             </span>
-          </motion.div>
+          </motion.div> */}
 
           {/* Heading */}
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6"
+            className="pt-10 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6"
           >
             Our{" "}
             <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">

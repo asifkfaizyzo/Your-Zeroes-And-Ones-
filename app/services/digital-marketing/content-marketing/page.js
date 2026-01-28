@@ -199,7 +199,7 @@ export default function ContentMarketing() {
 
   return (
     <>
-      <main className="min-h-screen bg-white">
+      <main className="min-h-screen bg-white pt-10">
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-[#20427f]/10 via-white to-[#20427f]/5 py-20">
           <div

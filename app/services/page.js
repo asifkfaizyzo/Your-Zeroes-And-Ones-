@@ -160,7 +160,7 @@ export default function Services() {
 
   return (
     <>
-      <main className="min-h-screen bg-white">
+      <main className="min-h-screen bg-white pt-10">
         {/* Hero Section */}
         <section className="py-16 sm:py-20">
           <div className="max-w-4xl mx-auto px-6 text-center">

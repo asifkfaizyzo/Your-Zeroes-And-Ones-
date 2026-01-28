@@ -9,9 +9,9 @@ export default function TestimonialsGrid({ testimonials, isMobile }) {
   const getGridClasses = () => {
     const count = testimonials.length;
     if (count === 1) return "grid-cols-1 max-w-sm mx-auto";
-    if (count === 2) return "grid-cols-1 md:grid-cols-2 max-w-2xl mx-auto";
-    if (count === 3) return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-4xl mx-auto";
-    return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
+    if (count === 2) return "grid-cols-1 md:grid-cols-2 max-w-3xl mx-auto";
+    if (count === 3) return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto";
+    return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-8";
   };
 
   return (

@@ -79,7 +79,12 @@ export default function TestimonialsSection() {
               />
             </>
           ) : (
-            <Aurora colorStops={["#0f2744", "#1a3a5c", "#244a6e"]} blend={0.5} amplitude={0.8} speed={0.5} />
+            <Aurora
+              colorStops={["#0f2744", "#1a3a5c", "#244a6e"]}
+              blend={0.5}
+              amplitude={0.8}
+              speed={0.5}
+            />
           )}
         </div>
         <div className="absolute inset-0 bg-[#0a1525]/40 z-[1]" />
@@ -103,7 +108,10 @@ export default function TestimonialsSection() {
   }
 
   return (
-    <section className="relative py-20 lg:py-28 overflow-hidden bg-[#060812]" id="testimonials">
+    <section
+      className="relative py-20 lg:py-28 overflow-hidden bg-[#060812]"
+      id="testimonials"
+    >
       {/* Background */}
       <div className="absolute inset-0 z-0">
         {!isClient ? (
@@ -122,7 +130,12 @@ export default function TestimonialsSection() {
             />
           </>
         ) : (
-          <Aurora colorStops={["#0f2744", "#060812", "#0f2744"]} blend={0.5} amplitude={0.8} speed={0.5} />
+          <Aurora
+            colorStops={["#0f2744", "#060812", "#0f2744"]}
+            blend={0.5}
+            amplitude={0.8}
+            speed={0.5}
+          />
         )}
       </div>
 
@@ -140,8 +153,15 @@ export default function TestimonialsSection() {
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6">
         {/* Header */}
         <div className="text-center mb-12 lg:mb-16">
-          <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-4">
-            <span className="text-[#5b8def] text-sm font-semibold uppercase tracking-[0.2em]">Client Testimonials</span>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-4"
+          >
+            <span className="text-[#5b8def] text-sm font-semibold uppercase tracking-[0.2em]">
+              Client Testimonials
+            </span>
           </motion.div>
 
           <div className="mb-4">
@@ -150,7 +170,8 @@ export default function TestimonialsSection() {
               delay={80}
               animateBy="words"
               direction="top"
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mx-auto"
+              align="center" // ADD THIS
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white"
             />
           </div>
 
@@ -160,6 +181,7 @@ export default function TestimonialsSection() {
               delay={60}
               animateBy="words"
               direction="top"
+              align="center" // ADD THIS
               className="text-white/50 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed font-normal"
             />
           </div>
@@ -189,8 +211,18 @@ export default function TestimonialsSection() {
               className="inline-flex items-center gap-2 px-6 py-3 bg-[#1e3a6e] text-white rounded-full font-semibold hover:bg-[#2d5aa8] transition-all duration-300 hover:gap-4"
             >
               View All Testimonials
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 8l4 4m0 0l-4 4m4-4H3"
+                />
               </svg>
             </Link>
           </GlareHover>

@@ -2,6 +2,21 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 
+// Helper to convert local video paths to streaming endpoint (iOS fix)
+const getStreamingUrl = (url) => {
+  if (!url) return '';
+  // External URLs - use as-is
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  // Local uploads - use streaming API
+  if (url.startsWith('/uploads/')) {
+    const videoPath = url.slice(1); // Remove leading slash
+    return `/api/stream/video?path=${encodeURIComponent(videoPath)}`;
+  }
+  return url;
+};
+
 const itemVariants = {
   hidden: { y: 20, opacity: 0 },
   visible: {
@@ -50,6 +65,8 @@ export default function TestimonialCard({ item, index = 0 }) {
   useEffect(() => {
     if (videoRef.current) {
       if (isHovering) {
+        // iOS requires muted for autoplay
+        videoRef.current.muted = true;
         videoRef.current.play().catch(() => {});
       } else {
         videoRef.current.pause();
@@ -116,13 +133,15 @@ export default function TestimonialCard({ item, index = 0 }) {
                 }`}
               />
               
-              {/* Video (plays on hover) */}
+              {/* Video (plays on hover) - USING STREAMING URL */}
               <video
                 ref={videoRef}
-                src={videoUrl}
-                muted={isMuted}
+                src={getStreamingUrl(videoUrl)}
+                muted
                 loop
                 playsInline
+                webkit-playsinline="true"
+                preload="none"
                 className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 ${
                   isHovering ? 'opacity-100 scale-100' : 'opacity-0 scale-100'
                 }`}
@@ -144,11 +163,8 @@ export default function TestimonialCard({ item, index = 0 }) {
                 isHovering ? 'opacity-0' : 'opacity-100'
               }`}>
                 <div className="relative">
-                  {/* Pulsing rings */}
                   <div className="absolute inset-0 w-16 h-16 rounded-full bg-white/20 animate-ping" style={{ animationDuration: '2s' }} />
                   <div className="absolute inset-0 w-16 h-16 rounded-full bg-white/10 animate-ping" style={{ animationDuration: '2s', animationDelay: '0.5s' }} />
-                  
-                  {/* Center circle with hover icon */}
                   <div className="relative w-16 h-16 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-lg">
                     <div className="flex flex-col items-center">
                       <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -179,11 +195,13 @@ export default function TestimonialCard({ item, index = 0 }) {
                 isHovering ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
               }`}>
                 <div className="flex items-center justify-between">
-                  {/* Mute Button */}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       setIsMuted(!isMuted);
+                      if (videoRef.current) {
+                        videoRef.current.muted = !isMuted;
+                      }
                     }}
                     className="p-2 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-sm transition-colors"
                     aria-label={isMuted ? "Unmute" : "Mute"}
@@ -199,10 +217,7 @@ export default function TestimonialCard({ item, index = 0 }) {
                       </svg>
                     )}
                   </button>
-
                   <span className="text-xs text-white/80">Click for full video</span>
-
-                  {/* Fullscreen Button */}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -222,10 +237,8 @@ export default function TestimonialCard({ item, index = 0 }) {
 
           {/* Content - Different layout for video vs quote-only */}
           <div className={`p-5 flex-1 flex flex-col ${!hasVideo ? 'justify-center' : ''}`}>
-            {/* Quote Section */}
             <div className={`${!hasVideo ? 'flex-1 flex flex-col justify-center' : 'flex-1'}`}>
               <div className={`relative ${!hasVideo ? 'text-center' : ''}`}>
-                {/* Quote mark for non-video cards - centered */}
                 {!hasVideo && (
                   <svg className="w-10 h-10 text-blue-100 mx-auto mb-3" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
@@ -250,7 +263,6 @@ export default function TestimonialCard({ item, index = 0 }) {
 
             {/* Footer */}
             <div className={`mt-4 pt-4 border-t border-slate-100 flex items-center gap-3 ${!hasVideo ? 'justify-center' : ''}`}>
-              {/* Avatar */}
               <div className="relative flex-shrink-0">
                 {image && !imageError ? (
                   <img
@@ -265,16 +277,12 @@ export default function TestimonialCard({ item, index = 0 }) {
                   </div>
                 )}
               </div>
-
-              {/* Info */}
               <div className={`${hasVideo ? 'flex-1' : ''} min-w-0`}>
                 <h4 className={`font-semibold text-slate-900 text-sm truncate ${!hasVideo ? 'text-center' : ''}`}>{name}</h4>
                 <p className={`text-xs text-slate-500 truncate ${!hasVideo ? 'text-center' : ''}`}>
                   {role}{company && ` · ${company}`}
                 </p>
               </div>
-
-              {/* Rating (compact) */}
               <div className="flex items-center gap-0.5 flex-shrink-0">
                 <svg className="w-4 h-4 text-amber-400 fill-amber-400" viewBox="0 0 20 20">
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -304,7 +312,6 @@ export default function TestimonialCard({ item, index = 0 }) {
               className="relative w-full max-w-lg max-h-[80vh] bg-white rounded-2xl shadow-2xl overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Header */}
               <div className="sticky top-0 bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   {image && !imageError ? (
@@ -336,20 +343,14 @@ export default function TestimonialCard({ item, index = 0 }) {
                   </svg>
                 </button>
               </div>
-
-              {/* Content */}
               <div className="px-6 py-5 overflow-y-auto max-h-[calc(80vh-140px)]">
                 <div className="relative text-center">
                   <svg className="w-12 h-12 text-blue-100 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
                   </svg>
-                  <p className="text-slate-700 leading-relaxed text-base">
-                    {message}
-                  </p>
+                  <p className="text-slate-700 leading-relaxed text-base">{message}</p>
                 </div>
               </div>
-
-              {/* Footer */}
               <div className="sticky bottom-0 bg-slate-50 border-t border-slate-100 px-6 py-3 flex items-center justify-between">
                 <div className="flex items-center gap-1">
                   {[...Array(5)].map((_, i) => (
@@ -375,7 +376,7 @@ export default function TestimonialCard({ item, index = 0 }) {
         )}
       </AnimatePresence>
 
-      {/* Fullscreen Video Modal */}
+      {/* Fullscreen Video Modal - USING STREAMING URL */}
       <AnimatePresence>
         {isFullscreen && hasVideo && (
           <motion.div
@@ -395,7 +396,6 @@ export default function TestimonialCard({ item, index = 0 }) {
                   className="relative w-full max-w-4xl"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  {/* Close Button */}
                   <button
                     onClick={() => setIsFullscreen(false)}
                     className="absolute -top-12 right-0 p-2 text-white/80 hover:text-white transition-colors z-10"
@@ -406,12 +406,14 @@ export default function TestimonialCard({ item, index = 0 }) {
                     </svg>
                   </button>
 
-                  {/* Video Player */}
                   <div className="rounded-xl overflow-hidden shadow-2xl bg-black">
                     <video
-                      src={videoUrl}
+                      src={getStreamingUrl(videoUrl)}
+                      poster={thumbnailUrl}
                       controls
                       autoPlay
+                      playsInline
+                      webkit-playsinline="true"
                       className="w-full"
                       style={{ maxHeight: 'calc(100vh - 200px)' }}
                     >
@@ -419,7 +421,6 @@ export default function TestimonialCard({ item, index = 0 }) {
                     </video>
                   </div>
 
-                  {/* Testimonial Info */}
                   <div className="mt-4 flex flex-wrap items-center gap-4 text-white">
                     <div className="flex items-center gap-3">
                       {image && !imageError ? (
@@ -444,8 +445,6 @@ export default function TestimonialCard({ item, index = 0 }) {
                           Verified
                         </span>
                       )}
-                      
-                      {/* Rating */}
                       <div className="flex items-center gap-1">
                         {[...Array(5)].map((_, i) => (
                           <svg
@@ -460,7 +459,6 @@ export default function TestimonialCard({ item, index = 0 }) {
                     </div>
                   </div>
 
-                  {/* Quote preview */}
                   {message && (
                     <div className="mt-4 p-4 bg-white/5 rounded-xl border border-white/10">
                       <p className="text-white/80 text-sm leading-relaxed italic text-center">

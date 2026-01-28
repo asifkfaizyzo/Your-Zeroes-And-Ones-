@@ -13,12 +13,12 @@ export default function CTASection() {
 
       <div className="w-full max-w-[1800px] mx-auto text-center relative z-10 px-4 sm:px-6">
         {/* Heading - Matched to VH1Hero sizes */}
-        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white mb-3 sm:mb-4 leading-tight">
+        <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-white mb-3 sm:mb-4 leading-tight">
           Ready to Transform Your Business?
         </h2>
 
         {/* Subtext - Matched to VH1Hero tagline */}
-        <p className="text-sm sm:text-base md:text-lg lg:text-xl text-blue-200/70 mb-6 sm:mb-8 max-w-md sm:max-w-xl lg:max-w-2xl mx-auto leading-relaxed">
+        <p className="text-sm sm:text-base md:text-lg lg:text-base text-blue-200/70 mb-6 sm:mb-8 max-w-md sm:max-w-xl lg:max-w-xl mx-auto leading-relaxed">
           Let's discuss how our comprehensive services can help you achieve your
           digital goals and drive real results.
         </p>

@@ -29,18 +29,6 @@ export default function VideoTestimonialCard({ testimonial, isMobile }) {
     }
   }, [isHovering, isMobile]);
 
-  // Mobile: Start playing muted when component mounts/becomes visible
-  useEffect(() => {
-    if (isMobile && mobileVideoRef.current && hasVideo) {
-      const timer = setTimeout(() => {
-        mobileVideoRef.current.play().catch((err) => {
-          console.log("Mobile autoplay prevented:", err);
-        });
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [isMobile, hasVideo]);
-
   // Desktop fullscreen handling
   useEffect(() => {
     if (isFullscreen && fullscreenVideoRef.current) {
@@ -73,8 +61,17 @@ export default function VideoTestimonialCard({ testimonial, isMobile }) {
 
   if (!hasVideo) return null;
 
+  // Mobile: Toggle play/pause on click
   const handleMobileClick = () => {
-    window.location.href = "/testimonials";
+    if (mobileVideoRef.current) {
+      if (isMobilePlaying) {
+        mobileVideoRef.current.pause();
+      } else {
+        mobileVideoRef.current.play().catch((err) => {
+          console.log("Mobile play prevented:", err);
+        });
+      }
+    }
   };
 
   const rating = Math.min(5, Math.max(0, parseInt(testimonial?.rating) || 5));
@@ -107,7 +104,7 @@ export default function VideoTestimonialCard({ testimonial, isMobile }) {
             }`}
           />
 
-          {/* Mobile: Muted autoplay video */}
+          {/* Mobile: Click-to-play video */}
           {isMobile && (
             <video
               ref={mobileVideoRef}
@@ -116,7 +113,7 @@ export default function VideoTestimonialCard({ testimonial, isMobile }) {
               loop
               playsInline
               webkit-playsinline="true"
-              preload="auto"
+              preload="metadata"
               onPlay={() => setIsMobilePlaying(true)}
               onPause={() => setIsMobilePlaying(false)}
               className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
@@ -155,10 +152,10 @@ export default function VideoTestimonialCard({ testimonial, isMobile }) {
             </div>
           )}
 
-          {/* Play indicator */}
+          {/* Play/Pause indicator */}
           <div
             className={`absolute inset-0 flex items-center justify-center transition-all duration-300 ${
-              isHovering && !isMobile ? "opacity-0" : "opacity-100"
+              (isHovering && !isMobile) || (isMobile && isMobilePlaying) ? "opacity-0" : "opacity-100"
             }`}
           >
             <div className="relative">
@@ -172,10 +169,10 @@ export default function VideoTestimonialCard({ testimonial, isMobile }) {
                 <div className="flex flex-col items-center">
                   {isMobile ? (
                     <>
-                      <svg className="w-3.5 h-3.5 text-[#5b8def]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      <svg className="w-4 h-4 text-[#5b8def]" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z" />
                       </svg>
-                      <span className="text-[6px] font-medium text-[#5b8def] mt-0.5">More</span>
+                      <span className="text-[6px] font-medium text-[#5b8def] mt-0.5">Play</span>
                     </>
                   ) : (
                     <>
@@ -194,6 +191,17 @@ export default function VideoTestimonialCard({ testimonial, isMobile }) {
               </div>
             </div>
           </div>
+
+          {/* Mobile: Pause indicator when playing */}
+          {isMobile && isMobilePlaying && (
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 active:opacity-100 transition-opacity duration-300">
+              <div className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
+                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+                </svg>
+              </div>
+            </div>
+          )}
 
           {/* Desktop-only hover controls */}
           {!isMobile && (
@@ -272,15 +280,15 @@ export default function VideoTestimonialCard({ testimonial, isMobile }) {
         </div>
 
         {/* Content Section */}
-        <div className="flex-1 flex flex-col p-4">
+        <div className="flex-1 flex flex-col px-6 py-5">
           <p className="text-white/80 text-sm leading-relaxed line-clamp-3 mb-3 flex-1">"{displayText}"</p>
 
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 min-w-0">
               <TestimonialAvatar testimonial={testimonial} size="sm" />
               <div className="min-w-0">
-                <h4 className="font-semibold text-white text-sm truncate">{testimonial.name}</h4>
-                <p className="text-xs text-white/50 truncate">
+                <h4 className="font-semibold text-white text-sm truncate max-w-[120px]">{testimonial.name}</h4>
+                <p className="text-xs text-white/50 truncate max-w-[150px]">
                   {testimonial.role}
                   {testimonial.company && ` · ${testimonial.company}`}
                 </p>

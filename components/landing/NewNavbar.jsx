@@ -107,7 +107,7 @@ export default function NewNavbar({ isDark = true }) {
     {
       category: "Technology",
       href: "/services/technology",
-      description: "Cutting-edge digital solutions",
+      description: "",
       subServices: [
         { name: "AI & Machine Learning", href: "/services/technology/ai-ml" },
         { name: "DevOps Consulting", href: "/services/technology/devops-consulting" },
@@ -294,7 +294,7 @@ export default function NewNavbar({ isDark = true }) {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </h4>
-              <p className={`text-xs mt-0.5 ${theme.dropdown.categoryDesc}`}>{service.description}</p>
+              <p className={`text-xs mt-0.5 ${theme.dropdown.categoryDesc}`}></p>
             </Link>
             <div className="space-y-0">
               {service.subServices.map((sub, idx) => (

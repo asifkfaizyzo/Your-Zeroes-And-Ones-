@@ -35,20 +35,6 @@ export default function BlogHero() {
         }}
       >
         <div className="max-w-4xl">
-          {/* Badge */}
-          {/* <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-3 py-1.5 mb-5"
-          >
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
-            </span>
-            <span className="text-xs font-medium text-white/80">Insights & Articles</span>
-          </motion.div> */}
-
           {/* Heading */}
           <motion.h1
             initial={{ opacity: 0, y: 20 }}

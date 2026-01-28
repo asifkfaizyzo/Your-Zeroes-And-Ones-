@@ -608,7 +608,7 @@ export default function QATesting() {
 
   return (
     <>
-      <main className="min-h-screen bg-white">
+      <main className="min-h-screen bg-white pt-10">
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-[#f0f4ff] to-[#e8efff] py-20">
           <div

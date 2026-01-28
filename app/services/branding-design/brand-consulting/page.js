@@ -165,7 +165,7 @@ export default function BrandConsulting() {
 
   return (
     <>
-      <main className="min-h-screen bg-white">
+      <main className="min-h-screen bg-white pt-10">
         {/* Hero Section with Side Elements */}
         <section className="relative bg-white py-20 overflow-hidden">
           <div className="absolute left-0 top-1/4 w-32 h-32 bg-[#20427f]/5 rounded-full"></div>

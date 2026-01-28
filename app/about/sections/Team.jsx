@@ -2,7 +2,7 @@
 "use client";
 import { useRef, useState, useEffect, memo } from "react";
 import Image from "next/image";
-import { CSSAnimatedSection, SectionHeader, SectionWrapper, getInitials } from "@/components/ui/AnimatedSection";
+import { SectionHeader, SectionWrapper, getInitials } from "@/components/ui/AnimatedSection";
 
 // Team Member Card Component
 const TeamMemberCard = memo(function TeamMemberCard({ member, index }) {
@@ -30,15 +30,17 @@ const TeamMemberCard = memo(function TeamMemberCard({ member, index }) {
   return (
     <div
       ref={ref}
-      className="group"
+      className="group h-full"
       style={{
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(30px) scale(0.95)',
         transition: `all 0.6s cubic-bezier(0.4, 0, 0.2, 1) ${index * 100}ms`
       }}
     >
-      <div className="bg-gray-50 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:-translate-y-2">
-        <div className="relative h-56 sm:h-64 overflow-hidden">
+      {/* Added h-full and flex flex-col to make cards equal height */}
+      <div className="bg-gray-50 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:-translate-y-2 h-full flex flex-col">
+        {/* Image section - fixed height */}
+        <div className="relative h-56 sm:h-64 overflow-hidden flex-shrink-0">
           {member.image ? (
             <Image
               src={member.image}
@@ -90,14 +92,18 @@ const TeamMemberCard = memo(function TeamMemberCard({ member, index }) {
           </div>
         </div>
 
-        <div className="p-6 text-center bg-white">
+        {/* Content section - flex-1 to fill remaining space */}
+        <div className="p-6 text-center bg-white flex-1 flex flex-col">
           <h3 className="text-xl font-bold text-gray-900 mb-1">
             {member.name}
           </h3>
           <p className="text-transparent bg-gradient-to-r from-[#203E7F] to-cyan-600 bg-clip-text font-semibold mb-3">
             {member.role}
           </p>
-          <p className="text-gray-500 text-sm">{member.description}</p>
+          {/* Description grows to fill available space */}
+          <p className="text-gray-500 text-sm flex-1">
+            {member.description}
+          </p>
         </div>
       </div>
     </div>
@@ -114,7 +120,8 @@ export default function Team({ teamMembers, loading }) {
         description="Passionate professionals dedicated to delivering excellence in every project."
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+      {/* Added items-stretch to ensure grid items stretch to equal height */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 items-stretch">
         {teamMembers.map((member, index) => (
           <TeamMemberCard key={member.id || index} member={member} index={index} />
         ))}

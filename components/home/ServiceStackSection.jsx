@@ -308,7 +308,7 @@ const BrandingSection = forwardRef(
       {
         icon: <PenTool className="w-4 h-4 md:w-5 md:h-5" />,
         label: "Logos",
-        value: "85+",
+        value: "25+",
       },
       {
         icon: <Video className="w-4 h-4 md:w-5 md:h-5" />,
@@ -401,7 +401,7 @@ const BrandingSection = forwardRef(
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-xl font-bold text-white">50+</div>
+                      <div className="text-xl font-bold text-white">25+</div>
                       <div className="text-white/50 text-[10px]">Brands</div>
                     </div>
                   </div>
@@ -482,7 +482,7 @@ const BrandingSection = forwardRef(
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-3xl font-bold text-white">50+</div>
+                      <div className="text-3xl font-bold text-white">25+</div>
                       <div className="text-white/50 text-xs">Brands</div>
                     </div>
                   </motion.div>

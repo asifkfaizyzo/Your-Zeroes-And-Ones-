@@ -30,6 +30,7 @@ import { Spotlight } from "@/components/effects/Spotlight/Spotlight";
 import BlurText from "@/components/effects/BlurText/BlurText";
 import ScrollVelocity from "@/components/effects/ScrollVelocity/ScrollVelocity";
 import Aurora from "@/components/effects/Aurora/Aurora";
+import GlareHover from "@/components/effects/GlareHover/GlareHover";
 import CardSwap, { Card } from "@/components/effects/CardSwap/CardSwap";
 
 export default function ServiceStackSection({
@@ -39,15 +40,19 @@ export default function ServiceStackSection({
   scrollToSection,
 }) {
   const containerRef = useRef(null);
-  const [isMobile, setIsMobile] = useState(true);
+  const [isMobile, setIsMobile] = useState(false); // desktop by default
+  const [isClient, setIsClient] = useState(false); // prevent SSR flash
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+    setIsClient(true);
+
+    const checkScreen = () => {
+      setIsMobile(window.innerWidth < 1024); // 1024px = perfect for 14" laptops
     };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+
+    checkScreen();
+    window.addEventListener("resize", checkScreen);
+    return () => window.removeEventListener("resize", checkScreen);
   }, []);
 
   const { scrollYProgress } = useScroll({
@@ -62,6 +67,7 @@ export default function ServiceStackSection({
         scrollProgress={scrollYProgress}
         onNextClick={() => scrollToSection(brandingSectionRef)}
         isMobile={isMobile}
+        isClient={isClient}
       />
 
       <BrandingSection
@@ -69,12 +75,14 @@ export default function ServiceStackSection({
         scrollProgress={scrollYProgress}
         onNextClick={() => scrollToSection(technologySectionRef)}
         isMobile={isMobile}
+        isClient={isClient}
       />
 
       <TechnologySection
         ref={technologySectionRef}
         scrollProgress={scrollYProgress}
         isMobile={isMobile}
+        isClient={isClient}
       />
     </div>
   );
@@ -84,7 +92,7 @@ export default function ServiceStackSection({
 // MARKETING SECTION
 // ============================================
 const MarketingSection = forwardRef(
-  ({ scrollProgress, onNextClick, isMobile }, ref) => {
+  ({ scrollProgress, onNextClick, isMobile, isClient }, ref) => {
     // Desktop-only transforms
     const y = useTransform(scrollProgress, [0, 0.33], [0, isMobile ? 0 : -50]);
     const scale = useTransform(
@@ -124,10 +132,11 @@ const MarketingSection = forwardRef(
           isMobile ? "" : "sticky top-0"
         }`}
       >
-        {/* Background - Desktop only interactive */}
+        {/* Background - No flash */}
         <div className="absolute inset-0 z-0">
-          {isMobile ? (
-            // Mobile: Static gradient background
+          {!isClient ? (
+            <div className="absolute inset-0 bg-[#060010]" />
+          ) : isMobile ? (
             <>
               <div className="absolute inset-0 bg-gradient-to-br from-[#060010] via-[#0a0033] to-[#060010]" />
               <div
@@ -141,7 +150,6 @@ const MarketingSection = forwardRef(
               />
             </>
           ) : (
-            // Desktop: Threads animation
             <Threads
               amplitude={1}
               distance={0}
@@ -184,25 +192,35 @@ const MarketingSection = forwardRef(
                 presence and drive measurable results.
               </p>
 
-              <Link
-                href="/services/digital-marketing"
-                className="inline-flex items-center gap-2 px-5 md:px-6 py-2.5 md:py-3 bg-[#20427f] text-white rounded-full font-semibold text-sm md:text-base hover:bg-[#2d5aa8] transition-all duration-300 hover:gap-4"
+              <GlareHover
+                glareColor="#5b8def"
+                glareOpacity={0.35}
+                glareAngle={-30}
+                glareSize={300}
+                transitionDuration={800}
+                playOnce={false}
+                className="inline-block rounded-full overflow-hidden"
               >
-                Explore Marketing
-                <svg
-                  className="w-4 h-4 md:w-5 md:h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+                <Link
+                  href="/services/digital-marketing"
+                  className="inline-flex items-center gap-2 px-5 md:px-6 py-2.5 md:py-3 bg-[#1e3a6e] text-white rounded-full font-semibold text-sm md:text-base hover:bg-[#2d5aa8] transition-all duration-300 hover:gap-4"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 8l4 4m0 0l-4 4m4-4H3"
-                  />
-                </svg>
-              </Link>
+                  Explore Marketing
+                  <svg
+                    className="w-4 h-4 md:w-5 md:h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 8l4 4m0 0l-4 4m4-4H3"
+                    />
+                  </svg>
+                </Link>
+              </GlareHover>
             </motion.div>
 
             {/* Service Cards Grid */}
@@ -219,7 +237,7 @@ const MarketingSection = forwardRef(
                     key={item.label}
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.1, duration: 0.5 }}
+                    transition={{ delay: 0, duration: 0.3 }}
                     viewport={{ once: true }}
                     whileHover={isMobile ? {} : { scale: 1.08, y: -8 }}
                     className="aspect-square flex flex-col items-center justify-center p-2 md:p-4 rounded-xl md:rounded-2xl bg-gradient-to-br from-[#20427f]/30 to-[#0a1628]/50 border border-[#5b8def]/30 backdrop-blur-sm cursor-pointer group transition-transform duration-300 ease-out"
@@ -276,7 +294,7 @@ MarketingSection.displayName = "MarketingSection";
 // BRANDING SECTION
 // ============================================
 const BrandingSection = forwardRef(
-  ({ scrollProgress, onNextClick, isMobile }, ref) => {
+  ({ scrollProgress, onNextClick, isMobile, isClient }, ref) => {
     // Desktop-only transforms
     const y = useTransform(
       scrollProgress,
@@ -322,10 +340,11 @@ const BrandingSection = forwardRef(
           isMobile ? "" : "sticky top-0"
         }`}
       >
-        {/* Background */}
+        {/* Background - No flash */}
         <div className="absolute inset-0 z-0">
-          {isMobile ? (
-            // Mobile: Static gradient background
+          {!isClient ? (
+            <div className="absolute inset-0 bg-[#0a0815]" />
+          ) : isMobile ? (
             <>
               <div className="absolute inset-0 bg-gradient-to-br from-[#0a0815] via-[#150a25] to-[#0a0815]" />
               <div
@@ -339,7 +358,6 @@ const BrandingSection = forwardRef(
               />
             </>
           ) : (
-            // Desktop: FloatingLines animation
             <FloatingLines
               enabledWaves={["top", "middle", "bottom"]}
               lineCount={5}
@@ -472,7 +490,7 @@ const BrandingSection = forwardRef(
                   <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.2, duration: 0.5 }}
+                    transition={{ delay: 0.0, duration: 0.3 }}
                     viewport={{ once: true }}
                     whileHover={{ scale: 1.05, y: -5 }}
                     className="row-span-1 rounded-2xl bg-gradient-to-br from-purple-500/10 to-[#20427f]/10 border border-purple-500/20 p-3 flex flex-col justify-between backdrop-blur-sm cursor-pointer group transition-transform duration-300 ease-out"
@@ -517,7 +535,7 @@ const BrandingSection = forwardRef(
                   <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.3, duration: 0.5 }}
+                    transition={{ delay: 0.0, duration: 0.3 }}
                     viewport={{ once: true }}
                     whileHover={{ scale: 1.05, y: -5 }}
                     className="row-span-1 rounded-2xl bg-gradient-to-br from-purple-500/10 to-[#20427f]/10 border border-purple-500/20 p-3 flex flex-col justify-between backdrop-blur-sm cursor-pointer group transition-transform duration-300 ease-out"
@@ -540,7 +558,7 @@ const BrandingSection = forwardRef(
                       key={item.label}
                       initial={{ opacity: 0, scale: 0.8 }}
                       whileInView={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.4 + i * 0.1, duration: 0.5 }}
+                      transition={{ delay: 0, duration: 0.3 }}
                       viewport={{ once: true }}
                       whileHover={{ scale: 1.05, y: -5 }}
                       className="rounded-2xl bg-gradient-to-br from-purple-500/10 to-[#20427f]/10 border border-purple-500/20 p-3 flex flex-col justify-between backdrop-blur-sm cursor-pointer group transition-transform duration-300 ease-out"
@@ -591,25 +609,35 @@ const BrandingSection = forwardRef(
                 production.
               </p>
 
-              <Link
-                href="/services/branding-design"
-                className="inline-flex items-center gap-2 px-5 md:px-6 py-2.5 md:py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full font-semibold text-sm md:text-base hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 hover:gap-4"
+              <GlareHover
+                glareColor="#cb79d6"
+                glareOpacity={0.4}
+                glareAngle={-30}
+                glareSize={300}
+                transitionDuration={800}
+                playOnce={false}
+                className="inline-block rounded-full overflow-hidden"
               >
-                Explore Branding
-                <svg
-                  className="w-4 h-4 md:w-5 md:h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+                <Link
+                  href="/services/branding-design"
+                  className="inline-flex items-center gap-2 px-5 md:px-6 py-2.5 md:py-3 bg-[#82168c] text-white rounded-full font-semibold text-sm md:text-base hover:bg-[#a922ba] transition-all duration-300 hover:gap-4 hover:shadow-lg hover:shadow-purple-500/40"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 8l4 4m0 0l-4 4m4-4H3"
-                  />
-                </svg>
-              </Link>
+                  Explore Branding
+                  <svg
+                    className="w-4 h-4 md:w-5 md:h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 8l4 4m0 0l-4 4m4-4H3"
+                    />
+                  </svg>
+                </Link>
+              </GlareHover>
             </motion.div>
           </div>
 
@@ -652,245 +680,264 @@ BrandingSection.displayName = "BrandingSection";
 // ============================================
 // TECHNOLOGY SECTION
 // ============================================
-const TechnologySection = forwardRef(({ scrollProgress, isMobile }, ref) => {
-  const techServices = [
-    {
-      tabIcon: Code,
-      label: "Web Development",
-      bgColor: "#0a1628",
-      tabColor: "text-blue-400",
-      auroraColors: ["#0f2744", "#1a3a5c", "#244a6e"],
-      techIcons: [
-        "/images/tech-icons/react.svg",
-        "/images/tech-icons/nextjs.svg",
-        "/images/tech-icons/nodejs.svg",
-        "/images/tech-icons/typescript.svg",
-        "/images/tech-icons/postgresql.svg",
-        "/images/tech-icons/mongodb.svg",
-      ],
-    },
-    {
-      tabIcon: Smartphone,
-      label: "Mobile Apps",
-      bgColor: "#1a1a3e",
-      tabColor: "text-indigo-400",
-      auroraColors: ["#1a1a3e", "#2a2a5e", "#3a3a7e"],
-      techIcons: [
-        "/images/tech-icons/react-native.svg",
-        "/images/tech-icons/flutter.svg",
-        "/images/tech-icons/swift.svg",
-        "/images/tech-icons/android-studio.svg",
-        "/images/tech-icons/java.svg",
-        "/images/tech-icons/kotlin.svg",
-      ],
-    },
-    {
-      tabIcon: Brain,
-      label: "AI & Machine Learning",
-      bgColor: "#0a1a2a",
-      tabColor: "text-cyan-400",
-      auroraColors: ["#0d3d4d", "#134e5e", "#1a5c5c"],
-      techIcons: [
-        "/images/data-tools/TensorFlow.svg",
-        "/images/data-tools/Airbyte.svg",
-        "/images/data-tools/SageMaker.svg",
-        "/images/data-tools/azureml.svg",
-        "/images/data-tools/Dbt.svg",
-        "/images/data-tools/fivetran.svg",
-      ],
-    },
-    {
-      tabIcon: Cloud,
-      label: "Cloud Services",
-      bgColor: "#0d2137",
-      tabColor: "text-sky-400",
-      auroraColors: ["#0c2d4a", "#1a4a6e", "#2a6090"],
-      techIcons: [
-        "/images/cloud-platforms/aws.svg",
-        "/images/cloud-platforms/azure.svg",
-        "/images/cloud-platforms/gcp.svg",
-        "/images/cloud-platforms/digitalocean.svg",
-        "/images/cloud-platforms/cloudflare.svg",
-        "/images/cloud-platforms/Oracle.svg",
-      ],
-    },
-  ];
+const TechnologySection = forwardRef(
+  ({ scrollProgress, isMobile, isClient }, ref) => {
+    const techServices = [
+      {
+        tabIcon: Code,
+        label: "Web Development",
+        bgColor: "#0a1628",
+        tabColor: "text-blue-400",
+        auroraColors: ["#0f2744", "#1a3a5c", "#244a6e"],
+        techIcons: [
+          "/images/tech-icons/react.svg",
+          "/images/tech-icons/nextjs.svg",
+          "/images/tech-icons/nodejs.svg",
+          "/images/tech-icons/typescript.svg",
+          "/images/tech-icons/postgresql.svg",
+          "/images/tech-icons/mongodb.svg",
+        ],
+      },
+      {
+        tabIcon: Smartphone,
+        label: "Mobile Apps",
+        bgColor: "#1a1a3e",
+        tabColor: "text-indigo-400",
+        auroraColors: ["#1a1a3e", "#2a2a5e", "#3a3a7e"],
+        techIcons: [
+          "/images/tech-icons/react-native.svg",
+          "/images/tech-icons/flutter.svg",
+          "/images/tech-icons/swift.svg",
+          "/images/tech-icons/android-studio.svg",
+          "/images/tech-icons/java.svg",
+          "/images/tech-icons/kotlin.svg",
+        ],
+      },
+      {
+        tabIcon: Brain,
+        label: "AI & Machine Learning",
+        bgColor: "#0a1a2a",
+        tabColor: "text-cyan-400",
+        auroraColors: ["#0d3d4d", "#134e5e", "#1a5c5c"],
+        techIcons: [
+          "/images/data-tools/TensorFlow.svg",
+          "/images/data-tools/Airbyte.svg",
+          "/images/data-tools/SageMaker.svg",
+          "/images/data-tools/azureml.svg",
+          "/images/data-tools/Dbt.svg",
+          "/images/data-tools/fivetran.svg",
+        ],
+      },
+      {
+        tabIcon: Cloud,
+        label: "Cloud Services",
+        bgColor: "#0d2137",
+        tabColor: "text-sky-400",
+        auroraColors: ["#0c2d4a", "#1a4a6e", "#2a6090"],
+        techIcons: [
+          "/images/cloud-platforms/aws.svg",
+          "/images/cloud-platforms/azure.svg",
+          "/images/cloud-platforms/gcp.svg",
+          "/images/cloud-platforms/digitalocean.svg",
+          "/images/cloud-platforms/cloudflare.svg",
+          "/images/cloud-platforms/Oracle.svg",
+        ],
+      },
+    ];
 
-  return (
-    <section ref={ref} className="relative overflow-hidden bg-[#060812]">
-      <div className="relative min-h-screen flex items-center py-16 md:py-20">
-        {/* Background */}
-        <div className="absolute inset-0 z-0">
-          {isMobile ? (
-            // Mobile: Static gradient
-            <>
-              <div className="absolute inset-0 bg-gradient-to-br from-[#060812] via-[#0a1525] to-[#060812]" />
-              <div
-                className="absolute inset-0 opacity-30"
-                style={{
-                  background: `
+    return (
+      <section ref={ref} className="relative overflow-hidden bg-[#060812]">
+        <div className="relative min-h-screen flex items-center py-16 md:py-20">
+          {/* Background - No flash */}
+          <div className="absolute inset-0 z-0">
+            {!isClient ? (
+              <div className="absolute inset-0 bg-[#060812]" />
+            ) : isMobile ? (
+              <>
+                <div className="absolute inset-0 bg-gradient-to-br from-[#060812] via-[#0a1525] to-[#060812]" />
+                <div
+                  className="absolute inset-0 opacity-30"
+                  style={{
+                    background: `
                     radial-gradient(circle at 50% 30%, #06b6d4 0%, transparent 50%),
                     radial-gradient(circle at 50% 70%, #3b82f6 0%, transparent 50%)
                   `,
-                }}
+                  }}
+                />
+              </>
+            ) : (
+              <Spotlight
+                gradientFirst="radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(200, 80%, 70%, .1) 0, hsla(200, 80%, 50%, .03) 50%, hsla(200, 80%, 40%, 0) 80%)"
+                gradientSecond="radial-gradient(50% 50% at 50% 50%, hsla(200, 80%, 70%, .08) 0, hsla(200, 80%, 50%, .02) 80%, transparent 100%)"
+                gradientThird="radial-gradient(50% 50% at 50% 50%, hsla(200, 80%, 70%, .05) 0, hsla(200, 80%, 40%, .02) 80%, transparent 100%)"
               />
-            </>
-          ) : (
-            // Desktop: Spotlight effect
-            <Spotlight
-              gradientFirst="radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(200, 80%, 70%, .1) 0, hsla(200, 80%, 50%, .03) 50%, hsla(200, 80%, 40%, 0) 80%)"
-              gradientSecond="radial-gradient(50% 50% at 50% 50%, hsla(200, 80%, 70%, .08) 0, hsla(200, 80%, 50%, .02) 80%, transparent 100%)"
-              gradientThird="radial-gradient(50% 50% at 50% 50%, hsla(200, 80%, 70%, .05) 0, hsla(200, 80%, 40%, .02) 80%, transparent 100%)"
-            />
-          )}
-        </div>
+            )}
+          </div>
 
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 lg:px-8">
-          {/* Mobile Layout */}
-          {isMobile ? (
-            <div className="flex flex-col items-center">
-              {/* Text Content */}
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-                viewport={{ once: true }}
-                className="text-left mb-6 px-4 w-full"
-              >
-                <span className="text-cyan-400 text-xs font-semibold uppercase tracking-widest mb-3 block">
-                  Technology Solutions
-                </span>
-
-                <h2 className="text-3xl font-bold mb-4 leading-tight">
-                  <BlurText
-                    text="We Build the Future"
-                    delay={60}
-                    animateBy="words"
-                    direction="top"
-                    align="left"
-                    className="text-white"
-                  />
-                </h2>
-
-                <p className="text-white/50 text-sm leading-relaxed max-w-md">
-                  Cutting-edge software solutions that power your digital
-                  transformation. From AI-driven applications to scalable cloud
-                  infrastructure and secure systems.
-                </p>
-              </motion.div>
-
-              {/* CTA Button */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-                viewport={{ once: true }}
-                className="mb-25 px-4 w-full text-left"
-              >
-                <Link
-                  href="/services/technology"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-[#20427f] text-white rounded-full font-semibold text-sm hover:shadow-lg hover:shadow-cyan-500/30 transition-all duration-300"
+          <div className="relative z-10 w-full max-w-7xl mx-auto px-4 lg:px-8">
+            {/* Mobile Layout - Matching MarketingSection structure */}
+            {isMobile ? (
+              <div className="grid grid-cols-1 gap-8 md:gap-12 items-center">
+                {/* Text Content */}
+                <motion.div
+                  initial={{ opacity: 0, x: -50 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8 }}
+                  viewport={{ once: true }}
+                  className="text-left mb-8"
                 >
-                  Explore Technology
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  <span className="text-cyan-400 text-xs md:text-sm font-semibold uppercase tracking-widest mb-3 md:mb-4 block">
+                    Technology Solutions
+                  </span>
+
+                  <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-4 md:mb-6 leading-tight">
+                    <BlurText
+                      text="We Build the Future"
+                      delay={60}
+                      animateBy="words"
+                      direction="left"
+                      align="left"
+                      className="text-white"
                     />
-                  </svg>
-                </Link>
-              </motion.div>
+                  </h2>
 
-              {/* Card Swap Container */}
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                viewport={{ once: true }}
-                className="relative w-full flex justify-center items-center"
-                style={{ height: "300px" }}
-              >
-                <CardSwap
-                  cardDistance={40}
-                  verticalDistance={40}
-                  skewAmount={3}
-                  delay={4000}
-                  pauseOnHover={false}
-                  width={280}
-                  height={220}
-                  zDepthMultiplier={0.7}
-                  centered={true}
+                  <p className="text-white/50 text-sm md:text-lg leading-relaxed mb-6 md:mb-8">
+                    Cutting-edge software solutions that power your digital
+                    transformation. From AI-driven applications to scalable
+                    cloud infrastructure and secure systems.
+                  </p>
+
+                  <GlareHover
+                    glareColor="#06b6d4"
+                    glareOpacity={0.35}
+                    glareAngle={-30}
+                    glareSize={300}
+                    transitionDuration={800}
+                    playOnce={false}
+                    className="inline-block rounded-full overflow-hidden"
+                  >
+                    <Link
+                      href="/services/technology"
+                      className="inline-flex items-center gap-2 px-5 md:px-6 py-2.5 md:py-3 bg-[#0e7490] text-white rounded-full font-semibold text-sm md:text-base hover:bg-[#0891b2] transition-all duration-300"
+                    >
+                      Explore Technology
+                      <svg
+                        className="w-4 h-4 md:w-5 md:h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M17 8l4 4m0 0l-4 4m4-4H3"
+                        />
+                      </svg>
+                    </Link>
+                  </GlareHover>
+                </motion.div>
+
+                {/* Card Swap Container */}
+                <motion.div
+                  initial={{ opacity: 0, x: 50 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                  viewport={{ once: true }}
+                  className="relative"
                 >
-                  {techServices.map((service, index) => {
-                    const TabIcon = service.tabIcon;
-                    return (
-                      <Card key={index}>
-                        <div
-                          className="w-full h-full rounded-xl overflow-hidden relative border border-white/10"
-                          style={{ backgroundColor: service.bgColor }}
-                        >
-                          {/* Tab Label */}
-                          <div className="absolute top-2 left-2 z-20">
-                            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-white/5 backdrop-blur-md border border-white/10">
-                              <TabIcon
-                                className={`w-3 h-3 ${service.tabColor}`}
-                              />
-                              <span className="text-white/90 text-xs font-medium">
-                                {service.label}
-                              </span>
-                            </div>
-                          </div>
+                  {/* Wrapper to properly contain and center the CardSwap */}
+                  <div 
+                    className="relative mr-auto"
+                    style={{ 
+                      width: 300, 
+                      height: 320,
+                    }}
+                  >
+                    {/* Inner positioning wrapper - offset to account for upward card stacking */}
+                    <div 
+                      className="absolute"
+                      style={{ 
+                        top: '55%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)'
+                      }}
+                    >
+                      <CardSwap
+                        cardDistance={30}
+                        verticalDistance={30}
+                        skewAmount={2}
+                        delay={4000}
+                        pauseOnHover={false}
+                        width={260}
+                        height={200}
+                        zDepthMultiplier={0.5}
+                        centered={true}
+                      >
+                        {techServices.map((service, index) => {
+                          const TabIcon = service.tabIcon;
+                          return (
+                            <Card key={index}>
+                              <div
+                                className="w-full h-full rounded-xl overflow-hidden relative border border-white/10"
+                                style={{ backgroundColor: service.bgColor }}
+                              >
+                                {/* Tab Label */}
+                                <div className="absolute top-2 left-2 z-20">
+                                  <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-white/5 backdrop-blur-md border border-white/10">
+                                    <TabIcon
+                                      className={`w-3 h-3 ${service.tabColor}`}
+                                    />
+                                    <span className="text-white/90 text-xs font-medium">
+                                      {service.label}
+                                    </span>
+                                  </div>
+                                </div>
 
-                          <div className="absolute inset-0 z-0">
-                            <Aurora
-                              colorStops={service.auroraColors}
-                              blend={0.5}
-                              amplitude={0.8}
-                              speed={0.5}
-                            />
-                          </div>
+                                <div className="absolute inset-0 z-0">
+                                  <Aurora
+                                    colorStops={service.auroraColors}
+                                    blend={0.5}
+                                    amplitude={0.8}
+                                    speed={0.5}
+                                  />
+                                </div>
 
-                          <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/20 via-transparent to-black/30" />
+                                <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/20 via-transparent to-black/30" />
 
-                          {/* Tech Icons Grid */}
-                          <div className="absolute inset-0 z-10 flex items-center justify-center pt-5">
-                            <div className="p-3 rounded-lg bg-white/10 backdrop-blur-lg border border-white/15">
-                              <div className="grid grid-cols-3 gap-2">
-                                {service.techIcons.map(
-                                  (iconPath, iconIndex) => (
-                                    <div
-                                      key={iconIndex}
-                                      className="w-10 h-10 flex items-center justify-center rounded-md bg-white/5 border border-white/10"
-                                    >
-                                      <img
-                                        src={iconPath}
-                                        alt=""
-                                        className="w-5 h-5 object-contain"
-                                      />
+                                {/* Tech Icons Grid */}
+                                <div className="absolute inset-0 z-10 flex items-center justify-center pt-4">
+                                  <div className="p-2.5 rounded-lg bg-white/10 backdrop-blur-lg border border-white/15">
+                                    <div className="grid grid-cols-3 gap-1.5">
+                                      {service.techIcons.map(
+                                        (iconPath, iconIndex) => (
+                                          <div
+                                            key={iconIndex}
+                                            className="w-9 h-9 flex items-center justify-center rounded-md bg-white/5 border border-white/10"
+                                          >
+                                            <img
+                                              src={iconPath}
+                                              alt=""
+                                              className="w-5 h-5 object-contain"
+                                            />
+                                          </div>
+                                        )
+                                      )}
                                     </div>
-                                  ),
-                                )}
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                          </div>
-                        </div>
-                      </Card>
-                    );
-                  })}
-                </CardSwap>
-              </motion.div>
-            </div>
-          ) : (
-            /* Desktop Layout - Original two column */
-            <>
-              <div className="relative z-10 w-full max-w-7xl mx-auto px-4 lg:px-8">
+                            </Card>
+                          );
+                        })}
+                      </CardSwap>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            ) : (
+              /* Desktop Layout - COMPLETELY UNCHANGED */
+              <>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
                   <motion.div
                     initial={{ opacity: 0, x: -50 }}
@@ -920,25 +967,35 @@ const TechnologySection = forwardRef(({ scrollProgress, isMobile }, ref) => {
                       cloud infrastructure and secure systems.
                     </p>
 
-                    <Link
-                      href="/services/technology"
-                      className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-[#20427f] text-white rounded-full font-semibold hover:shadow-lg hover:shadow-cyan-500/30 transition-all duration-300 hover:gap-4"
+                    <GlareHover
+                      glareColor="#06b6d4"
+                      glareOpacity={0.35}
+                      glareAngle={-30}
+                      glareSize={300}
+                      transitionDuration={800}
+                      playOnce={false}
+                      className="inline-block rounded-full overflow-hidden"
                     >
-                      Explore Technology
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+                      <Link
+                        href="/services/technology"
+                        className="inline-flex items-center gap-2 px-6 py-3 bg-[#0e7490] text-white rounded-full font-semibold text-sm hover:bg-[#0891b2] transition-all duration-300 hover:gap-4 hover:shadow-lg hover:shadow-cyan-500/40"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M17 8l4 4m0 0l-4 4m4-4H3"
-                        />
-                      </svg>
-                    </Link>
+                        Explore Technology
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M17 8l4 4m0 0l-4 4m4-4H3"
+                          />
+                        </svg>
+                      </Link>
+                    </GlareHover>
                   </motion.div>
 
                   <motion.div
@@ -1003,7 +1060,7 @@ const TechnologySection = forwardRef(({ scrollProgress, isMobile }, ref) => {
                                             className="w-8 h-8 object-contain"
                                           />
                                         </div>
-                                      ),
+                                      )
                                     )}
                                   </div>
                                 </div>
@@ -1027,13 +1084,13 @@ const TechnologySection = forwardRef(({ scrollProgress, isMobile }, ref) => {
                     />
                   </div>
                 </div>
-              </div>
-            </>
-          )}
+              </>
+            )}
+          </div>
         </div>
-      </div>
-    </section>
-  );
-});
+      </section>
+    );
+  }
+);
 
 TechnologySection.displayName = "TechnologySection";

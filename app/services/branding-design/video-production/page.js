@@ -523,7 +523,6 @@ export default function VideoProduction() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

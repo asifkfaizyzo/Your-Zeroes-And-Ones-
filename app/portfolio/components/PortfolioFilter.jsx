@@ -99,7 +99,7 @@ export default function PortfolioFilter({
   return (
     <>
       {/* Desktop Filter Bar */}
-      <div className="bg-white sticky top-0 z-40 py-4 border-b border-gray-100 shadow-sm">
+      <div className="bg-white z-40 py-4 border-b border-gray-100 shadow-sm">
         <div
           className="max-w-[1800px] mx-auto"
           style={{

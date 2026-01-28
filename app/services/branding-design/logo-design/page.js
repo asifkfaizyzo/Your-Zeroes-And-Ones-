@@ -284,7 +284,6 @@ function LogoDesign() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

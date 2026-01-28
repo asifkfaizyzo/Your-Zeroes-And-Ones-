@@ -56,7 +56,7 @@ export default function NotFound() {
           </div>
         </section>
       </main>
-      <Footer />
+       
     </>
   )
 }

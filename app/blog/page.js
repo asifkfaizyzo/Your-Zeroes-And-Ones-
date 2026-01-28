@@ -5,7 +5,7 @@ import RecentArticlesWrapper from "./RecentArticlesWrapper";
 import BlogHero from "./components/BlogHero";
 import prisma from "@/lib/prisma";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Blog - Your Zeros and Ones",
@@ -15,11 +15,11 @@ export const metadata = {
 
 export default async function BlogPage() {
   let blogs = [];
-  
+
   try {
     blogs = await prisma.blog.findMany({
       where: { published: true },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     });
   } catch (error) {
     console.error("Error fetching blogs:", error);
@@ -28,12 +28,10 @@ export default async function BlogPage() {
 
   return (
     <>
-      
-      <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50">
+      <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 pt-10">
         <BlogHero />
         <RecentArticlesWrapper posts={blogs} />
       </main>
-      <Footer />
     </>
   );
 }

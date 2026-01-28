@@ -904,7 +904,6 @@ export default function CyberSecurity() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

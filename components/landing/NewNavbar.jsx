@@ -1,7 +1,7 @@
 // components/landing/NewNavbar.jsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -11,6 +11,7 @@ export default function NewNavbar({ isDark = true }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const pathname = usePathname();
+  const servicesTimeoutRef = useRef(null);
 
   const isHomepage = pathname === "/" || pathname === "/rehome";
 
@@ -43,6 +44,15 @@ export default function NewNavbar({ isDark = true }) {
     setIsServicesOpen(false);
   }, [pathname]);
 
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (servicesTimeoutRef.current) {
+        clearTimeout(servicesTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const getInterpolatedValue = (stages, progress, key) => {
     for (let i = 0; i < stages.length; i++) {
       const stage = stages[i];
@@ -71,11 +81,6 @@ export default function NewNavbar({ isDark = true }) {
       category: "Branding & Design",
       href: "/services/branding-design",
       description: "Build a memorable brand identity",
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-        </svg>
-      ),
       subServices: [
         { name: "Brand Consulting", href: "/services/branding-design/brand-consulting" },
         { name: "Logo Design", href: "/services/branding-design/logo-design" },
@@ -90,12 +95,6 @@ export default function NewNavbar({ isDark = true }) {
       category: "Digital Marketing",
       href: "/services/digital-marketing",
       description: "Reach and engage your audience",
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
-        </svg>
-      ),
       subServices: [
         { name: "SEO", href: "/services/digital-marketing/seo" },
         { name: "Social Media Management", href: "/services/digital-marketing/social-media-management" },
@@ -109,11 +108,6 @@ export default function NewNavbar({ isDark = true }) {
       category: "Technology",
       href: "/services/technology",
       description: "Cutting-edge digital solutions",
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-        </svg>
-      ),
       subServices: [
         { name: "AI & Machine Learning", href: "/services/technology/ai-ml" },
         { name: "DevOps Consulting", href: "/services/technology/devops-consulting" },
@@ -131,6 +125,21 @@ export default function NewNavbar({ isDark = true }) {
   const closeAllMenus = () => {
     setIsServicesOpen(false);
     setIsMenuOpen(false);
+  };
+
+  // Hover handlers with delay for smooth UX
+  const handleServicesMouseEnter = () => {
+    if (servicesTimeoutRef.current) {
+      clearTimeout(servicesTimeoutRef.current);
+      servicesTimeoutRef.current = null;
+    }
+    setIsServicesOpen(true);
+  };
+
+  const handleServicesMouseLeave = () => {
+    servicesTimeoutRef.current = setTimeout(() => {
+      setIsServicesOpen(false);
+    }, 150); // Small delay to allow moving to dropdown
   };
 
   const isActivePath = (href) => {
@@ -199,8 +208,6 @@ export default function NewNavbar({ isDark = true }) {
       categoryTitle: isDark ? "text-white" : "text-gray-900",
       categoryTitleHover: isDark ? "group-hover:text-blue-200" : "group-hover:text-[#20427f]",
       categoryDesc: isDark ? "text-blue-200/60" : "text-gray-500",
-      categoryIconBg: isDark ? "bg-white/10" : "bg-[#20427f]/10",
-      categoryIconColor: isDark ? "text-blue-200" : "text-[#20427f]",
       subServiceText: isDark
         ? "text-blue-200/70 hover:bg-white/10 hover:text-white"
         : "text-gray-600 hover:bg-[#20427f]/5 hover:text-[#20427f]",
@@ -247,6 +254,79 @@ export default function NewNavbar({ isDark = true }) {
       : isDark ? "brightness-0 invert" : "",
   };
 
+  // Mega Menu Content Component (reusable for both layouts)
+  const MegaMenuContent = () => (
+    <div 
+      className={`w-[850px] max-h-[70vh] overflow-y-auto rounded-2xl shadow-2xl border overflow-hidden ${theme.dropdown.bg} ${theme.dropdown.border}`}
+      onMouseEnter={handleServicesMouseEnter}
+      onMouseLeave={handleServicesMouseLeave}
+    >
+      {/* Header - Compact */}
+      <div className={`px-6 py-3 border-b ${theme.dropdown.headerBorder}`}>
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className={`text-lg font-bold ${theme.dropdown.title}`}>Our Services</h3>
+            <p className={`text-xs mt-0.5 ${theme.dropdown.subtitle}`}>
+              Comprehensive digital solutions for your business
+            </p>
+          </div>
+          <Link
+            href="/services"
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all border ${theme.dropdown.viewAllBtn}`}
+            onClick={closeAllMenus}
+          >
+            View All
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </Link>
+        </div>
+      </div>
+
+      {/* Service Categories Grid - Compact */}
+      <div className={`grid grid-cols-3 divide-x ${theme.dropdown.divider}`}>
+        {services.map((service) => (
+          <div key={service.category} className="p-4">
+            <Link href={service.href} className="group block mb-3" onClick={closeAllMenus}>
+              <h4 className={`text-sm font-bold flex items-center gap-1.5 ${theme.dropdown.categoryTitle} ${theme.dropdown.categoryTitleHover} transition-colors`}>
+                {service.category}
+                <svg className="w-3.5 h-3.5 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </h4>
+              <p className={`text-xs mt-0.5 ${theme.dropdown.categoryDesc}`}>{service.description}</p>
+            </Link>
+            <div className="space-y-0">
+              {service.subServices.map((sub, idx) => (
+                <Link
+                  key={idx}
+                  href={sub.href}
+                  className={`flex items-center gap-1.5 px-2 py-1.5 rounded-md text-xs transition-all ${theme.dropdown.subServiceText}`}
+                  onClick={closeAllMenus}
+                >
+                  <svg className={`w-2.5 h-2.5 flex-shrink-0 ${theme.dropdown.subServiceIcon}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                  <span className="truncate">{sub.name}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Footer - Compact */}
+      <div className={`px-6 py-2.5 ${theme.dropdown.footerBg} border-t ${theme.dropdown.headerBorder}`}>
+        <div className="flex items-center justify-between">
+          <p className={`text-xs ${theme.dropdown.footerText}`}>Need help choosing?</p>
+          <Link href="/contact" className={`text-xs font-medium ${theme.dropdown.footerLink} transition-colors`} onClick={closeAllMenus}>
+            Contact our team →
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+
   // ========================================
   // RENDER: Non-Homepage (Full-width header)
   // ========================================
@@ -287,8 +367,8 @@ export default function NewNavbar({ isDark = true }) {
                   <div key={item.href} className="relative">
                     {item.hasDropdown ? (
                       <div
-                        onMouseEnter={() => setIsServicesOpen(true)}
-                        onMouseLeave={() => setIsServicesOpen(false)}
+                        onMouseEnter={handleServicesMouseEnter}
+                        onMouseLeave={handleServicesMouseLeave}
                       >
                         <button
                           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
@@ -308,86 +388,17 @@ export default function NewNavbar({ isDark = true }) {
                           </svg>
                         </button>
 
-                        {/* Mega Menu Dropdown */}
+                        {/* Mega Menu Dropdown - Centered */}
                         <div
-                          className={`absolute top-full right-0 pt-4 transition-all duration-300 ${
+                          className={`fixed left-1/2 -translate-x-1/2 top-14 pt-2 transition-all duration-300 ${
                             isServicesOpen
                               ? "opacity-100 visible translate-y-0"
                               : "opacity-0 invisible -translate-y-2 pointer-events-none"
                           }`}
                         >
-                          <div className={`w-[900px] rounded-2xl shadow-2xl border overflow-hidden ${theme.dropdown.bg} ${theme.dropdown.border}`}>
-                            {/* Header */}
-                            <div className={`px-8 py-5 border-b ${theme.dropdown.headerBorder}`}>
-                              <div className="flex items-center justify-between">
-                                <div>
-                                  <h3 className={`text-xl font-bold ${theme.dropdown.title}`}>Our Services</h3>
-                                  <p className={`text-sm mt-1 ${theme.dropdown.subtitle}`}>
-                                    Comprehensive digital solutions for your business
-                                  </p>
-                                </div>
-                                <Link
-                                  href="/services"
-                                  className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all border ${theme.dropdown.viewAllBtn}`}
-                                  onClick={closeAllMenus}
-                                >
-                                  View All Services
-                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                  </svg>
-                                </Link>
-                              </div>
-                            </div>
-
-                            {/* All 3 Service Categories Grid */}
-                            <div className={`grid grid-cols-3 divide-x ${theme.dropdown.divider}`}>
-                              {services.map((service) => (
-                                <div key={service.category} className="p-6">
-                                  <Link href={service.href} className="group block mb-5" onClick={closeAllMenus}>
-                                    <div className="flex items-start gap-3">
-                                      <div className={`p-2.5 rounded-xl ${theme.dropdown.categoryIconBg}`}>
-                                        <span className={theme.dropdown.categoryIconColor}>{service.icon}</span>
-                                      </div>
-                                      <div className="flex-1">
-                                        <h4 className={`text-base font-bold flex items-center gap-2 ${theme.dropdown.categoryTitle} ${theme.dropdown.categoryTitleHover} transition-colors`}>
-                                          {service.category}
-                                          <svg className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                          </svg>
-                                        </h4>
-                                        <p className={`text-xs mt-0.5 ${theme.dropdown.categoryDesc}`}>{service.description}</p>
-                                      </div>
-                                    </div>
-                                  </Link>
-                                  <div className="space-y-0.5">
-                                    {service.subServices.map((sub, idx) => (
-                                      <Link
-                                        key={idx}
-                                        href={sub.href}
-                                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all ${theme.dropdown.subServiceText}`}
-                                        onClick={closeAllMenus}
-                                      >
-                                        <svg className={`w-3 h-3 flex-shrink-0 ${theme.dropdown.subServiceIcon}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                        </svg>
-                                        <span className="truncate">{sub.name}</span>
-                                      </Link>
-                                    ))}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-
-                            {/* Footer */}
-                            <div className={`px-8 py-4 ${theme.dropdown.footerBg} border-t ${theme.dropdown.headerBorder}`}>
-                              <div className="flex items-center justify-between">
-                                <p className={`text-sm ${theme.dropdown.footerText}`}>Need help choosing? We're here to guide you.</p>
-                                <Link href="/contact" className={`text-sm font-medium ${theme.dropdown.footerLink} transition-colors`} onClick={closeAllMenus}>
-                                  Contact our team →
-                                </Link>
-                              </div>
-                            </div>
-                          </div>
+                          {/* Invisible bridge to prevent gap */}
+                          <div className="h-2" />
+                          <MegaMenuContent />
                         </div>
                       </div>
                     ) : (
@@ -520,7 +531,7 @@ export default function NewNavbar({ isDark = true }) {
       )}
 
       <header
-        className="fixed top-0 left-0 right-0 z-50 flex justify-center"
+        className="fixed top-0 left-0 right-0 px-8 z-50 flex justify-center"
         style={{ paddingTop: styles.topPadding }}
       >
         <nav
@@ -570,8 +581,8 @@ export default function NewNavbar({ isDark = true }) {
                   <div key={item.href} className="relative">
                     {item.hasDropdown ? (
                       <div
-                        onMouseEnter={() => setIsServicesOpen(true)}
-                        onMouseLeave={() => setIsServicesOpen(false)}
+                        onMouseEnter={handleServicesMouseEnter}
+                        onMouseLeave={handleServicesMouseLeave}
                       >
                         <button
                           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
@@ -589,81 +600,17 @@ export default function NewNavbar({ isDark = true }) {
                           </svg>
                         </button>
 
-                        {/* Mega Menu Dropdown */}
+                        {/* Mega Menu Dropdown - Centered */}
                         <div
-                          className={`absolute top-full right-0 pt-4 transition-all duration-300 ${
+                          className={`fixed left-1/2 -translate-x-1/2 top-16 pt-2 transition-all duration-300 ${
                             isServicesOpen
                               ? "opacity-100 visible translate-y-0"
                               : "opacity-0 invisible -translate-y-2 pointer-events-none"
                           }`}
                         >
-                          <div className={`w-[900px] rounded-2xl shadow-2xl border overflow-hidden ${theme.dropdown.bg} ${theme.dropdown.border}`}>
-                            <div className={`px-8 py-5 border-b ${theme.dropdown.headerBorder}`}>
-                              <div className="flex items-center justify-between">
-                                <div>
-                                  <h3 className={`text-xl font-bold ${theme.dropdown.title}`}>Our Services</h3>
-                                  <p className={`text-sm mt-1 ${theme.dropdown.subtitle}`}>Comprehensive digital solutions for your business</p>
-                                </div>
-                                <Link
-                                  href="/services"
-                                  className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all border ${theme.dropdown.viewAllBtn}`}
-                                  onClick={closeAllMenus}
-                                >
-                                  View All Services
-                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                  </svg>
-                                </Link>
-                              </div>
-                            </div>
-
-                            <div className={`grid grid-cols-3 divide-x ${theme.dropdown.divider}`}>
-                              {services.map((service) => (
-                                <div key={service.category} className="p-6">
-                                  <Link href={service.href} className="group block mb-5" onClick={closeAllMenus}>
-                                    <div className="flex items-start gap-3">
-                                      <div className={`p-2.5 rounded-xl ${theme.dropdown.categoryIconBg}`}>
-                                        <span className={theme.dropdown.categoryIconColor}>{service.icon}</span>
-                                      </div>
-                                      <div className="flex-1">
-                                        <h4 className={`text-base font-bold flex items-center gap-2 ${theme.dropdown.categoryTitle} ${theme.dropdown.categoryTitleHover} transition-colors`}>
-                                          {service.category}
-                                          <svg className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                          </svg>
-                                        </h4>
-                                        <p className={`text-xs mt-0.5 ${theme.dropdown.categoryDesc}`}>{service.description}</p>
-                                      </div>
-                                    </div>
-                                  </Link>
-                                  <div className="space-y-0.5">
-                                    {service.subServices.map((sub, idx) => (
-                                      <Link
-                                        key={idx}
-                                        href={sub.href}
-                                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all ${theme.dropdown.subServiceText}`}
-                                        onClick={closeAllMenus}
-                                      >
-                                        <svg className={`w-3 h-3 flex-shrink-0 ${theme.dropdown.subServiceIcon}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                        </svg>
-                                        <span className="truncate">{sub.name}</span>
-                                      </Link>
-                                    ))}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-
-                            <div className={`px-8 py-4 ${theme.dropdown.footerBg} border-t ${theme.dropdown.headerBorder}`}>
-                              <div className="flex items-center justify-between">
-                                <p className={`text-sm ${theme.dropdown.footerText}`}>Need help choosing? We're here to guide you.</p>
-                                <Link href="/contact" className={`text-sm font-medium ${theme.dropdown.footerLink} transition-colors`} onClick={closeAllMenus}>
-                                  Contact our team →
-                                </Link>
-                              </div>
-                            </div>
-                          </div>
+                          {/* Invisible bridge to prevent gap */}
+                          <div className="h-2" />
+                          <MegaMenuContent />
                         </div>
                       </div>
                     ) : (

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import BlurText from "@/components/effects/BlurText/BlurText";
 import LightRays from "@/components/effects/LightRays/LightRays";
+import GlareHover from "@/components/effects/GlareHover/GlareHover";
 
 function getInitials(name = "") {
   if (!name) return "?";
@@ -13,7 +14,7 @@ function getInitials(name = "") {
   return parts.map((p) => p.charAt(0).toUpperCase()).join("");
 }
 
-function LogoItem({ client, index }) {
+function LogoItem({ client, index, isMobile }) {
   const [imageError, setImageError] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const initials = getInitials(client.name);
@@ -29,7 +30,7 @@ function LogoItem({ client, index }) {
       className="flex items-center justify-center cursor-pointer"
     >
       <motion.div
-        animate={{ scale: isHovered ? 1.15 : 1 }}
+        animate={{ scale: isHovered && !isMobile ? 1.15 : 1 }}
         transition={{ duration: 0.3, ease: "easeOut" }}
       >
         {client.logo && !imageError ? (
@@ -53,6 +54,20 @@ export default function ClientsSection() {
   const [clients, setClients] = useState([]);
   const [clientsLoading, setClientsLoading] = useState(true);
   const [displayCount] = useState(10);
+  const [isMobile, setIsMobile] = useState(false); // desktop by default
+  const [isClient, setIsClient] = useState(false); // prevent SSR flash
+
+  useEffect(() => {
+    setIsClient(true);
+
+    const checkScreen = () => {
+      setIsMobile(window.innerWidth < 1024); // 1024px breakpoint
+    };
+
+    checkScreen();
+    window.addEventListener("resize", checkScreen);
+    return () => window.removeEventListener("resize", checkScreen);
+  }, []);
 
   useEffect(() => {
     const fetchClients = async () => {
@@ -80,27 +95,53 @@ export default function ClientsSection() {
       <div className="absolute top-0 left-0 right-0 h-16 bg-[#060812]" />
 
       <div className="relative min-h-screen flex items-center justify-center">
+        {/* Background - No flash */}
         <div className="absolute inset-0 z-0">
-          <LightRays
-            raysOrigin="top-center"
-            raysColor="#ffffff"
-            raysSpeed={0.8}
-            lightSpread={0.5}
-            rayLength={2}
-            followMouse={true}
-            mouseInfluence={0.02}
-            noiseAmount={0}
-            distortion={0}
-            pulsating={false}
-            fadeDistance={0.7}
-            saturation={0.6}
-          />
+          {!isClient ? (
+            // SSR/Initial render: solid background to prevent flash
+            <div className="absolute inset-0 bg-[#060812]" />
+          ) : isMobile ? (
+            // Mobile: Static gradient background
+            <>
+              <div className="absolute inset-0 bg-gradient-to-b from-[#060812] via-[#0a1020] to-[#060812]" />
+              <div
+                className="absolute inset-0 opacity-20"
+                style={{
+                  background: `
+                    radial-gradient(ellipse at 50% 0%, rgba(91, 141, 239, 0.15) 0%, transparent 50%),
+                    radial-gradient(ellipse at 50% 100%, rgba(91, 141, 239, 0.1) 0%, transparent 50%)
+                  `,
+                }}
+              />
+            </>
+          ) : (
+            // Desktop: LightRays animation
+            <LightRays
+              raysOrigin="top-center"
+              raysColor="#ffffff"
+              raysSpeed={0.8}
+              lightSpread={0.5}
+              rayLength={2}
+              followMouse={true}
+              mouseInfluence={0.02}
+              noiseAmount={0}
+              distortion={0}
+              pulsating={false}
+              fadeDistance={0.7}
+              saturation={0.6}
+            />
+          )}
         </div>
 
         <div className="absolute inset-0 bg-[#060812]/50 z-[1]" />
 
-        <div className="absolute left-8 top-1/4 bottom-1/4 w-px bg-gradient-to-b from-transparent via-[#5b8def]/15 to-transparent hidden lg:block z-[2]" />
-        <div className="absolute right-8 top-1/4 bottom-1/4 w-px bg-gradient-to-b from-transparent via-[#5b8def]/15 to-transparent hidden lg:block z-[2]" />
+        {/* Side decorative lines - Desktop only */}
+        {!isMobile && (
+          <>
+            <div className="absolute left-8 top-1/4 bottom-1/4 w-px bg-gradient-to-b from-transparent via-[#5b8def]/15 to-transparent hidden lg:block z-[2]" />
+            <div className="absolute right-8 top-1/4 bottom-1/4 w-px bg-gradient-to-b from-transparent via-[#5b8def]/15 to-transparent hidden lg:block z-[2]" />
+          </>
+        )}
 
         <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="text-center mb-10 lg:mb-16">
@@ -154,9 +195,11 @@ export default function ClientsSection() {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-5 gap-8 sm:gap-10 lg:gap-12 place-items-center max-w-4xl mx-auto">
+              <div className="flex flex-wrap justify-center gap-8 sm:gap-10 lg:gap-20 max-w-4xl mx-auto">
                 {displayedClients.map((client, index) => (
-                  <LogoItem key={client.id} client={client} index={index} />
+                  <div key={client.id} className="flex-shrink-0">
+                    <LogoItem client={client} index={index} isMobile={isMobile} />
+                  </div>
                 ))}
               </div>
 
@@ -169,7 +212,11 @@ export default function ClientsSection() {
                 >
                   <div className="h-px w-16 bg-gradient-to-r from-transparent to-white/20" />
                   <span className="text-white/40 text-sm">
-                    + <span className="text-[#5b8def] font-semibold">{remainingCount}</span> more trusted partners
+                    +{" "}
+                    <span className="text-[#5b8def] font-semibold">
+                      {remainingCount}
+                    </span>{" "}
+                    more trusted partners
                   </span>
                   <div className="h-px w-16 bg-gradient-to-l from-transparent to-white/20" />
                 </motion.div>
@@ -184,15 +231,35 @@ export default function ClientsSection() {
             transition={{ delay: 0.3 }}
             className="text-center mt-12"
           >
-            <Link
-              href="/clients"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-[#20427f] text-white rounded-full font-semibold hover:bg-[#2d5aa8] transition-all duration-300 hover:gap-4"
+            <GlareHover
+              glareColor="#5b8def"
+              glareOpacity={0.35}
+              glareAngle={-30}
+              glareSize={300}
+              transitionDuration={800}
+              playOnce={false}
+              className="inline-block rounded-full overflow-hidden"
             >
-              View All Clients
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </Link>
+              <Link
+                href="/clients"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-[#1e3a6e] text-white rounded-full font-semibold hover:bg-[#2d5aa8] transition-all duration-300 hover:gap-4"
+              >
+                View All Clients
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  />
+                </svg>
+              </Link>
+            </GlareHover>
           </motion.div>
         </div>
       </div>

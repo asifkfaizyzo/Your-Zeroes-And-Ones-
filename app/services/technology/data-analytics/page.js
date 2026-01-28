@@ -949,7 +949,6 @@ export default function DataAnalytics() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

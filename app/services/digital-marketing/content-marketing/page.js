@@ -617,7 +617,6 @@ export default function ContentMarketing() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

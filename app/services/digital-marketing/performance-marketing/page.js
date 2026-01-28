@@ -617,7 +617,6 @@ export default function PerformanceMarketing() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

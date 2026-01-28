@@ -313,7 +313,6 @@ export default function DigitalMarketing() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

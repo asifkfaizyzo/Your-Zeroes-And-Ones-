@@ -617,7 +617,6 @@ export default function MarketingAutomation() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

@@ -29,7 +29,7 @@ export default function Portfolio() {
   const [activeSubCategory, setActiveSubCategory] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isFiltering, setIsFiltering] = useState(false);
-  
+
   // ✅ NEW: Dynamic stats state
   const [stats, setStats] = useState({
     projects: 0,
@@ -148,8 +148,7 @@ export default function Portfolio() {
 
   return (
     <>
-      
-      <main className="min-h-screen bg-white">
+      <main className="min-h-screen bg-white pt-10">
         {/* ✅ UPDATED: Pass dynamic stats to hero */}
         <PortfolioHero stats={stats} />
 
@@ -226,20 +225,20 @@ export default function Portfolio() {
                   label: "Projects Completed",
                   Icon: FolderCheck,
                 },
-                { 
-                  value: `${stats.clients}+`, 
-                  label: "Happy Clients", 
-                  Icon: Users 
+                {
+                  value: `${stats.clients}+`,
+                  label: "Happy Clients",
+                  Icon: Users,
                 },
-                { 
-                  value: `${stats.years}+`, 
-                  label: "Years Experience", 
-                  Icon: Clock 
+                {
+                  value: `${stats.years}+`,
+                  label: "Years Experience",
+                  Icon: Clock,
                 },
-                { 
-                  value: `${stats.satisfaction}%`, 
-                  label: "Client Satisfaction", 
-                  Icon: Star 
+                {
+                  value: `${stats.satisfaction}%`,
+                  label: "Client Satisfaction",
+                  Icon: Star,
                 },
               ].map((stat, index) => (
                 <div
@@ -263,7 +262,6 @@ export default function Portfolio() {
 
         <PortfolioCTA />
       </main>
-      <Footer />
     </>
   );
 }

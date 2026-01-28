@@ -1,75 +1,102 @@
 // app/components/landingpages/CTASection.js
 import Link from "next/link";
+import GlareHover from "@/components/effects/GlareHover/GlareHover";
 
 export default function CTASection() {
   return (
-    <section className="py-12 sm:py-16 lg:py-20 2xl:py-24 bg-gradient-to-br from-[#0a1628] via-[#0f1d32] to-[#0a1628] relative overflow-hidden">
+    <section className="py-10 sm:py-12 lg:py-16 2xl:py-20 bg-gradient-to-br from-[#0a1628] via-[#0f1d32] to-[#0a1628] relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-0 left-0 w-48 sm:w-72 lg:w-96 h-48 sm:h-72 lg:h-96 bg-[#203E7F] rounded-full filter blur-3xl animate-pulse" />
         <div className="absolute bottom-0 right-0 w-48 sm:w-72 lg:w-96 h-48 sm:h-72 lg:h-96 bg-[#203E7F] rounded-full filter blur-3xl animate-pulse animation-delay-2000" />
       </div>
 
-      <div
-        className="w-full max-w-[1800px] mx-auto text-center relative z-10"
-        style={{
-          paddingLeft: "clamp(2rem, 8vw, 12rem)",
-          paddingRight: "clamp(2rem, 8vw, 12rem)",
-        }}
-      >
-        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl 2xl:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight">
+      <div className="w-full max-w-[1800px] mx-auto text-center relative z-10 px-4 sm:px-6">
+        {/* Heading - Matched to VH1Hero sizes */}
+        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white mb-3 sm:mb-4 leading-tight">
           Ready to Transform Your Business?
         </h2>
-        <p className="text-base sm:text-lg md:text-xl lg:text-2xl 2xl:text-3xl text-blue-200/70 mb-6 sm:mb-8 lg:mb-10 max-w-2xl 2xl:max-w-3xl mx-auto leading-relaxed">
-          Let's discuss how our comprehensive services can help you achieve
-          your digital goals and drive real results.
+
+        {/* Subtext - Matched to VH1Hero tagline */}
+        <p className="text-sm sm:text-base md:text-lg lg:text-xl text-blue-200/70 mb-6 sm:mb-8 max-w-md sm:max-w-xl lg:max-w-2xl mx-auto leading-relaxed">
+          Let's discuss how our comprehensive services can help you achieve your
+          digital goals and drive real results.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-6 sm:mb-8">
-          <Link
-            href="/contact"
-            className="group bg-white text-[#0f1d32] px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 rounded-xl hover:bg-blue-50 transition-all duration-300 font-bold text-sm sm:text-base lg:text-lg shadow-2xl hover:scale-105 inline-flex items-center justify-center"
+        {/* Buttons - Grid layout for mobile, flex for desktop */}
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-row sm:gap-4 justify-center mb-6 sm:mb-8 max-w-2xl mx-auto">
+          {/* Get Free Consultation */}
+          <GlareHover
+            glareColor="#1e3a6e"
+            glareOpacity={0.25}
+            glareAngle={-30}
+            glareSize={300}
+            transitionDuration={800}
+            playOnce={false}
+            className="inline-block rounded-xl sm:rounded-full overflow-hidden"
           >
-            Get Free Consultation
-            <svg
-              className="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+            <Link
+              href="/contact"
+              className="w-full bg-white text-[#0f1d32] px-4 sm:px-6 lg:px-8 py-3 sm:py-4 rounded-xl sm:rounded-full hover:bg-blue-50 transition-all duration-300 font-semibold text-xs sm:text-sm lg:text-base inline-flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 hover:gap-3 shadow-xl"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 7l5 5m0 0l-5 5m5-5H6"
-              />
-            </svg>
-          </Link>
-          <Link
-            href="/portfolio"
-            className="group border-2 border-white/30 text-white px-6 sm:px-8 lg:px-10 py-3 sm:py-4 lg:py-5 rounded-xl hover:bg-white/10 hover:border-white/50 transition-all duration-300 font-bold text-sm sm:text-base lg:text-lg hover:scale-105 inline-flex items-center justify-center"
+              <span className="text-center sm:text-left leading-tight whitespace-nowrap">
+                Get Free Consultation
+              </span>
+              <svg
+                className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 8l4 4m0 0l-4 4m4-4H3"
+                />
+              </svg>
+            </Link>
+          </GlareHover>
+
+          {/* View Our Work */}
+          <GlareHover
+            glareColor="#ffffff"
+            glareOpacity={0.28}
+            glareAngle={-30}
+            glareSize={300}
+            transitionDuration={800}
+            playOnce={false}
+            className="inline-block rounded-xl sm:rounded-full overflow-hidden"
           >
-            View Our Work
-            <svg
-              className="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:rotate-45 transition-transform"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+            <Link
+              href="/portfolio"
+              className="w-full border border-white/30 text-white px-4 sm:px-6 lg:px-8 py-3 sm:py-4 rounded-xl sm:rounded-full hover:bg-white/10 hover:border-white/50 transition-all duration-300 font-semibold text-xs sm:text-sm lg:text-base inline-flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 hover:gap-3"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-              />
-            </svg>
-          </Link>
+              <span className="text-center sm:text-left leading-tight whitespace-nowrap">
+                View Our Work
+              </span>
+              <svg
+                className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 8l4 4m0 0l-4 4m4-4H3"
+                />
+              </svg>
+            </Link>
+          </GlareHover>
         </div>
 
-        <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4 sm:gap-6 lg:gap-8 pt-6 sm:pt-8 border-t border-white/10">
-          <div className="text-blue-200/80 flex items-center justify-center gap-2">
+        {/* Trust Badges */}
+        <div className="flex flex-row flex-wrap justify-center gap-4 sm:gap-6 pt-4 sm:pt-6 border-t border-white/10">
+          <div className="text-blue-200/70 flex items-center justify-center gap-1.5 sm:gap-2">
             <svg
-              className="w-5 h-5 sm:w-6 sm:h-6"
+              className="w-4 h-4 sm:w-5 sm:h-5"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
@@ -79,19 +106,19 @@ export default function CTASection() {
                 clipRule="evenodd"
               />
             </svg>
-            <span className="font-semibold text-sm sm:text-base">
+            <span className="font-medium text-xs sm:text-sm">
               Secure & Confidential
             </span>
           </div>
-          <div className="text-blue-200/80 flex items-center justify-center gap-2">
+          <div className="text-blue-200/70 flex items-center justify-center gap-1.5 sm:gap-2">
             <svg
-              className="w-5 h-5 sm:w-6 sm:h-6"
+              className="w-4 h-4 sm:w-5 sm:h-5"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
               <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
             </svg>
-            <span className="font-semibold text-sm sm:text-base">
+            <span className="font-medium text-xs sm:text-sm">
               100% Satisfaction
             </span>
           </div>

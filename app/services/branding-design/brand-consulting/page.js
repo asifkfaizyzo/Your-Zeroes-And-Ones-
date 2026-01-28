@@ -294,7 +294,6 @@ export default function BrandConsulting() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

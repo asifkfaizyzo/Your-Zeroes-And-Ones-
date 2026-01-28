@@ -623,7 +623,6 @@ export default function MobileDevelopment() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

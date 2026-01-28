@@ -532,7 +532,6 @@ export default function SEO() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

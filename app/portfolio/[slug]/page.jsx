@@ -7,15 +7,15 @@ import ProjectDetail from "./ProjectDetail";
 // Fetch single portfolio item
 async function getPortfolioItem(slug) {
   try {
-    const baseUrl = process.env.SITE_ORIGIN || 'http://localhost:3000';
+    const baseUrl = process.env.SITE_ORIGIN || "http://localhost:3000";
     const res = await fetch(`${baseUrl}/api/portfolio/${slug}`, {
-      cache: 'no-store', // or 'force-cache' for static
+      cache: "no-store", // or 'force-cache' for static
     });
 
     if (!res.ok) return null;
     return res.json();
   } catch (error) {
-    console.error('Error fetching portfolio item:', error);
+    console.error("Error fetching portfolio item:", error);
     return null;
   }
 }
@@ -23,20 +23,21 @@ async function getPortfolioItem(slug) {
 // Fetch related projects
 async function getRelatedProjects(category, currentSlug) {
   try {
-    const baseUrl = process.env.SITE_ORIGIN || 'http://localhost:3000';
-    const res = await fetch(`${baseUrl}/api/portfolio?category=${encodeURIComponent(category)}`, {
-      cache: 'no-store',
-    });
+    const baseUrl = process.env.SITE_ORIGIN || "http://localhost:3000";
+    const res = await fetch(
+      `${baseUrl}/api/portfolio?category=${encodeURIComponent(category)}`,
+      {
+        cache: "no-store",
+      },
+    );
 
     if (!res.ok) return [];
     const projects = await res.json();
-    
+
     // Filter out current project and limit to 3
-    return projects
-      .filter(p => p.slug !== currentSlug)
-      .slice(0, 3);
+    return projects.filter((p) => p.slug !== currentSlug).slice(0, 3);
   } catch (error) {
-    console.error('Error fetching related projects:', error);
+    console.error("Error fetching related projects:", error);
     return [];
   }
 }
@@ -67,9 +68,7 @@ export default async function ProjectDetailPage({ params }) {
 
   return (
     <>
-      
       <ProjectDetail project={project} relatedProjects={relatedProjects} />
-      <Footer />
     </>
   );
 }

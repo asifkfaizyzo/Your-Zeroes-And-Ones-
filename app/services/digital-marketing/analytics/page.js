@@ -626,7 +626,6 @@ export default function Analytics() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

@@ -301,7 +301,6 @@ export default async function SitemapPage() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

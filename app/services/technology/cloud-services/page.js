@@ -805,7 +805,6 @@ export default function CloudServices() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

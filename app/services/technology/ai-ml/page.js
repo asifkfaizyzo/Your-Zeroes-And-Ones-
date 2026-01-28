@@ -464,7 +464,6 @@ export default function AIML() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

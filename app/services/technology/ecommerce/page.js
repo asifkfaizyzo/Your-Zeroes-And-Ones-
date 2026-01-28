@@ -606,7 +606,6 @@ export default function Ecommerce() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

@@ -988,7 +988,6 @@ export default function QATesting() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

@@ -618,7 +618,6 @@ export default function DevOps() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

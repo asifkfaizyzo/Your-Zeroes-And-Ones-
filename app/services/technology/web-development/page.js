@@ -529,7 +529,6 @@ export default function WebDevelopment() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

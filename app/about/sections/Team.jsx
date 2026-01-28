@@ -69,10 +69,13 @@ const TeamMemberCard = memo(function TeamMemberCard({ member, index }) {
             </div>
           )}
 
-          {/* Gradient overlay - Only on hover */}
+          {/* Subtle gradient overlay for icon visibility (always visible) */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+
+          {/* Blue gradient overlay - Only on hover */}
           <div className="absolute inset-0 bg-gradient-to-t from-[#203E7F]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-          {/* Social links - Always visible */}
+          {/* Social links - Glass style by default */}
           {hasSocialLinks && (
             <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-3 z-10">
               {member.linkedin && member.linkedin !== "#" && (
@@ -80,11 +83,11 @@ const TeamMemberCard = memo(function TeamMemberCard({ member, index }) {
                   href={member.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 bg-white/90 rounded-full flex items-center justify-center hover:bg-white hover:scale-110 group-hover:bg-white/20 group-hover:backdrop-blur-sm transition-all duration-300 group/link shadow-lg group-hover:shadow-none"
+                  className="group/link w-8 h-8 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 hover:bg-white p-1.5 hover:scale-110 hover:shadow-lg transition-all duration-300"
                   aria-label={`${member.name} LinkedIn`}
                 >
                   <svg
-                    className="w-5 h-5 text-[#203E7F] group-hover:text-white group-hover/link:scale-110 transition-all duration-300"
+                    className="w-5 h-5 text-white group-hover/link:text-[#0A66C2] transition-all duration-300"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -97,11 +100,11 @@ const TeamMemberCard = memo(function TeamMemberCard({ member, index }) {
                   href={member.twitter}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 bg-white/90 rounded-full flex items-center justify-center hover:bg-white hover:scale-110 group-hover:bg-white/20 group-hover:backdrop-blur-sm transition-all duration-300 group/link shadow-lg group-hover:shadow-none"
+                  className="group/link w-8 h-8 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 p-1.5 hover:bg-white hover:scale-110 hover:shadow-lg transition-all duration-300"
                   aria-label={`${member.name} Twitter`}
                 >
                   <svg
-                    className="w-5 h-5 text-[#203E7F] group-hover:text-white group-hover/link:scale-110 transition-all duration-300"
+                    className="w-5 h-5 text-white group-hover/link:text-black transition-all duration-300"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >

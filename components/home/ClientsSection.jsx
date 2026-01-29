@@ -31,11 +31,11 @@ function LogoItem({ client, index, isMobile }) {
       viewport={{ once: true, margin: "-50px" }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="flex items-center justify-center cursor-pointer aspect-square"
+      className="flex items-center justify-center cursor-pointer w-full h-full"
     >
       <motion.div
         animate={{ 
-          scale: isHovered && !isMobile ? 1.2 : 1,
+          scale: isHovered && !isMobile ? 1.15 : 1,
           filter: isHovered && !isMobile ? "brightness(1.2)" : "brightness(1)"
         }}
         transition={{ duration: 0.3, ease: "easeOut" }}
@@ -46,12 +46,14 @@ function LogoItem({ client, index, isMobile }) {
             src={client.logo}
             alt={client.name}
             title={client.name}
-            className="w-10 h-10 xs:w-12 xs:h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 object-contain brightness-0 invert transition-all duration-300"
+            // ✅ FIXED: Image now fills 80% of container instead of fixed small sizes
+            className="w-[80%] h-[80%] object-contain brightness-0 invert transition-all duration-300"
             onError={() => setImageError(true)}
           />
         ) : (
-          <div className="flex items-center justify-center w-10 h-10 xs:w-12 xs:h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 rounded-full bg-white/5 border border-white/10">
-            <span className="text-sm xs:text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-white/80">
+          // ✅ FIXED: Fallback initials also fill container properly
+          <div className="flex items-center justify-center w-[80%] h-[80%] rounded-full bg-white/5 border border-white/10">
+            <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white/80">
               {initials}
             </span>
           </div>
@@ -67,7 +69,6 @@ export default function ClientsSection() {
   const [isMobile, setIsMobile] = useState(false);
   const [isClient, setIsClient] = useState(false);
 
-  // ✅ Grid configuration: 3 rows × 6 columns = 18 clients max
   const DISPLAY_COUNT = 18;
 
   useEffect(() => {
@@ -103,13 +104,21 @@ export default function ClientsSection() {
   const hasMoreClients = clients.length > DISPLAY_COUNT;
   const remainingCount = clients.length - DISPLAY_COUNT;
 
-  // Loading skeleton
   const LoadingSkeleton = () => (
-    <div className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-10 max-w-6xl mx-auto">
+    <div className="flex flex-wrap justify-center gap-3 xs:gap-4 sm:gap-6 md:gap-8 lg:gap-10 xl:gap-12 max-w-6xl mx-auto">
       {Array.from({ length: 18 }).map((_, index) => (
         <div
           key={index}
-          className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full bg-white/5 animate-pulse"
+          className="
+            w-[calc(33.333%-0.75rem)]
+            xs:w-[calc(33.333%-1rem)]
+            sm:w-[calc(25%-1.5rem)]
+            md:w-[calc(20%-2rem)]
+            lg:w-[calc(16.666%-2.5rem)]
+            max-w-[160px]
+            aspect-square
+            rounded-full bg-white/5 animate-pulse
+          "
           style={{ animationDelay: `${index * 50}ms` }}
         />
       ))}
@@ -158,7 +167,6 @@ export default function ClientsSection() {
 
         <div className="absolute inset-0 bg-[#060812]/50 z-[1]" />
 
-        {/* Side decorative lines - Desktop only */}
         {!isMobile && (
           <>
             <div className="absolute left-8 top-1/4 bottom-1/4 w-px bg-gradient-to-b from-transparent via-[#5b8def]/15 to-transparent hidden lg:block z-[2]" />
@@ -217,13 +225,12 @@ export default function ClientsSection() {
           {clientsLoading ? (
             <LoadingSkeleton />
           ) : displayedClients.length === 0 ? (
-            /* No clients fallback */
             <div className="text-center py-12">
               <p className="text-white/40 text-sm">No clients to display</p>
             </div>
           ) : (
             <>
-              {/* ✅ Responsive Flexbox Grid - Centers incomplete rows automatically */}
+              {/* ✅ YOUR ORIGINAL LAYOUT - Just increased max-w from 120px to 160px */}
               <div className="flex flex-wrap justify-center gap-3 xs:gap-4 sm:gap-6 md:gap-8 lg:gap-10 xl:gap-12 max-w-6xl mx-auto px-2">
                 {displayedClients.map((client, index) => (
                   <div
@@ -248,7 +255,6 @@ export default function ClientsSection() {
                 ))}
               </div>
 
-              {/* Remaining count indicator */}
               {hasMoreClients && (
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -312,4 +318,4 @@ export default function ClientsSection() {
       </div>
     </section>
   );
-}  
+}

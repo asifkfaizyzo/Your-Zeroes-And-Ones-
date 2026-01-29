@@ -34,7 +34,7 @@ export default function Portfolio() {
   const [stats, setStats] = useState({
     projects: 0,
     clients: 30,
-    years: 15,
+    years: 10,
     satisfaction: 100,
   });
 
@@ -44,9 +44,9 @@ export default function Portfolio() {
       .then((res) => res.json())
       .then((data) => {
         setStats({
-          projects: data.projects || 0,
-          clients: data.clients || 30,
-          years: data.years || 15,
+          projects: data.projects || 20,
+          clients: data.clients || 15,
+          years: data.years,
           satisfaction: 100, // Always 100%
         });
       })
@@ -54,8 +54,8 @@ export default function Portfolio() {
         // Fallback values if API fails
         setStats({
           projects: 20,
-          clients: 30,
-          years: 15,
+          clients: 20,
+          years: 10,
           satisfaction: 100,
         });
       });

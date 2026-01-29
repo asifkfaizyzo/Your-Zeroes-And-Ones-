@@ -9,7 +9,7 @@ import { LogoMorphAnimation } from './LogoAnimation'
 // CONFIGURATION - Set these to true/false
 // ============================================
 const LOADER_CONFIG = {
-  enableFirstLoad: true,
+  enableFirstLoad: false,
   enableNavigation: false,
   firstLoadDuration: 2500,
   navigationDuration: 800,

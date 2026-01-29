@@ -11,7 +11,7 @@ export async function GET() {
     return Response.json({
       projects,
       clients,
-      years: 15,
+      years: 10,
       support: "24/7",
     });
   } catch (error) {
@@ -19,8 +19,8 @@ export async function GET() {
     return Response.json(
       {
         projects: 20,
-        clients: 30,
-        years: 15,
+        clients: 20,
+        years: 10,
         support: "24/7",
       },
       { status: 200 } // Return fallback data instead of error

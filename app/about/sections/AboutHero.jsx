@@ -28,9 +28,9 @@ const floatingItems = [
 ];
 
 const stats = [
-  { value: "50+", label: "Projects Delivered", Icon: Briefcase },
-  { value: "15+", label: "Years Experience", Icon: Award },
-  { value: "30+", label: "Happy Clients", Icon: Users },
+  { value: "20+", label: "Projects Delivered", Icon: Briefcase },
+  { value: "10+", label: "Years Experience", Icon: Award },
+  { value: "20+", label: "Happy Clients", Icon: Users },
 ];
 
 const jumpingIcons = [

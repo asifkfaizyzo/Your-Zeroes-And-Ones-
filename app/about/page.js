@@ -35,7 +35,7 @@ export default function About() {
   const [stats, setStats] = useState({
     projects: 20,
     clients: 30,
-    years: 15,
+    years: 10,
     support: "24/7",
   });
 
@@ -63,8 +63,8 @@ export default function About() {
           const data = await statsRes.json();
           setStats({
             projects: data.projects || 20,
-            clients: data.clients || 30,
-            years: data.years || 15,
+            clients: data.clients || 20,
+            years: data.years || 10,
             support: data.support || "24/7",
           });
         }

@@ -30,6 +30,39 @@ const SORT_OPTIONS = [
   { value: "z-a", label: "Z → A", Icon: ArrowUpZA },
 ];
 
+// ✅ Helper function to format dates
+const formatDate = (date) => {
+  if (!date) {
+    return "No date";
+  }
+
+  try {
+    let dateObj;
+
+    // If it's already a Date object
+    if (date instanceof Date) {
+      dateObj = date;
+    } else {
+      // If it's a string or number, convert to Date
+      dateObj = new Date(date);
+    }
+
+    // Check if valid date
+    if (isNaN(dateObj.getTime())) {
+      return "Invalid date";
+    }
+
+    return dateObj.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  } catch (error) {
+    console.error("Date formatting error:", error);
+    return "Date error";
+  }
+};
+
 // Custom Select Component with Icons
 function CustomSelect({ value, onChange, options }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -138,10 +171,10 @@ export default function RecentArticlesClient({ posts }) {
       );
     }
 
-    // Sort posts
+    // Sort posts - ✅ FIXED: Using createdAt
     result.sort((a, b) => {
-      const dateA = new Date(a.date);
-      const dateB = new Date(b.date);
+      const dateA = a.createdAt instanceof Date ? a.createdAt : new Date(a.createdAt);
+      const dateB = b.createdAt instanceof Date ? b.createdAt : new Date(b.createdAt);
 
       switch (sortOrder) {
         case "newest":
@@ -343,7 +376,8 @@ export default function RecentArticlesClient({ posts }) {
                     <div className="flex items-center justify-between text-xs text-slate-400">
                       <span className="flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
-                        {post.date}
+                        {/* ✅ FIXED: Use createdAt instead of date */}
+                        {formatDate(post.createdAt)}
                       </span>
                       <span className="flex items-center gap-1 text-indigo-600 font-medium group-hover:gap-2 transition-all">
                         Read more

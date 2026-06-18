@@ -57,8 +57,8 @@ export default function ContactInfo() {
     <div className="lg:col-span-2 space-y-8">
       {/* Intro */}
       <div>
-        <span className="inline-block px-3 py-1 bg-[#1e3a6e] border border-[#5b8def]/30 text-[#5b8def] text-xs font-semibold rounded-full mb-3">
-          Get In Touch
+        <span className="inline-block px-3 py-1 text-xl sm:text-2xl font-bold text-white rounded-full mb-3">
+          Get In Touch With Us
         </span>
       </div>
 

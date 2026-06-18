@@ -118,9 +118,7 @@ export default function AboutHero() {
           transition={{ duration: 0.6 }}
           className="mb-6"
         >
-          <span className="text-[#5b8def] text-xs sm:text-sm font-semibold uppercase tracking-[0.2em]">
-            Who We Are
-          </span>
+          
         </motion.div>
 
         {/* Heading */}

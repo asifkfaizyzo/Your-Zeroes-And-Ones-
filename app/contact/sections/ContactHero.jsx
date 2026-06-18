@@ -65,7 +65,7 @@ export default function ContactHero() {
         ) : (
           <div className="absolute inset-0 w-full h-full">
             <DotField
-              dotRadius={1.5}
+              dotRadius={3}
               dotSpacing={18}
               bulgeStrength={55}
               glowRadius={180}
@@ -74,8 +74,8 @@ export default function ContactHero() {
               cursorRadius={500}
               cursorForce={0.1}
               bulgeOnly={true}
-              gradientFrom="rgba(91, 141, 239, 0.25)"
-              gradientTo="rgba(45, 90, 168, 0.15)"
+              gradientFrom="rgba(121, 146, 196, 0.25)"
+              gradientTo="rgba(133, 161, 208, 0.15)"
               glowColor="#1e3a6e"
             />
           </div>

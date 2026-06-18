@@ -111,9 +111,7 @@ export default function PortfolioHero({ stats }) {
             transition={{ duration: 0.6 }}
             className="mb-6"
           >
-            <span className="text-[#5b8def] text-xs sm:text-sm font-semibold uppercase tracking-[0.2em]">
-              Our Work
-            </span>
+           
           </motion.div>
 
           {/* Heading */}

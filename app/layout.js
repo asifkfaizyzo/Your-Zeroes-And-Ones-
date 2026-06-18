@@ -7,6 +7,7 @@ import PageLoader from "@/components/PageLoader";
 import { ToastContainer } from "react-toastify";
 import ReCaptchaProvider from "../components/ReCaptchaProvider";
 import LayoutWrapper from "@/components/LayoutWrapper";
+import DevStampProvider from "@/components/DevStampProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,14 +24,16 @@ export default function RootLayout({ children }) {
     <html lang="en" className={inter.className}>
       <body className="bg-white text-black antialiased">
         <ConsoleBranding />
-        <Suspense fallback={null}>
-          <PageLoader>
-            <ReCaptchaProvider>
-              <LayoutWrapper>{children}</LayoutWrapper>
-            </ReCaptchaProvider>
-            <ToastContainer />
-          </PageLoader>
-        </Suspense>
+        <DevStampProvider>
+          <Suspense fallback={null}>
+            <PageLoader>
+              <ReCaptchaProvider>
+                <LayoutWrapper>{children}</LayoutWrapper>
+              </ReCaptchaProvider>
+              <ToastContainer />
+            </PageLoader>
+          </Suspense>
+        </DevStampProvider>
       </body>
     </html>
   );

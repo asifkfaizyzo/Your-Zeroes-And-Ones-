@@ -1,4 +1,4 @@
-// Q:\PROJECTS\YourZeroesAndOnes\YZO_Main\app\testimonials\ui\TestimonialPagination.jsx
+// app/testimonials/ui/TestimonialPagination.jsx
 "use client";
 import { motion } from "framer-motion";
 
@@ -42,9 +42,10 @@ export default function TestimonialPagination({
   return (
     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
       {/* Page info */}
-      <div className="text-sm text-gray-500 order-2 sm:order-1">
-        Page <span className="font-semibold text-gray-900">{currentPage}</span> of{" "}
-        <span className="font-semibold text-gray-900">{totalPages}</span>
+      <div className="text-sm text-white/40 order-2 sm:order-1">
+        Page{" "}
+        <span className="font-semibold text-white">{currentPage}</span> of{" "}
+        <span className="font-semibold text-white">{totalPages}</span>
       </div>
 
       {/* Pagination controls */}
@@ -57,8 +58,8 @@ export default function TestimonialPagination({
           disabled={currentPage === 1}
           className={`flex items-center gap-1 px-3 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
             currentPage === 1
-              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-              : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200 shadow-sm hover:shadow"
+              ? "bg-white/5 text-white/20 cursor-not-allowed border border-white/5"
+              : "bg-[#5b8def]/5 border border-[#5b8def]/20 text-white/70 hover:bg-[#5b8def]/10 hover:border-[#5b8def]/40 hover:text-white"
           }`}
         >
           <svg
@@ -88,16 +89,16 @@ export default function TestimonialPagination({
               disabled={page === "..."}
               className={`relative min-w-[40px] h-10 rounded-lg font-medium text-sm transition-all duration-200 ${
                 page === "..."
-                  ? "text-gray-400 cursor-default"
+                  ? "text-white/30 cursor-default"
                   : currentPage === page
-                  ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/30"
-                  : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200 hover:border-gray-300"
+                  ? "bg-[#1e3a6e] border border-[#5b8def]/60 text-[#5b8def] shadow-lg shadow-[#5b8def]/10"
+                  : "bg-[#5b8def]/5 border border-[#5b8def]/15 text-white/70 hover:bg-[#5b8def]/10 hover:border-[#5b8def]/30 hover:text-white"
               }`}
             >
               {currentPage === page && page !== "..." && (
                 <motion.div
                   layoutId="activePage"
-                  className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg"
+                  className="absolute inset-0 bg-[#1e3a6e] border border-[#5b8def]/60 rounded-lg"
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 />
               )}
@@ -114,8 +115,8 @@ export default function TestimonialPagination({
           disabled={currentPage === totalPages}
           className={`flex items-center gap-1 px-3 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
             currentPage === totalPages
-              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-              : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200 shadow-sm hover:shadow"
+              ? "bg-white/5 text-white/20 cursor-not-allowed border border-white/5"
+              : "bg-[#5b8def]/5 border border-[#5b8def]/20 text-white/70 hover:bg-[#5b8def]/10 hover:border-[#5b8def]/40 hover:text-white"
           }`}
         >
           <span className="hidden sm:inline">Next</span>
@@ -135,15 +136,16 @@ export default function TestimonialPagination({
         </motion.button>
       </div>
 
-      {/* Quick jump (optional) */}
+      {/* Quick jump */}
       <div className="hidden md:flex items-center gap-2 order-3">
-        <span className="text-sm text-gray-500">Go to:</span>
+        <span className="text-sm text-white/40">Go to:</span>
         <input
           type="number"
           min={1}
           max={totalPages}
           placeholder="#"
-          className="w-16 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+          className="w-16 px-3 py-2 text-sm bg-white/5 border border-[#5b8def]/20 rounded-lg text-white placeholder-white/20
+                     focus:ring-2 focus:ring-[#5b8def]/50 focus:border-[#5b8def]/40 outline-none transition-all"
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               const value = parseInt(e.target.value);

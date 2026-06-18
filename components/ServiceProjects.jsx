@@ -48,7 +48,7 @@ export default function ServiceProjectsExpandable({
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-20 bg-gray-50">
+    <section ref={sectionRef} className="py-20 bg-[#060812]">
       <div
         className="max-w-[1800px] mx-auto"
         style={{
@@ -62,10 +62,10 @@ export default function ServiceProjectsExpandable({
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
             Our Work
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-white/50 max-w-2xl mx-auto">
             {projects.length > 0
               ? "Explore our latest projects"
               : `Explore our ${
@@ -78,10 +78,13 @@ export default function ServiceProjectsExpandable({
         {isLoading && (
           <div className="flex flex-wrap justify-center gap-6">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="animate-pulse w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]">
-                <div 
-                  className="bg-gray-200 rounded-2xl" 
-                  style={{ height: 'clamp(180px, 20vw, 280px)' }}
+              <div
+                key={i}
+                className="animate-pulse w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]"
+              >
+                <div
+                  className="bg-[#5b8def]/10 rounded-2xl"
+                  style={{ height: "clamp(180px, 20vw, 280px)" }}
                 />
               </div>
             ))}
@@ -97,10 +100,10 @@ export default function ServiceProjectsExpandable({
                 : "opacity-0 translate-y-8"
             }`}
           >
-            <div className="bg-white rounded-2xl p-12 text-center border border-red-100">
-              <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="rounded-2xl p-12 text-center border border-[#5b8def]/20 bg-[#5b8def]/5 backdrop-blur-sm">
+              <div className="w-16 h-16 bg-[#5b8def]/10 border border-[#5b8def]/20 rounded-full flex items-center justify-center mx-auto mb-6">
                 <svg
-                  className="w-8 h-8 text-red-400"
+                  className="w-8 h-8 text-white/30"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -113,15 +116,15 @@ export default function ServiceProjectsExpandable({
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
+              <h3 className="text-xl font-bold text-white mb-2">
                 Unable to Load Projects
               </h3>
-              <p className="text-gray-500 mb-6">
+              <p className="text-white/40 mb-6">
                 Something went wrong while fetching our projects.
               </p>
               <button
                 onClick={() => window.location.reload()}
-                className="inline-flex items-center gap-2 text-[#20427f] font-medium hover:underline"
+                className="inline-flex items-center gap-2 text-[#5b8def] font-medium hover:underline"
               >
                 <svg
                   className="w-4 h-4"
@@ -142,7 +145,7 @@ export default function ServiceProjectsExpandable({
           </div>
         )}
 
-        {/* Empty State - No Projects */}
+        {/* Empty State */}
         {!isLoading && !error && projects.length === 0 && (
           <div
             className={`transition-all duration-1000 delay-200 ${
@@ -151,13 +154,13 @@ export default function ServiceProjectsExpandable({
                 : "opacity-0 translate-y-12"
             }`}
           >
-            <div className="relative bg-white rounded-3xl overflow-hidden border-2 border-dashed border-gray-200 hover:border-[#20427f]/30 transition-colors duration-500">
+            <div className="relative rounded-3xl overflow-hidden border border-dashed border-[#5b8def]/20 hover:border-[#5b8def]/40 bg-[#5b8def]/5 backdrop-blur-sm transition-colors duration-500">
               {/* Background Pattern */}
               <div className="absolute inset-0 opacity-[0.03]">
                 <div
                   className="absolute inset-0"
                   style={{
-                    backgroundImage: `radial-gradient(#20427f 1px, transparent 1px)`,
+                    backgroundImage: `radial-gradient(#5b8def 1px, transparent 1px)`,
                     backgroundSize: "24px 24px",
                   }}
                 />
@@ -167,23 +170,20 @@ export default function ServiceProjectsExpandable({
                 <div className="max-w-2xl mx-auto text-center">
                   {/* Animated Icon */}
                   <div className="relative w-24 h-24 mx-auto mb-8">
-                    {/* Pulsing rings */}
                     <div
-                      className="absolute inset-0 bg-[#20427f]/10 rounded-full animate-ping"
+                      className="absolute inset-0 bg-[#5b8def]/10 rounded-full animate-ping"
                       style={{ animationDuration: "3s" }}
                     />
                     <div
-                      className="absolute inset-2 bg-[#20427f]/10 rounded-full animate-ping"
+                      className="absolute inset-2 bg-[#5b8def]/10 rounded-full animate-ping"
                       style={{
                         animationDuration: "3s",
                         animationDelay: "0.5s",
                       }}
                     />
-
-                    {/* Main icon container */}
-                    <div className="relative w-24 h-24 bg-gradient-to-br from-[#20427f] to-[#1a3568] rounded-full flex items-center justify-center shadow-lg shadow-[#20427f]/20">
+                    <div className="relative w-24 h-24 bg-[#1e3a6e] border border-[#5b8def]/30 rounded-full flex items-center justify-center">
                       <svg
-                        className="w-10 h-10 text-white"
+                        className="w-10 h-10 text-[#5b8def]"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -199,12 +199,12 @@ export default function ServiceProjectsExpandable({
                   </div>
 
                   {/* Text Content */}
-                  <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">
                     Projects Coming Soon
                   </h3>
-                  <p className="text-gray-600 text-lg mb-8 max-w-md mx-auto leading-relaxed">
+                  <p className="text-white/50 text-lg mb-8 max-w-md mx-auto leading-relaxed">
                     We're currently crafting amazing projects in{" "}
-                    <span className="font-medium text-[#20427f]">
+                    <span className="font-medium text-[#5b8def]">
                       {subCategoryName || categoryName || "this category"}
                     </span>
                     . Check back soon to see our latest work!
@@ -214,7 +214,7 @@ export default function ServiceProjectsExpandable({
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <Link
                       href="/portfolio"
-                      className="inline-flex items-center justify-center gap-2 bg-[#20427f] text-white px-6 py-3 rounded-full font-semibold hover:bg-[#1a3568] transition-colors shadow-lg shadow-[#20427f]/20 hover:shadow-xl hover:shadow-[#20427f]/25"
+                      className="inline-flex items-center justify-center gap-2 bg-[#1e3a6e] border border-[#5b8def]/30 text-white px-6 py-3 rounded-full font-semibold hover:bg-[#2d5aa8] hover:border-[#5b8def]/60 transition-all duration-200 shadow-lg shadow-[#5b8def]/10"
                     >
                       <svg
                         className="w-5 h-5"
@@ -233,7 +233,7 @@ export default function ServiceProjectsExpandable({
                     </Link>
                     <Link
                       href="/contact"
-                      className="inline-flex items-center justify-center gap-2 border-2 border-gray-200 text-gray-700 px-6 py-3 rounded-full font-semibold hover:border-[#20427f] hover:text-[#20427f] transition-colors"
+                      className="inline-flex items-center justify-center gap-2 border border-white/30 text-white px-6 py-3 rounded-full font-semibold hover:bg-white/10 hover:border-white/50 transition-all duration-200"
                     >
                       <svg
                         className="w-5 h-5"
@@ -254,16 +254,16 @@ export default function ServiceProjectsExpandable({
                 </div>
 
                 {/* Decorative Elements */}
-                <div className="absolute top-8 left-8 w-20 h-20 border border-[#20427f]/10 rounded-full" />
-                <div className="absolute bottom-8 right-8 w-32 h-32 border border-[#20427f]/10 rounded-full" />
-                <div className="absolute top-1/2 right-12 w-3 h-3 bg-[#20427f]/20 rounded-full hidden lg:block" />
-                <div className="absolute bottom-1/3 left-16 w-2 h-2 bg-[#20427f]/30 rounded-full hidden lg:block" />
+                <div className="absolute top-8 left-8 w-20 h-20 border border-[#5b8def]/10 rounded-full" />
+                <div className="absolute bottom-8 right-8 w-32 h-32 border border-[#5b8def]/10 rounded-full" />
+                <div className="absolute top-1/2 right-12 w-3 h-3 bg-[#5b8def]/20 rounded-full hidden lg:block" />
+                <div className="absolute bottom-1/3 left-16 w-2 h-2 bg-[#5b8def]/30 rounded-full hidden lg:block" />
               </div>
             </div>
 
-            {/* Optional: Show other categories hint */}
+            {/* Category hint */}
             <div className="mt-8 text-center">
-              <p className="text-gray-500 text-sm">
+              <p className="text-white/30 text-sm">
                 Meanwhile, explore our work in other categories
               </p>
               <div className="flex flex-wrap justify-center gap-2 mt-4">
@@ -272,7 +272,8 @@ export default function ServiceProjectsExpandable({
                     <Link
                       key={cat}
                       href="/portfolio"
-                      className="px-4 py-2 bg-white border border-gray-200 rounded-full text-sm text-gray-600 hover:border-[#20427f] hover:text-[#20427f] transition-colors"
+                      className="px-4 py-2 bg-[#5b8def]/5 border border-[#5b8def]/10 rounded-full text-sm text-white/50
+                                 hover:bg-[#1e3a6e] hover:border-[#5b8def]/40 hover:text-white transition-all duration-200"
                     >
                       {cat}
                     </Link>
@@ -283,38 +284,40 @@ export default function ServiceProjectsExpandable({
           </div>
         )}
 
-        {/* Project Cards - Dynamic sizing like ProjectCard */}
+        {/* Project Cards */}
         {!isLoading && !error && projects.length > 0 && (
           <>
             <div className="flex flex-wrap justify-center gap-6">
               {projects.map((project, index) => (
                 <div
                   key={project.id || index}
-                  className={`group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer flex flex-col w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] ${
-                    isVisible
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 translate-y-12"
-                  }`}
+                  className={`group rounded-2xl overflow-hidden border border-[#5b8def]/20 bg-[#5b8def]/5 backdrop-blur-sm
+                              hover:border-[#5b8def]/40 hover:-translate-y-1 hover:bg-[#5b8def]/10
+                              hover:shadow-lg hover:shadow-[#5b8def]/10
+                              transition-all duration-500 cursor-pointer flex flex-col
+                              w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] ${
+                                isVisible
+                                  ? "opacity-100 translate-y-0"
+                                  : "opacity-0 translate-y-12"
+                              }`}
                   style={{ transitionDelay: `${index * 100}ms` }}
                 >
                   <Link href={`/portfolio/${project.slug}`} className="flex flex-col h-full">
-                    {/* Image - Dynamic height like ProjectCard */}
-                    <div 
-                      className="relative overflow-hidden bg-gradient-to-br from-[#20427f] to-[#1a3668]"
-                      style={{
-                        height: 'clamp(180px, 20vw, 280px)'
-                      }}
+                    {/* Image */}
+                    <div
+                      className="relative overflow-hidden bg-[#1e3a6e]"
+                      style={{ height: "clamp(180px, 20vw, 280px)" }}
                     >
                       {project.image ? (
                         <Image
                           src={project.image}
                           alt={project.title}
                           fill
-                          unoptimized={project.image?.startsWith('/uploads/')}
+                          unoptimized={project.image?.startsWith("/uploads/")}
                           className="object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       ) : (
-                        <div className="absolute inset-0 flex items-center justify-center text-white/40 text-sm">
+                        <div className="absolute inset-0 flex items-center justify-center text-white/20 text-sm">
                           Project Image
                         </div>
                       )}
@@ -324,7 +327,7 @@ export default function ServiceProjectsExpandable({
 
                       {/* View Project CTA */}
                       <div className="absolute bottom-4 left-4 right-4 opacity-100 group-hover:opacity-100 transition-opacity duration-300">
-                        <div className="bg-white text-[#20427f] px-4 py-3 rounded-xl font-semibold text-center flex items-center justify-center gap-2 text-sm lg:text-base">
+                        <div className="bg-white text-[#0f1d32] px-4 py-3 rounded-xl font-semibold text-center flex items-center justify-center gap-2 text-sm lg:text-base">
                           View Project
                           <svg
                             className="w-4 h-4 lg:w-5 lg:h-5"
@@ -343,29 +346,20 @@ export default function ServiceProjectsExpandable({
                       </div>
                     </div>
 
-                    {/* Content - Dynamic padding */}
-                    <div 
+                    {/* Content */}
+                    <div
                       className="flex-1 flex flex-col"
-                      style={{
-                        padding: 'clamp(1rem, 2vw, 1.5rem)'
-                      }}
+                      style={{ padding: "clamp(1rem, 2vw, 1.5rem)" }}
                     >
-                      {/* Title - Dynamic font size */}
-                      <h3 
-                        className="font-bold text-gray-900 mb-2 group-hover:text-[#20427f] transition-colors line-clamp-2"
-                        style={{
-                          fontSize: 'clamp(1rem, 1.5vw, 1.25rem)'
-                        }}
+                      <h3
+                        className="font-bold text-white mb-2 group-hover:text-[#5b8def] transition-colors line-clamp-2"
+                        style={{ fontSize: "clamp(1rem, 1.5vw, 1.25rem)" }}
                       >
                         {project.title}
                       </h3>
-
-                      {/* Description - Dynamic font size */}
-                      <p 
-                        className="text-gray-600 leading-relaxed line-clamp-2 flex-1"
-                        style={{
-                          fontSize: 'clamp(0.8rem, 1vw, 0.9rem)'
-                        }}
+                      <p
+                        className="text-white/40 leading-relaxed line-clamp-2 flex-1"
+                        style={{ fontSize: "clamp(0.8rem, 1vw, 0.9rem)" }}
                       >
                         {project.description || project.shortDescription}
                       </p>
@@ -385,7 +379,7 @@ export default function ServiceProjectsExpandable({
             >
               <Link
                 href="/portfolio"
-                className="inline-flex items-center gap-3 bg-[#20427f] text-white px-8 py-4 rounded-full font-semibold hover:bg-[#1a3568] transition-colors shadow-lg"
+                className="inline-flex items-center gap-3 bg-[#1e3a6e] border border-[#5b8def]/30 text-white px-8 py-4 rounded-full font-semibold hover:bg-[#2d5aa8] hover:border-[#5b8def]/60 transition-all duration-200 shadow-lg shadow-[#5b8def]/10"
               >
                 View All Projects
                 <svg

@@ -1,6 +1,3 @@
-// app/blog/page.js
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import RecentArticlesWrapper from "./RecentArticlesWrapper";
 import BlogHero from "./components/BlogHero";
 import prisma from "@/lib/prisma";
@@ -15,7 +12,6 @@ export const metadata = {
 
 export default async function BlogPage() {
   let blogs = [];
-
   try {
     blogs = await prisma.blog.findMany({
       where: { published: true },
@@ -27,11 +23,9 @@ export default async function BlogPage() {
   }
 
   return (
-    <>
-      <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 pt-10">
-        <BlogHero />
-        <RecentArticlesWrapper posts={blogs} />
-      </main>
-    </>
+    <div className="bg-[#060010] font-['Inter',sans-serif]">
+      <BlogHero />
+      <RecentArticlesWrapper posts={blogs} />
+    </div>
   );
 }

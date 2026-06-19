@@ -1,7 +1,11 @@
 // app/services/branding-design/page.js
-import Header from "../../../components/Header";
-import Footer from "../../../components/Footer";
 import Link from "next/link";
+
+export const metadata = {
+  title: "Branding & Design - YourZerosAndOnes",
+  description:
+    "Complete branding solutions including logo design, graphic design, video production and more",
+};
 
 export default function BrandingDesign() {
   const services = [
@@ -14,7 +18,7 @@ export default function BrandingDesign() {
         <svg
           className="w-8 h-8"
           fill="none"
-          stroke="#1a3568"
+          stroke="#5b8def"
           strokeWidth={1.5}
           viewBox="0 0 24 24"
         >
@@ -35,7 +39,7 @@ export default function BrandingDesign() {
         <svg
           className="w-8 h-8"
           fill="none"
-          stroke="#1a3568"
+          stroke="#5b8def"
           strokeWidth={1.5}
           viewBox="0 0 24 24"
         >
@@ -55,7 +59,7 @@ export default function BrandingDesign() {
         <svg
           className="w-8 h-8"
           fill="none"
-          stroke="#1a3568"
+          stroke="#5b8def"
           strokeWidth={1.5}
           viewBox="0 0 24 24"
         >
@@ -76,7 +80,7 @@ export default function BrandingDesign() {
         <svg
           className="w-8 h-8"
           fill="none"
-          stroke="#1a3568"
+          stroke="#5b8def"
           strokeWidth={1.5}
           viewBox="0 0 24 24"
         >
@@ -97,7 +101,7 @@ export default function BrandingDesign() {
         <svg
           className="w-8 h-8"
           fill="none"
-          stroke="#1a3568"
+          stroke="#5b8def"
           strokeWidth={1.5}
           viewBox="0 0 24 24"
         >
@@ -118,7 +122,7 @@ export default function BrandingDesign() {
         <svg
           className="w-8 h-8"
           fill="none"
-          stroke="#1a3568"
+          stroke="#5b8def"
           strokeWidth={1.5}
           viewBox="0 0 24 24"
         >
@@ -139,7 +143,7 @@ export default function BrandingDesign() {
         <svg
           className="w-8 h-8"
           fill="none"
-          stroke="#1a3568"
+          stroke="#5b8def"
           strokeWidth={1.5}
           viewBox="0 0 24 24"
         >
@@ -167,139 +171,143 @@ export default function BrandingDesign() {
   ];
 
   return (
-    <>
-      <main className="min-h-screen bg-white pt-10">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-br from-[#f0f4ff] to-[#e8efff] py-20">
-          <div
-            className="max-w-[1800px] mx-auto text-center"
-            style={{
-              paddingLeft: "clamp(2rem, 8vw, 12rem)",
-              paddingRight: "clamp(2rem, 8vw, 12rem)",
-            }}
-          >
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-              Branding & Design
-            </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Transform your vision into compelling visual identities that
-              resonate with your audience and drive business growth.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-              {ctaLinks.map((link, index) => (
-                <Link
-                  key={index}
-                  href={link.href}
-                  className={`${
-                    link.variant === "primary"
-                      ? "bg-[#20427f] text-white hover:bg-[#1a3568] shadow-lg hover:shadow-xl"
-                      : "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
-                  } px-8 py-4 rounded-lg transition-all duration-200 font-medium`}
-                >
-                  {link.text}
-                </Link>
-              ))}
-            </div>
+    <main className="min-h-screen bg-[#060010] pt-10">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-[#060010] via-[#0a1628] to-[#060010] py-20">
+        <div
+          className="max-w-[1800px] mx-auto text-center"
+          style={{
+            paddingLeft: "clamp(2rem, 8vw, 12rem)",
+            paddingRight: "clamp(2rem, 8vw, 12rem)",
+          }}
+        >
+          <span className="text-[#5b8def] text-xs sm:text-sm font-semibold uppercase tracking-[0.2em]">
+            Creative Services
+          </span>
+          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 mt-3">
+            Branding & Design
+          </h1>
+          <p className="text-xl text-white/50 mb-8 max-w-3xl mx-auto leading-relaxed">
+            Transform your vision into compelling visual identities that
+            resonate with your audience and drive business growth.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+            {ctaLinks.map((link, index) => (
+              <Link
+                key={index}
+                href={link.href}
+                className={`${
+                  link.variant === "primary"
+                    ? "bg-[#1e3a6e] text-white border border-[#5b8def]/30 hover:bg-[#2d5aa8] hover:border-[#5b8def]/60 shadow-lg hover:shadow-[#5b8def]/10"
+                    : "border border-white/30 text-white hover:bg-white/10 hover:border-white/50"
+                } px-8 py-4 rounded-lg transition-all duration-200 font-medium`}
+              >
+                {link.text}
+              </Link>
+            ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Services Grid */}
-        <section className="py-20 bg-white">
-          <div
-            className="max-w-[1800px] mx-auto"
-            style={{
-              paddingLeft: "clamp(2rem, 8vw, 12rem)",
-              paddingRight: "clamp(2rem, 8vw, 12rem)",
-            }}
-          >
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">
-                Our Design Services
-              </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Comprehensive branding and design solutions tailored to make
-                your business stand out.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {services.map((service, index) => (
-                <Link
-                  key={index}
-                  href={service.path}
-                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-[#20427f] group"
-                >
-                  <div className="text-3xl mb-4 text-center group-hover:scale-110 transition-transform duration-300">
-                    {service.icon}
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 text-center group-hover:text-[#20427f] transition-colors">
-                    {service.name}
-                  </h3>
-                  <p className="text-gray-600 mb-6 leading-relaxed text-sm text-center">
-                    {service.description}
-                  </p>
-                  <div className="flex items-center justify-center text-[#20427f] font-medium">
-                    <span>Learn more</span>
-                    <svg
-                      className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="py-20 bg-gradient-to-r from-[#20427f] to-[#2c5aa0]">
-          <div
-            className="max-w-[1800px] mx-auto text-center"
-            style={{
-              paddingLeft: "clamp(2rem, 8vw, 12rem)",
-              paddingRight: "clamp(2rem, 8vw, 12rem)",
-            }}
-          >
-            <h2 className="text-4xl font-bold text-white mb-6">
-              Ready to Build Your Brand?
+      {/* Services Grid */}
+      <section className="py-20 bg-[#060812]">
+        <div
+          className="max-w-[1800px] mx-auto"
+          style={{
+            paddingLeft: "clamp(2rem, 8vw, 12rem)",
+            paddingRight: "clamp(2rem, 8vw, 12rem)",
+          }}
+        >
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-white mb-4">
+              Our Design Services
             </h2>
-            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              Let's create a memorable brand identity that sets you apart from
-              the competition.
+            <p className="text-xl text-white/50 max-w-3xl mx-auto">
+              Comprehensive branding and design solutions tailored to make
+              your business stand out.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              {ctaLinks.map((link, index) => (
-                <Link
-                  key={index}
-                  href={link.href}
-                  className={`${
-                    link.variant === "primary"
-                      ? "bg-white text-[#20427f] hover:bg-gray-100 shadow-lg hover:shadow-xl"
-                      : "border border-white text-white hover:bg-white hover:text-[#20427f]"
-                  } px-8 py-4 rounded-lg transition-all duration-200 font-medium`}
-                >
-                  {link.text}
-                </Link>
-              ))}
-            </div>
           </div>
-        </section>
-      </main>
-    </>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {services.map((service, index) => (
+              <Link
+                key={index}
+                href={service.path}
+                className="rounded-2xl border border-[#5b8def]/20 bg-[#5b8def]/5 backdrop-blur-sm p-8
+                           hover:border-[#5b8def]/40 hover:-translate-y-1 hover:bg-[#5b8def]/10
+                           hover:shadow-lg hover:shadow-[#5b8def]/10
+                           transition-all duration-300 group"
+              >
+                <div className="text-3xl mb-4 text-center group-hover:scale-110 transition-transform duration-300">
+                  {service.icon}
+                </div>
+                <h3 className="text-xl font-bold text-white mb-3 text-center group-hover:text-[#5b8def] transition-colors">
+                  {service.name}
+                </h3>
+                <p className="text-white/50 mb-6 leading-relaxed text-sm text-center">
+                  {service.description}
+                </p>
+                <div className="flex items-center justify-center text-[#5b8def] font-medium">
+                  <span>Learn more</span>
+                  <svg
+                    className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-br from-[#0a1628] via-[#0f1d32] to-[#0a1628] relative overflow-hidden">
+        {/* Pulse blobs */}
+        <div className="absolute inset-0 opacity-20 pointer-events-none">
+          <div className="absolute top-0 left-0 w-72 lg:w-96 h-72 lg:h-96 bg-[#203E7F] rounded-full filter blur-3xl animate-pulse" />
+          <div className="absolute bottom-0 right-0 w-72 lg:w-96 h-72 lg:h-96 bg-[#203E7F] rounded-full filter blur-3xl animate-pulse" />
+        </div>
+
+        <div
+          className="relative z-10 max-w-[1800px] mx-auto text-center"
+          style={{
+            paddingLeft: "clamp(2rem, 8vw, 12rem)",
+            paddingRight: "clamp(2rem, 8vw, 12rem)",
+          }}
+        >
+          <h2 className="text-4xl font-bold text-white mb-6">
+            Ready to Build Your Brand?
+          </h2>
+          <p className="text-xl text-blue-200/70 mb-8 max-w-2xl mx-auto">
+            Let's create a memorable brand identity that sets you apart from
+            the competition.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {ctaLinks.map((link, index) => (
+              <Link
+                key={index}
+                href={link.href}
+                className={`${
+                  link.variant === "primary"
+                    ? "bg-white text-[#0f1d32] hover:bg-blue-50 shadow-lg hover:shadow-xl"
+                    : "border border-white/30 text-white hover:bg-white/10 hover:border-white/50"
+                } px-8 py-4 rounded-lg transition-all duration-200 font-medium`}
+              >
+                {link.text}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }
-
-export const metadata = {
-  title: "Branding & Design - YourZerosAndOnes",
-  description:
-    "Complete branding solutions including logo design, graphic design, video production and more",
-};

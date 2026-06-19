@@ -123,9 +123,9 @@ export default function AboutHero() {
 
         {/* Heading */}
         <h1 className="pt-6 mb-6">
-          <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-2">
+          <span className="block text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-2">
             <BlurText
-              text="About Your Zeros"
+              text="About"
               delay={60}
               animateBy="words"
               direction="top"
@@ -135,7 +135,7 @@ export default function AboutHero() {
           </span>
           <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold">
             <ShinyText
-              text="and Ones"
+              text=" Your Zeros and Ones"
               speed={2}
               delay={0.6}
               color="#5b8def"

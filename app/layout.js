@@ -22,7 +22,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={inter.className}>
-      <body className="bg-white text-black antialiased">
+      {/* 
+        Removed bg-white from body — LayoutWrapper now controls 
+        background color dynamically based on route (dark for public, white for admin)
+      */}
+      <body className="text-black antialiased">
         <ConsoleBranding />
         <DevStampProvider>
           <Suspense fallback={null}>

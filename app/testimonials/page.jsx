@@ -1,21 +1,16 @@
-//Q:\PROJECTS\YourZeroesAndOnes\YZO_Main\app\testimonials\page.jsx
-
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
+// app/testimonials/page.jsx
 import TestimonialHero from "./sections/TestimonialHero";
 import TestimonialWrapper from "./sections/TestimonialWrapper";
 
 export const metadata = {
-  title: "Testimonials | Kiran S Pradeep",
+  title: "Testimonials | YourZerosAndOnes",
 };
 
 export default function TestimonialsPage() {
   return (
-    <main className="min-h-screen w-full">
-       <Header/>
+    <main className="min-h-screen w-full bg-[#060010]">
       <TestimonialHero />
       <TestimonialWrapper />
-      <Footer/>
     </main>
   );
 }

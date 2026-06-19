@@ -1,65 +1,12 @@
 // app/about/sections/WhyChooseUs.jsx
 "use client";
 import { useRef, useState, useEffect, memo } from "react";
+import { motion } from "framer-motion";
 import {
-  Lightbulb,
-  Rocket,
-  Shield,
-  HeadphonesIcon,
-  Settings,
-  BarChart3,
+  Lightbulb, Rocket, Shield, HeadphonesIcon, Settings, BarChart3,
 } from "lucide-react";
-import { CSSAnimatedSection, SectionHeader, SectionWrapper } from "@/components/ui/AnimatedSection";
+import BlurText from "@/components/effects/BlurText/BlurText";
 
-// Feature Card Component
-const FeatureCard = memo(function FeatureCard({ item, index }) {
-  const ref = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const currentRef = ref.current;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.2 }
-    );
-
-    if (currentRef) observer.observe(currentRef);
-    return () => {
-      if (currentRef) observer.unobserve(currentRef);
-    };
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      className="group"
-      style={{
-        opacity: isVisible ? 1 : 0,
-        transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(30px) scale(0.95)',
-        transition: `all 0.5s cubic-bezier(0.4, 0, 0.2, 1) ${index * 80}ms`
-      }}
-    >
-      <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 h-full hover:-translate-y-2">
-        <div className="w-14 h-14 bg-gradient-to-br from-[#203E7F] to-cyan-600 rounded-2xl flex items-center justify-center mb-5 shadow-lg transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
-          <item.Icon className="w-7 h-7 text-white" />
-        </div>
-        <h3 className="text-xl font-bold text-gray-900 mb-3">
-          {item.title}
-        </h3>
-        <p className="text-gray-600 leading-relaxed">
-          {item.description}
-        </p>
-      </div>
-    </div>
-  );
-});
-
-// Static data - no need to fetch
 const WHY_CHOOSE_US_DATA = [
   {
     Icon: Lightbulb,
@@ -93,21 +40,116 @@ const WHY_CHOOSE_US_DATA = [
   },
 ];
 
+const FeatureCard = memo(function FeatureCard({ item, index }) {
+  const ref = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) { setIsVisible(true); observer.disconnect(); }
+      },
+      { threshold: 0.15 }
+    );
+    if (el) observer.observe(el);
+    return () => { if (el) observer.unobserve(el); };
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className="group"
+      style={{
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? "translateY(0) scale(1)" : "translateY(30px) scale(0.95)",
+        transition: `all 0.5s cubic-bezier(0.4,0,0.2,1) ${index * 80}ms`,
+      }}
+    >
+      <div className="h-full rounded-2xl border border-[#5b8def]/20 bg-[#5b8def]/5
+                      p-6 sm:p-8 backdrop-blur-sm
+                      hover:border-[#5b8def]/40 hover:-translate-y-2 hover:bg-[#5b8def]/10
+                      transition-all duration-300 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#5b8def]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl" />
+
+        <div className="relative">
+          <div className="w-12 h-12 bg-[#1e3a6e] border border-[#5b8def]/30 rounded-xl
+                          flex items-center justify-center mb-5
+                          group-hover:border-[#5b8def]/60 group-hover:scale-110 group-hover:rotate-3
+                          transition-all duration-300">
+            <item.Icon className="w-6 h-6 text-[#5b8def]" />
+          </div>
+          <h3 className="text-lg font-bold text-white mb-3 group-hover:text-[#5b8def] transition-colors duration-300">
+            {item.title}
+          </h3>
+          <p className="text-white/40 text-sm leading-relaxed">
+            {item.description}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+});
+
 export default function WhyChooseUs() {
   return (
-    <SectionWrapper bg="bg-gray-100">
-      <SectionHeader
-        badge="Why Us"
-        title="Why Choose"
-        highlightedText="Us?"
-        description="Discover what sets us apart and makes us the right partner for your digital journey."
+    <section className="relative py-20 sm:py-24 bg-[#060010] overflow-hidden">
+      <div
+        className="absolute inset-0 opacity-[0.025]"
+        style={{
+          backgroundImage:
+            "linear-gradient(#20427f 1px, transparent 1px), linear-gradient(90deg, #20427f 1px, transparent 1px)",
+          backgroundSize: "60px 60px",
+        }}
       />
+      <div className="absolute top-1/2 right-0 w-96 h-96 bg-[#5b8def]/5 rounded-full blur-[100px] pointer-events-none -translate-y-1/2" />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-        {WHY_CHOOSE_US_DATA.map((item, index) => (
-          <FeatureCard key={index} item={item} index={index} />
-        ))}
+      <div
+        className="relative z-10 w-full"
+        style={{
+          paddingLeft: "clamp(2rem, 8vw, 12rem)",
+          paddingRight: "clamp(2rem, 8vw, 12rem)",
+        }}
+      >
+        {/* Header */}
+        <div className="text-center mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-4"
+          >
+            <span className="text-[#5b8def] text-xs sm:text-sm font-semibold uppercase tracking-[0.2em]">
+              Why Us
+            </span>
+          </motion.div>
+          <div className="mb-4">
+            <BlurText
+              text="Why Choose Us?"
+              delay={60}
+              animateBy="words"
+              direction="top"
+              align="center"
+              className="text-3xl sm:text-4xl md:text-5xl font-bold text-white"
+            />
+          </div>
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            className="text-white/40 text-base sm:text-lg max-w-2xl mx-auto"
+          >
+            Discover what sets us apart and makes us the right partner for your digital journey.
+          </motion.p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+          {WHY_CHOOSE_US_DATA.map((item, index) => (
+            <FeatureCard key={index} item={item} index={index} />
+          ))}
+        </div>
       </div>
-    </SectionWrapper>
+    </section>
   );
 }

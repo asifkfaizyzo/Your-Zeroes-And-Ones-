@@ -1,60 +1,108 @@
 // app/about/sections/VisionMission.jsx
 "use client";
+import { motion } from "framer-motion";
 import { Eye, Zap } from "lucide-react";
-import { CSSAnimatedSection, SectionHeader, SectionWrapper } from "@/components/ui/AnimatedSection";
+import BlurText from "@/components/effects/BlurText/BlurText";
 
 export default function VisionMission() {
   return (
-    <SectionWrapper bg="bg-gray-100">
-      <SectionHeader
-        badge="Our Purpose"
-        title="Vision &"
-        highlightedText="Mission"
+    <section className="relative py-20 sm:py-24 bg-[#060010] overflow-hidden">
+      {/* Grid */}
+      <div
+        className="absolute inset-0 opacity-[0.025]"
+        style={{
+          backgroundImage:
+            "linear-gradient(#20427f 1px, transparent 1px), linear-gradient(90deg, #20427f 1px, transparent 1px)",
+          backgroundSize: "60px 60px",
+        }}
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Vision Card */}
-        <CSSAnimatedSection delay={0}>
-          <div className="bg-gradient-to-br from-[#203E7F] to-cyan-600 rounded-3xl p-8 sm:p-10 text-white h-full relative overflow-hidden group hover:shadow-2xl transition-shadow duration-300">
-            {/* Dot pattern background */}
-            <div className="absolute inset-0 opacity-10">
-              <div
-                className="absolute inset-0"
-                style={{
-                  backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
-                  backgroundSize: "30px 30px",
-                }}
-              />
-            </div>
+      <div
+        className="relative z-10 w-full"
+        style={{
+          paddingLeft: "clamp(2rem, 8vw, 12rem)",
+          paddingRight: "clamp(2rem, 8vw, 12rem)",
+        }}
+      >
+        {/* Header */}
+        <div className="text-center mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-4"
+          >
+            <span className="text-[#5b8def] text-xs sm:text-sm font-semibold uppercase tracking-[0.2em]">
+              Our Purpose
+            </span>
+          </motion.div>
+          <BlurText
+            text="Vision & Mission"
+            delay={60}
+            animateBy="words"
+            direction="top"
+            align="center"
+            className="text-3xl sm:text-4xl md:text-5xl font-bold text-white"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+          {/* Vision */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="group relative rounded-3xl border border-[#5b8def]/30 bg-[#5b8def]/5
+                       backdrop-blur-sm p-8 sm:p-10 overflow-hidden
+                       hover:border-[#5b8def]/50 hover:-translate-y-1 transition-all duration-300"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-[#5b8def]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl" />
+
+            <div
+              className="absolute inset-0 opacity-[0.04]"
+              style={{
+                backgroundImage: "radial-gradient(circle at 2px 2px, #5b8def 1px, transparent 0)",
+                backgroundSize: "28px 28px",
+              }}
+            />
 
             <div className="relative">
-              <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Eye className="w-8 h-8 text-white" />
+              <div className="w-14 h-14 bg-[#1e3a6e] border border-[#5b8def]/30 rounded-2xl flex items-center justify-center mb-6 group-hover:border-[#5b8def]/60 group-hover:scale-110 transition-all duration-300">
+                <Eye className="w-7 h-7 text-[#5b8def]" />
               </div>
-              <h3 className="text-2xl sm:text-3xl font-bold mb-4">Our Vision</h3>
-              <p className="text-blue-100 text-base sm:text-lg leading-relaxed">
+              <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+                Our Vision
+              </h3>
+              <p className="text-white/50 text-base sm:text-lg leading-relaxed">
                 To be the leading catalyst for digital innovation, empowering
                 businesses worldwide to achieve their full potential through
                 transformative technology solutions that create lasting impact
                 and drive sustainable growth.
               </p>
             </div>
-          </div>
-        </CSSAnimatedSection>
+          </motion.div>
 
-        {/* Mission Card */}
-        <CSSAnimatedSection delay={150}>
-          <div className="bg-white rounded-3xl p-8 sm:p-10 h-full shadow-xl border border-gray-100 relative overflow-hidden group hover:shadow-2xl transition-shadow duration-300">
-            <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-[#203E7F]/10 to-cyan-600/10 opacity-50" />
+          {/* Mission */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.15 }}
+            className="group relative rounded-3xl border border-[#5b8def]/20 bg-[#060812]
+                       p-8 sm:p-10 overflow-hidden
+                       hover:border-[#5b8def]/40 hover:-translate-y-1 transition-all duration-300"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-[#1e3a6e]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl" />
 
             <div className="relative">
-              <div className="w-16 h-16 bg-gradient-to-br from-[#203E7F] to-cyan-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                <Zap className="w-8 h-8 text-white" />
+              <div className="w-14 h-14 bg-[#1e3a6e] border border-[#5b8def]/30 rounded-2xl flex items-center justify-center mb-6 group-hover:border-[#5b8def]/60 group-hover:scale-110 transition-all duration-300">
+                <Zap className="w-7 h-7 text-[#5b8def]" />
               </div>
-              <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+              <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4">
                 Our Mission
               </h3>
-              <p className="text-gray-600 text-base sm:text-lg leading-relaxed">
+              <p className="text-white/50 text-base sm:text-lg leading-relaxed">
                 To deliver exceptional, customized IT solutions that solve
                 complex business challenges. We are committed to building
                 long-term partnerships based on trust, innovation, and
@@ -62,9 +110,9 @@ export default function VisionMission() {
                 ever-evolving digital landscape.
               </p>
             </div>
-          </div>
-        </CSSAnimatedSection>
+          </motion.div>
+        </div>
       </div>
-    </SectionWrapper>
+    </section>
   );
 }
